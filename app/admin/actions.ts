@@ -7,7 +7,7 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'admin123'
 const COOKIE_NAME = 'admin_auth'
 const COOKIE_VALUE = 'authenticated'
 
-export async function adminLogin(prevState: { error?: string }, formData: FormData) {
+export async function adminLogin(prevState: { error: string }, formData: FormData): Promise<{ error: string }> {
   const password = formData.get('password') as string
   if (password === ADMIN_PASSWORD) {
     const cookieStore = await cookies()

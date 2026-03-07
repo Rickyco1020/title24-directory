@@ -16,7 +16,7 @@ function LoginButton() {
 }
 
 export default function AdminLoginPage() {
-  const [state, action] = useFormState(adminLogin, { error: undefined })
+  const [state, action] = useFormState(adminLogin, { error: '' })
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
@@ -36,7 +36,7 @@ export default function AdminLoginPage() {
               placeholder="Enter admin password"
             />
           </div>
-          {state?.error && (
+          {state.error && (
             <p className="text-red-500 text-sm">{state.error}</p>
           )}
           <LoginButton />
