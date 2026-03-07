@@ -318,25 +318,27 @@ Engage both early, keep your compliance document chain organized, and you'll be 
 
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const article = articles[params.slug]
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const article = articles[slug]
   if (!article) return {}
   return {
     title: article.seoTitle,
     description: article.description,
-    alternates: { canonical: `https://title24directory.com/resources/${params.slug}` },
+    alternates: { canonical: `https://title24directory.com/resources/${slug}` },
   }
 }
 
-export default function ArticlePage({ params }: { params: { slug: string } }) {
-  const article = articles[params.slug]
+export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const article = articles[slug]
   if (!article) notFound()
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: article.title,
-    description: article.description,
+    headline: article!.title,
+    description: article!.description,
     datePublished: '2026-03-01',
     author: { '@type': 'Organization', name: 'Title24 Directory' },
     publisher: { '@type': 'Organization', name: 'Title24 Directory', url: 'https://title24directory.com' },
