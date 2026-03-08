@@ -9,6 +9,12 @@ const articles = [
   'title-24-compliance-guide',
   'what-is-acceptance-testing',
   'hers-vs-ecc-rater',
+  'title-24-solar-requirements',
+  'what-is-a-cf1r',
+  'duct-leakage-testing',
+  'heat-pump-water-heater-title-24',
+  'performance-path-title-24',
+  'hvac-replacement-hers-rater',
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -38,6 +44,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/directory`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.9 },
     { url: `${BASE_URL}/get-listed`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.8 },
     { url: `${BASE_URL}/resources`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.7 },
+    { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.5 },
   ]
 
   return [...corePages, ...countyPages, ...cityPages, ...articlePages]

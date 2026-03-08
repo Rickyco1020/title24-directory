@@ -3,7 +3,13 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { BADGE_COLORS, CATEGORY_LABELS } from '@/lib/categories'
 import type { Rater } from '@/lib/supabase'
+import { CA_COUNTIES } from '@/lib/california-data'
 import type { Metadata } from 'next'
+
+function formatCountyName(slug: string): string {
+  const county = CA_COUNTIES.find(c => c.slug === slug)
+  return county?.name ?? slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+}
 
 export const dynamic = 'force-dynamic'
 
@@ -21,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params
   const rater = await getRater(id)
   if (!rater) return {}
-  const counties = rater.counties_served?.slice(0, 2).join(', ') ?? 'California'
+  const counties = rater.counties_served?.slice(0, 2).map(formatCountyName).join(', ') ?? 'California'
   return {
     title: `${rater.business_name} | Title 24 Rater — ${counties}`,
     description: rater.description ?? `${rater.business_name} is a certified Title 24 rater serving ${counties}. View services, coverage area, and contact details.`,
@@ -44,7 +50,7 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
     description: rater.description ?? undefined,
     telephone: rater.phone ?? undefined,
     url: rater.website ?? undefined,
-    areaServed: counties.map(c => ({ '@type': 'AdministrativeArea', name: c })),
+    areaServed: counties.map(c => ({ '@type': 'AdministrativeArea', name: formatCountyName(c) })),
   }
 
   return (
@@ -134,7 +140,7 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
                     href={`/directory/county/${c}`}
                     className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full hover:bg-blue-100 hover:text-blue-800 transition-colors"
                   >
-                    {c}
+                    {formatCountyName(c)}
                   </Link>
                 ))}
               </div>

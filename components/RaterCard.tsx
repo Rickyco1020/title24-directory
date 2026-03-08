@@ -1,6 +1,11 @@
 import Link from 'next/link'
 import { BADGE_COLORS, CATEGORY_LABELS } from '@/lib/categories'
+import { CA_COUNTIES } from '@/lib/california-data'
 import type { Rater } from '@/lib/supabase'
+
+function formatCounty(slug: string): string {
+  return CA_COUNTIES.find(c => c.slug === slug)?.name ?? slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+}
 
 export default function RaterCard({ rater }: { rater: Rater }) {
   return (
@@ -18,7 +23,7 @@ export default function RaterCard({ rater }: { rater: Rater }) {
       </div>
       {(rater.cities_served?.length || rater.counties_served?.length) && (
         <p className="text-gray-500 text-sm mb-3">
-          📍 {[...(rater.counties_served ?? []), ...(rater.cities_served ?? [])].slice(0, 3).join(', ')}
+          📍 {[...(rater.counties_served ?? []).map(formatCounty), ...(rater.cities_served ?? [])].slice(0, 3).join(', ')}
           {(rater.cities_served?.length ?? 0) + (rater.counties_served?.length ?? 0) > 3 ? ' +more' : ''}
         </p>
       )}
