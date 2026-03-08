@@ -89,7 +89,7 @@ export default function HomePage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
-            { slug: 'what-is-a-hers-rater', title: 'What is a HERS Rater?', excerpt: 'Learn what a HERS rater does and when you need one for your California project.', tag: 'HERS' },
+            { slug: 'what-is-a-hers-rater', title: 'What Is a HERS Rater (Now Called an ECC Rater)?', excerpt: 'Learn what a HERS Rater does, how the role is becoming ECC Rater under the 2025 energy code, and when you need one.', tag: 'HERS / ECC' },
             { slug: 'cf2r-vs-cf3r', title: 'CF2R vs CF3R: What\'s the Difference?', excerpt: 'Understanding the difference between CF2R and CF3R forms for Title 24 compliance.', tag: 'Forms' },
             { slug: 'title-24-compliance-guide', title: 'California Title 24 Compliance Guide', excerpt: 'A complete guide to Title 24 energy code compliance for builders and contractors.', tag: 'Compliance' },
           ].map(article => (

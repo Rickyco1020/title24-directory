@@ -71,7 +71,7 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
 }
 
 export default function DirectoryPage({ searchParams }: { searchParams: Record<string, string> }) {
-  const counties = CA_COUNTIES.map(c => c.name).sort()
+  const sortedCounties = [...CA_COUNTIES].sort((a, b) => a.name.localeCompare(b.name))
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -94,7 +94,7 @@ export default function DirectoryPage({ searchParams }: { searchParams: Record<s
           <label className="block text-sm font-medium text-gray-700 mb-1">County</label>
           <select name="county" defaultValue={searchParams.county} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
             <option value="">All Counties</option>
-            {counties.map(c => <option key={c} value={c}>{c}</option>)}
+            {sortedCounties.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
           </select>
         </div>
         <div className="flex items-end">

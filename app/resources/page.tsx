@@ -7,11 +7,11 @@ export const metadata: Metadata = {
 }
 
 const articles = [
-  { slug: 'what-is-a-hers-rater', title: 'What is a HERS Rater? (And When Do You Need One)', excerpt: 'Learn what a HERS rater does, why they\'re required in California, and how to find one for your project.', tags: ['HERS'] },
+  { slug: 'what-is-a-hers-rater', title: 'What Is a HERS Rater (Now Called an ECC Rater) and When Do You Need One?', excerpt: 'Learn what a HERS Rater does, how the role is transitioning to ECC Rater under the 2025 energy code, and how to find one for your California project.', tags: ['HERS', 'ECC'] },
   { slug: 'cf2r-vs-cf3r', title: 'CF2R vs CF3R: What\'s the Difference?', excerpt: 'Understanding the difference between CF2R installer certificates and CF3R verifier certificates for Title 24 compliance.', tags: ['Forms'] },
-  { slug: 'title-24-compliance-guide', title: 'California Title 24 Compliance: A Builder\'s Guide', excerpt: 'A complete guide to navigating California\'s Title 24 energy code for new construction and major renovations.', tags: ['Compliance'] },
-  { slug: 'what-is-acceptance-testing', title: 'What Does an Acceptance Tester Do?', excerpt: 'Title 24 acceptance testing explained — what it covers, when it\'s required, and how to find a certified tester.', tags: ['Compliance'] },
-  { slug: 'hers-vs-ecc-rater', title: 'ECC Rater vs HERS Rater: Which Do You Need?', excerpt: 'California\'s energy code is changing. Here\'s the difference between HERS and ECC raters and which one your 2025+ project needs.', tags: ['HERS', 'ECC'] },
+  { slug: 'title-24-compliance-guide', title: 'California Title 24 Compliance: A Builder\'s Complete Guide', excerpt: 'A complete guide to navigating California\'s Title 24 energy code for new construction and major renovations.', tags: ['Compliance'] },
+  { slug: 'what-is-acceptance-testing', title: 'What Does an Acceptance Tester Do? Title 24 Acceptance Testing Explained', excerpt: 'Title 24 acceptance testing explained — what it covers, when it\'s required, and how to find a certified tester.', tags: ['Compliance'] },
+  { slug: 'hers-vs-ecc-rater', title: 'ECC Writer vs. HERS Rater: Which One Does Your Project Need?', excerpt: 'Two different roles, both required on most California projects. Here\'s the difference between the ECC Writer (energy consultant) and the HERS Rater (field verifier).', tags: ['HERS', 'ECC'] },
 ]
 
 export default function ResourcesPage() {
