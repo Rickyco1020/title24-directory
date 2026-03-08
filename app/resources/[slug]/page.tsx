@@ -546,6 +546,81 @@ Confirm that the electrical panel has sufficient capacity for the heat pump wate
 
 Heat pump water heaters are now the standard compliance path for water heating under California's 2022 Title 24 standards. Their high efficiency easily clears the new thresholds that most conventional water heaters cannot meet. For builders and contractors working on new California construction, understanding the installation requirements and planning for HERS verification where it applies will make for a smoother path to permit final.`,
   },
+  'performance-path-title-24': {
+    title: 'The Performance Path to Title 24 Compliance: How Heat Pumps, Mini Splits, and R-21 Work Together',
+    seoTitle: 'Title 24 Performance Path California | Heat Pump Water Heater, Mini Split, R-21',
+    description: 'Learn how California\'s Title 24 performance path lets you trade efficiency measures — like heat pump water heaters, ductless mini splits, and R-21 insulation — to meet energy code requirements with more design flexibility.',
+    tags: ['Compliance', 'HVAC'],
+    content: `## Introduction
+
+California's Title 24 energy code gives builders and designers two ways to demonstrate compliance: the prescriptive path and the performance path. The prescriptive path is a checklist — meet every specified requirement for your climate zone exactly as written. The performance path is a budget — use CEC-approved energy modeling software to show that your building's overall energy use meets or beats the code target, even if individual components differ from the prescriptive minimums.
+
+For residential projects, the performance path is the more popular option. It lets you make tradeoffs between building systems — using a more efficient water heater, for example, to offset slightly less insulation — as long as the overall building hits the energy budget. This post explains how the performance path works and how three common residential measures — heat pump water heaters, ductless mini-split heat pumps, and R-21 wall insulation — interact under the 2022 Title 24 standards.
+
+## How the Performance Path Works
+
+The performance path uses CEC-approved compliance software — CBECC-Res for single-family and low-rise multifamily, or EnergyPro — to compare two versions of your building. The "standard design" is a theoretical version of your building built to meet every prescriptive requirement exactly. The "proposed design" is your actual building as designed, with whatever equipment, insulation, and systems you've specified.
+
+If the proposed design's calculated energy use is equal to or less than the standard design, the building complies. The software calculates an energy budget that accounts for the building's climate zone, size, orientation, and other fixed characteristics, then scores the proposed design against that budget.
+
+The key advantage is flexibility. The prescriptive path requires you to meet every individual specification — a specific wall U-factor, a specific HVAC efficiency, a specific water heater type. The performance path lets you exceed the requirement in one area to compensate for falling short in another. Energy consultants call this a "tradeoff."
+
+There is an important limitation: mandatory requirements still apply regardless of which compliance path you use. Mandatory measures — like minimum duct insulation, mechanical ventilation, and certain air sealing requirements — cannot be traded away on the performance path. They must be met on every project.
+
+## Heat Pump Water Heaters on the Performance Path
+
+Water heating is one of the largest energy consumers in a California home, and the 2022 Title 24 standards made heat pump water heaters the prescriptive baseline for most new residential construction. A heat pump water heater with a Uniform Energy Factor (UEF) in the 3.0 to 4.0 range is two to three times more efficient than a conventional electric resistance heater and significantly more efficient than a standard gas water heater (UEF typically 0.6 to 0.7).
+
+On the performance path, specifying a heat pump water heater does more than just meet the water heating requirement — it often generates compliance margin that can be applied elsewhere in the building design. Because the standard design already assumes a heat pump water heater as the baseline in many climate zones under the 2022 code, using one is essentially the starting point. But selecting a higher-efficiency model (UEF 3.5 or above) can create additional headroom in the energy budget.
+
+For projects where the builder wants to use a gas water heater instead, the performance path allows it — but the compliance software will show the energy penalty. The proposed design must make up that deficit with efficiency gains in other systems, such as a more efficient HVAC system, better insulation, or additional solar PV capacity.
+
+The 2022 standards also require heat pump water heater-ready infrastructure on all new residential construction — dedicated space (a minimum of 2.5 feet by 2.5 feet by 7 feet), electrical capacity, and plumbing connections — even when a gas water heater is installed. This is a mandatory requirement that applies on both compliance paths.
+
+## Ductless Mini-Split Heat Pumps on the Performance Path
+
+Ductless mini-split heat pumps have become increasingly popular in California residential construction — particularly for additions, ADUs, and homes where traditional ducted systems are impractical. Under the 2022 Title 24 standards, mini-splits and other variable capacity heat pump (VCHP) systems can earn meaningful compliance credits on the performance path.
+
+The VCHP compliance option allows qualifying systems to receive a 5 percent cooling credit and a 12 percent heating credit when modeled on the performance path. These credits reflect the real-world efficiency advantages of variable-capacity compressor technology — mini-splits adjust their output to match the actual heating or cooling demand rather than cycling on and off at full capacity like conventional systems.
+
+To claim these credits, the system must meet specific conditions. The equipment must be certified to the California Energy Commission through the AHRI Directory of Certified Product Performance or an equivalent approved directory. For ductless systems, HERS verification is required to confirm airflow is provided to all habitable spaces — each bedroom and the main living area must receive adequate conditioned air. For ducted mini-split systems, additional requirements apply: ducts must be installed entirely within the conditioned envelope, and the air-handler fan must be certified to automatically shut off when no heating or cooling is being called for.
+
+One important consideration: without the VCHP compliance option, mini-split systems may be modeled in compliance software as minimum-efficiency split systems regardless of their actual performance capabilities. The VCHP compliance option corrects this by allowing the software to account for the system's actual variable-capacity performance. If a mini-split system does not qualify for or claim the VCHP credit, it may actually make compliance harder rather than easier. Confirm with your energy consultant that the VCHP credit is being applied correctly in the compliance calculation.
+
+Mini-splits also eliminate duct losses entirely in ductless configurations, which is a significant compliance advantage. Duct leakage is a major source of energy waste in residential buildings, and removing ducts from the equation removes that loss from the energy model.
+
+## R-21 Wall Insulation on the Performance Path
+
+The 2022 Title 24 prescriptive requirements for exterior walls specify a maximum assembly U-factor of 0.048 in most California climate zones. Meeting this U-factor prescriptively typically requires R-21 cavity insulation in 2×6 framing plus R-5 continuous insulation on the exterior — what the code calls a "high-performance wall" assembly.
+
+On the performance path, R-21 cavity insulation alone — without continuous exterior insulation — may be sufficient to comply, depending on how much efficiency margin the rest of the building provides. If the project uses a heat pump water heater and a high-efficiency HVAC system (such as a ductless mini-split with the VCHP credit), the combined efficiency gains can offset the slightly higher wall U-factor that results from omitting the continuous insulation layer.
+
+This is a common and practical tradeoff on the performance path. Continuous exterior insulation adds material cost, labor complexity, and detailing challenges — particularly around windows and penetrations. Being able to achieve compliance with R-21 cavity insulation alone by investing in high-performance mechanical systems is a real design and cost advantage.
+
+However, mandatory insulation requirements still apply. The mandatory minimum for framed walls under the 2022 standards requires insulation to fill the cavity completely. R-21 in a 2×6 wall meets this requirement. Going below the cavity-fill minimum is not an option on any compliance path.
+
+Climate zone also matters. Projects in California's most extreme climate zones (such as zones 14, 15, and 16 — high desert and mountain areas) face tighter prescriptive envelope requirements, and the performance path tradeoff may require more significant mechanical efficiency gains to compensate for reduced wall insulation. Projects in mild coastal zones (such as zones 3 and 7) have more room to trade envelope performance for mechanical efficiency.
+
+## How These Three Measures Work Together
+
+The real power of the performance path emerges when these measures are combined. Consider a typical new single-family home in a Central Valley climate zone (such as zone 12). The prescriptive path would require a heat pump water heater, a minimum-efficiency HVAC system meeting all prescriptive specifications, R-21 cavity insulation plus R-5 continuous insulation on exterior walls (to meet the 0.048 U-factor), and every other prescriptive requirement met exactly.
+
+The performance path, by contrast, might use a high-efficiency heat pump water heater (UEF 3.5 or above) to generate compliance margin, a ductless mini-split heat pump system claiming the VCHP credit (earning 5% cooling and 12% heating credits while eliminating duct losses), and R-21 cavity insulation in 2×6 framing without continuous exterior insulation — using the mechanical efficiency gains to offset the wall assembly tradeoff.
+
+The energy modeling software calculates whether this combination meets the overall energy budget. In many climate zones, this package comfortably complies — and can be more cost-effective and simpler to build than the prescriptive alternative.
+
+## HERS Verification on the Performance Path
+
+Regardless of which compliance path you use, HERS verification requirements apply to measures specified on the CF1R. On a performance-path project using the measures described above, expect HERS verification for the VCHP credit (airflow verification to all habitable spaces, equipment certification confirmation), insulation quality installation (QII) if claimed as a compliance credit, refrigerant charge verification for the heat pump system, and solar PV and battery-ready verification (required on all new residential construction under the 2022 standards).
+
+Coordinate with your HERS Rater early to understand which verifications are required on your project. The CF1R generated by the compliance software will list every measure that requires HERS verification.
+
+## Conclusion
+
+The performance path is the most flexible way to demonstrate Title 24 compliance for residential projects in California. By using CEC-approved energy modeling software to balance efficiency across building systems, builders can make practical tradeoffs — like pairing a heat pump water heater and ductless mini-split with R-21 cavity insulation — that meet the energy budget without following every prescriptive specification exactly. The result is often a building that costs less to construct, performs well in practice, and gives designers more freedom.
+
+Work with your energy consultant early to model your project on the performance path, confirm which HERS verification measures are required, and coordinate with your HERS Rater before construction begins.`,
+  },
   'hvac-replacement-hers-rater': {
     title: 'HVAC Replacement and Title 24: When Do You Need a HERS Rater?',
     seoTitle: 'HVAC Replacement HERS Rater Required California | Title 24 Guide',

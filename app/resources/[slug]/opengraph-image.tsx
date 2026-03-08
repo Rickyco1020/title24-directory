@@ -14,6 +14,7 @@ const articles: Record<string, { title: string; tags: string[] }> = {
   'what-is-a-cf1r': { title: 'What Is a CF1R? California Title 24 Compliance Report Explained', tags: ['Forms'] },
   'duct-leakage-testing': { title: 'Duct Leakage Testing in California: What to Expect', tags: ['HVAC', 'HERS'] },
   'heat-pump-water-heater-title-24': { title: 'Heat Pump Water Heater Requirements Under Title 24', tags: ['HVAC', 'Compliance'] },
+  'performance-path-title-24': { title: 'The Performance Path to Title 24 Compliance', tags: ['Compliance', 'HVAC'] },
   'hvac-replacement-hers-rater': { title: 'HVAC Replacement and Title 24: When You Need a HERS Rater', tags: ['HVAC', 'HERS'] },
 }
 

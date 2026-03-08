@@ -16,6 +16,7 @@ const articles = [
   { slug: 'what-is-a-cf1r', title: 'What Is a CF1R? California Title 24 Compliance Report Explained', excerpt: 'The CF1R is the foundation of every Title 24 project. Learn what it contains, who prepares it, and how it connects to the CF2R and CF3R.', tags: ['Forms', 'Compliance'] },
   { slug: 'duct-leakage-testing', title: 'Duct Leakage Testing in California: What to Expect', excerpt: 'Duct leakage testing is one of the most common HERS requirements. Learn what it measures, when it\'s required, and how to prepare for a clean test.', tags: ['HVAC', 'HERS'] },
   { slug: 'heat-pump-water-heater-title-24', title: 'Heat Pump Water Heater Requirements Under California Title 24', excerpt: 'The 2022 standards effectively require heat pump water heaters for most new residential construction. Here\'s what you need to know.', tags: ['HVAC', 'Compliance'] },
+  { slug: 'performance-path-title-24', title: 'The Performance Path to Title 24 Compliance: How Heat Pumps, Mini Splits, and R-21 Work Together', excerpt: 'Learn how the Title 24 performance path lets you trade efficiency measures — like heat pump water heaters, ductless mini splits, and R-21 insulation — for more design flexibility.', tags: ['Compliance', 'HVAC'] },
   { slug: 'hvac-replacement-hers-rater', title: 'HVAC Replacement and Title 24: When Do You Need a HERS Rater?', excerpt: 'Replacing an HVAC system in California often triggers HERS verification. Learn when it applies and what tests are required.', tags: ['HVAC', 'HERS'] },
 ]
 
