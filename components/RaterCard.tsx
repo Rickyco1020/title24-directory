@@ -23,13 +23,21 @@ export default function RaterCard({ rater }: { rater: Rater }) {
         </p>
       )}
       {rater.description && <p className="text-gray-600 text-sm mb-4 line-clamp-2">{rater.description}</p>}
-      <div className="flex flex-wrap gap-3">
-        {rater.phone && (
-          <a href={`tel:${rater.phone}`} className="text-blue-700 font-medium text-sm hover:underline">📞 {rater.phone}</a>
-        )}
-        {rater.website && (
-          <a href={rater.website} target="_blank" rel="noopener noreferrer" className="text-blue-700 font-medium text-sm hover:underline">🌐 Website</a>
-        )}
+      <div className="flex flex-wrap items-center justify-between gap-3 mt-1">
+        <div className="flex flex-wrap gap-3">
+          {rater.phone && (
+            <a href={`tel:${rater.phone}`} className="text-blue-700 font-medium text-sm hover:underline">📞 {rater.phone}</a>
+          )}
+          {rater.website && (
+            <a href={rater.website} target="_blank" rel="noopener noreferrer" className="text-blue-700 font-medium text-sm hover:underline">🌐 Website</a>
+          )}
+        </div>
+        <Link
+          href={`/directory/rater/${rater.id}`}
+          className="text-sm font-semibold text-blue-700 hover:text-blue-900 hover:underline whitespace-nowrap"
+        >
+          View Profile →
+        </Link>
       </div>
     </div>
   )

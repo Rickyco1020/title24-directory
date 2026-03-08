@@ -4,6 +4,7 @@ import './globals.css'
 import Link from 'next/link'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import MobileNav from '@/components/MobileNav'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={inter.className}>
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-50 relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <Link href="/" className="flex items-center space-x-2">
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <Link href="/resources" className="text-gray-600 hover:text-blue-700 font-medium transition-colors">Resources</Link>
                 <Link href="/get-listed" className="bg-blue-700 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-800 transition-colors">Get Listed</Link>
               </nav>
+              <MobileNav />
             </div>
           </div>
         </header>
