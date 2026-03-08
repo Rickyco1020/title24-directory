@@ -4,15 +4,15 @@ import type { Metadata } from 'next'
 
 const articles: Record<string, { title: string; seoTitle: string; description: string; tags: string[]; content: string }> = {
   'what-is-a-hers-rater': {
-    title: 'What Is a HERS Rater and When Do You Need One?',
-    seoTitle: 'What Is a HERS Rater California | Title 24 Directory',
-    description: 'Learn what a HERS Rater does, why they\'re required for many California Title 24 projects, and how to find a certified rater for your construction or renovation project.',
-    tags: ['HERS'],
+    title: 'What Is a HERS Rater (Now Called an ECC Rater) and When Do You Need One?',
+    seoTitle: 'What Is a HERS Rater / ECC Rater California | Title 24 Directory',
+    description: 'Learn what a HERS Rater (now called an ECC Rater under the 2025 energy code) does, why they\'re required for California Title 24 projects, and how to find one near you.',
+    tags: ['HERS', 'ECC'],
     content: `## Introduction
 
-If you're building or renovating in California, there's a good chance you'll need to work with a HERS Rater before you can get final sign-off. But for most builders, contractors, and homeowners, the term is unfamiliar — and the role is often confused with other compliance professionals.
+If you're building or renovating in California, there's a good chance you'll need to work with a certified field verifier before you can get final sign-off. Depending on when your project was permitted, this professional may be called a HERS Rater or — under California's new 2025 energy code — an ECC Rater. The role is the same; the name changed.
 
-This post explains exactly what a HERS Rater is, what they do on a project, when California's Title 24 energy code requires one, and how to find a certified rater in your area.
+This post explains what a HERS Rater is, how the role is evolving into the ECC Rater designation under the 2025 standards, what they do on a project, when California's Title 24 energy code requires one, and how to find a certified rater in your area.
 
 ## What Is a HERS Rater?
 
@@ -22,41 +22,51 @@ In California, HERS Raters are certified through California Energy Commission (C
 
 HERS Raters are third-party verifiers — they are independent from the contractor or installer and are required to have no financial interest in the outcome of the project they are testing. This independence is a core requirement of the role.
 
-## What Does a HERS Rater Actually Do?
+## 2025 Update: HERS Raters Are Now Called ECC Raters
 
-A HERS Rater performs field verification and diagnostic testing on specific building components and systems. The tests and verifications required on a given project depend on what features were claimed on the building's Title 24 compliance documentation (the CF1R).
+Under California's 2025 Building Energy Efficiency Standards, which take effect January 1, 2026, the HERS Program is being replaced by the Energy Code Compliance (ECC) Program. This is a rebranding of the same field verification role — not a new or different job.
 
-Common tasks a HERS Rater may perform include duct leakage testing (measuring how much air is lost through the HVAC duct system), refrigerant charge verification (confirming HVAC systems are properly charged), airflow measurement (verifying air is distributed correctly throughout the building), window and glazing verification (confirming installed windows match compliance document specifications), insulation verification (checking that insulation type, location, and R-value match the design), indoor air quality system verification (confirming mechanical ventilation systems are installed and functioning), and solar and battery storage verification (increasingly required under the 2022 Title 24 standards).
+What changes: HERS Providers become ECC-Providers. HERS Raters become ECC-Raters. The field verification and diagnostic testing work they perform remains the same.
 
-The rater records their findings and submits results to the HERS registry, which generates the CF3R — the verified certificate that confirms compliance was achieved in the field.
+What doesn't change: existing HERS Rater certifications automatically carry over. A rater certified under the 2022 code is considered a 2022 Energy Code-certified ECC-Rater until they complete 2025 ECC certification. There is no gap in service — field verification continues without disruption.
 
-## When Is a HERS Rater Required in California?
+The motivation behind the rename reflects the broader scope of the 2025 standards. The new ECC designation emphasizes that these raters are verifying compliance with the full energy code — not just a home energy rating — and that their role includes confirming not just that systems were installed, but that they were installed correctly and verified to perform. This stricter field accountability is a core principle of the 2025 code.
 
-Under California's Title 24 Part 6 (the Building Energy Efficiency Standards), a HERS Rater is required whenever a project uses measures that require HERS verification. This is determined by the compliance documentation prepared by the energy consultant or Title 24 analyst.
+For projects permitted before January 1, 2026, you need a HERS Rater. For projects permitted on or after that date, you need an ECC Rater. The person doing the work may be the same individual — just with an updated certification.
 
-Common project types that trigger HERS verification requirements include new single-family residential construction (almost universally requires HERS verification for duct systems, HVAC, and other components), new multifamily construction, HVAC replacements or alterations (replacing a furnace, air conditioner, or heat pump in an existing home often requires duct leakage testing), additions and alterations, and newly installed or replaced duct systems.
+## What Does a HERS / ECC Rater Actually Do?
 
-If a project does not claim any HERS-verified measures on its compliance documentation, a HERS Rater may not be required. However, this is uncommon for new construction in California.
+The rater performs field verification and diagnostic testing on specific building components and systems. The tests required on a given project depend on what features were claimed on the building's Title 24 compliance documentation (the CF1R).
 
-The specific HERS measures required on your project are listed on the CF1R (the compliance certificate prepared by your Title 24 analyst). Review this document early — it tells you exactly what will need to be verified.
+Common tasks include duct leakage testing (measuring how much air is lost through the HVAC duct system), refrigerant charge verification (confirming HVAC systems are properly charged), airflow measurement (verifying air is distributed correctly throughout the building), window and glazing verification (confirming installed windows match compliance document specifications), insulation verification (checking that insulation type, location, and R-value match the design), indoor air quality system verification (confirming mechanical ventilation systems are installed and functioning), and solar and battery storage verification (required under the 2022 and 2025 standards).
 
-## HERS Rater vs. Other Title 24 Compliance Roles
+The rater records their findings and submits results to the registry, which generates the CF3R — the verified certificate that confirms compliance was achieved in the field.
 
-It's common to confuse HERS Raters with other professionals involved in Title 24 compliance. A Title 24 Energy Consultant or ECC Writer prepares the compliance calculations and generates the CF1R. They work at the design stage and do not perform field testing. A HERS Rater performs field testing and verification after installation and generates the CF3R, confirming what was actually installed. An Acceptance Tester is a separate certified role required for nonresidential and some multifamily projects — they verify that lighting controls, HVAC controls, and other systems function correctly.
+## When Is a HERS / ECC Rater Required in California?
+
+A rater is required whenever a project's compliance documentation specifies measures that require field verification and diagnostic testing. This is determined by the CF1R prepared by the energy consultant.
+
+Common project types that trigger this requirement include new single-family residential construction (almost universally requires field verification for duct systems, HVAC, and other components), new multifamily construction, HVAC replacements or alterations (replacing a furnace, air conditioner, or heat pump in an existing home often requires duct leakage testing), additions and alterations, and newly installed or replaced duct systems.
+
+The specific measures required on your project are listed on the CF1R. Review this document early — it tells you exactly what will need to be verified.
+
+## HERS / ECC Rater vs. Other Title 24 Compliance Roles
+
+It's common to confuse field raters with other professionals involved in Title 24 compliance. A Title 24 Energy Consultant (also called a Title 24 analyst) prepares the compliance calculations and generates the CF1R. They work at the design stage and do not perform field testing. A HERS Rater or ECC Rater performs field testing and verification after installation and generates the CF3R, confirming what was actually installed and that it performs correctly. An Acceptance Tester is a separate certified role required for nonresidential and some multifamily projects — they verify that lighting controls, HVAC controls, and other systems function correctly.
 
 Some professionals hold multiple certifications and can fill more than one role, but each role has distinct requirements and responsibilities.
 
-## How to Find a Certified HERS Rater in California
+## How to Find a Certified HERS or ECC Rater in California
 
-HERS Raters in California must be certified through a CEC-approved rating organization. To find a certified rater, use the CHEERS rater directory (CHEERS is now the sole active CEC-approved HERS Provider in California), check the CEC's HERS Provider page at energy.ca.gov, use Title 24 Directory (our directory lists verified HERS Raters across California, searchable by location and specialty), or ask your Title 24 energy consultant (many analysts work regularly with raters and can refer you to someone familiar with your project type).
+To find a certified rater, check with CHEERS (currently the sole active CEC-approved HERS Provider in California, transitioning to ECC-Provider status under the 2025 code), check the CEC's program pages at energy.ca.gov for both the HERS Program and the new ECC Program, use Title 24 Directory (our directory lists certified raters across California, searchable by location and specialty), or ask your Title 24 energy consultant (many analysts work regularly with raters and can provide a referral).
 
-When selecting a HERS Rater, confirm they are currently certified, have experience with your project type (residential vs. multifamily vs. commercial), and are familiar with the specific measures on your CF1R.
+When selecting a rater, confirm they are currently certified, have experience with your project type (residential vs. multifamily vs. commercial), and are certified under the correct code cycle for your project's permit date.
 
 ## Conclusion
 
-A HERS Rater is a certified, independent field professional who verifies that the energy features in your building were actually installed and perform correctly. They are required on most new construction and many alteration projects in California, and their work is what produces the CF3R — the document that closes out your Title 24 compliance in the field.
+A HERS Rater — now called an ECC Rater under the 2025 California energy code — is a certified, independent field professional who verifies that the energy features in your building were actually installed and perform correctly. The name is changing as of January 1, 2026, but the role is the same: they are the last line of verification between what was designed, what was installed, and what actually works. Their work produces the CF3R — the document that closes out your Title 24 compliance in the field.
 
-If you're planning a project in California and aren't sure whether a HERS Rater is required, start by reviewing your CF1R compliance document or consult with your Title 24 energy analyst early in the process.`,
+If you're planning a project in California, confirm which code cycle applies to your permit date, then connect with a rater certified under the correct standards.`,
   },
   'cf2r-vs-cf3r': {
     title: 'CF2R vs CF3R: What\'s the Difference?',
