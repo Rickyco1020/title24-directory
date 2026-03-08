@@ -324,6 +324,277 @@ The ECC writer and the HERS Rater are both essential to Title 24 compliance in C
 
 Engage both early, keep your compliance document chain organized, and you'll be well-positioned to move smoothly through permit final.`,
   },
+  'title-24-solar-requirements': {
+    title: 'Title 24 Solar PV Requirements for New Construction in California',
+    seoTitle: 'Title 24 Solar PV Requirements California | New Construction 2023+',
+    description: 'California requires solar PV and battery storage on most new construction. Learn what Title 24 mandates, what\'s exempt, and how a HERS Rater verifies your system.',
+    tags: ['Solar', 'Compliance'],
+    content: `## Introduction
+
+California made history with its 2022 Building Energy Efficiency Standards by becoming the first state to require both solar photovoltaic (PV) systems and battery storage on most new construction. If you're building in California, understanding what the solar and battery mandates require — and how they're verified — is essential to getting your project to permit final.
+
+## What the 2022 Title 24 Standards Require
+
+Under the 2022 Title 24 standards (effective January 1, 2023), all new single-family homes and low-rise multifamily buildings (three stories or fewer) are required to include a solar PV system. This requirement was first introduced under the 2019 standards. What the 2022 cycle added was a battery storage mandate — making California the first state to require both.
+
+The 2022 standards also significantly expanded the solar mandate to nonresidential buildings. New commercial buildings including offices, retail stores, schools, grocery stores, warehouses, and high-rise multifamily buildings (four stories and above) must now include solar PV systems sized according to the building's conditioned floor area.
+
+## Battery Storage Requirements
+
+For new single-family homes and low-rise multifamily buildings that require solar PV, the 2022 standards also require a battery storage system. The minimum usable capacity is 7.5 kWh for most residential applications.
+
+Battery storage is not currently mandatory for nonresidential buildings under the 2022 standards, though it may be used as a compliance pathway for certain measures.
+
+## How Solar System Size Is Determined
+
+For residential buildings, the required solar PV system size is calculated based on conditioned floor area, climate zone, and the building's energy consumption. The energy consultant (ECC writer) performs this calculation using CEC-approved compliance software and specifies the required system on the CF1R.
+
+For nonresidential buildings, the PV system size is based on conditioned floor area with specific minimum watts-per-square-foot requirements that vary by building type and climate zone.
+
+## Exemptions and Alternative Compliance
+
+There are limited exemptions to the solar requirement. Buildings where the roof area is insufficient to accommodate the minimum required system may qualify for a reduction or exemption. Shading from adjacent trees or structures that would reduce system output below a threshold can also reduce the required size.
+
+Buildings that connect to a community solar program (a shared solar facility) may be able to satisfy the requirement through that alternative, subject to CEC approval.
+
+These exemptions and alternatives must be documented and calculated by the energy consultant — they are not automatic.
+
+## HERS Verification of Solar and Battery Systems
+
+Like other Title 24 compliance measures, solar PV and battery storage systems must be field-verified. A HERS Rater is required to confirm that the installed system matches the specifications on the CF1R, including verifying the inverter, panel count, system capacity, and battery storage usable capacity.
+
+The HERS Rater will check the equipment model numbers against what was specified in the compliance documentation, confirm the system is operational, and submit verification data to the HERS registry to generate the CF3R.
+
+This verification must be completed before permit final. Scheduling your HERS Rater to verify the solar and battery system at the same time as other HERS measures (duct leakage, HVAC verification, etc.) is the most efficient approach.
+
+## What This Means for Builders
+
+Solar PV and battery storage are now baseline requirements for virtually all new residential construction in California. They should be incorporated into the project design from the beginning — not treated as add-ons.
+
+Work with your energy consultant early to determine the correct system size for your project, confirm the solar PV contractor understands the CF1R specifications, ensure the battery storage system meets the minimum usable capacity requirement, and schedule your HERS Rater to verify both systems before permit final.
+
+## Conclusion
+
+California's 2022 Title 24 standards require solar PV on most new construction and battery storage on new residential buildings. The requirements are determined by the energy consultant, documented on the CF1R, and verified in the field by a HERS Rater. Building these requirements into your project plan from the start is the most cost-effective approach.`,
+  },
+  'what-is-a-cf1r': {
+    title: 'What Is a CF1R? California Title 24 Compliance Report Explained',
+    seoTitle: 'What Is a CF1R? Title 24 Certificate of Compliance California',
+    description: 'The CF1R is the foundation of every Title 24 project in California. Learn what it contains, who prepares it, when it\'s required, and how it connects to CF2R and CF3R.',
+    tags: ['Forms', 'Compliance'],
+    content: `## Introduction
+
+If you've worked on a permitted construction project in California, you've likely heard the term "CF1R." It's one of the most important documents in California's Title 24 compliance process — and one of the least understood outside of energy professionals.
+
+This post explains exactly what a CF1R is, what it contains, who prepares it, when it's required, and how it fits into the broader compliance document chain alongside the CF2R and CF3R.
+
+## What Is a CF1R?
+
+The CF1R is the Certificate of Compliance. It is the foundational Title 24 compliance document for any California construction project subject to the Building Energy Efficiency Standards.
+
+The "CF" stands for Compliance Form. The "1" indicates it is the first document in the compliance sequence — the design-stage compliance report that everything else flows from.
+
+The CF1R is generated by an energy consultant (also called a Title 24 analyst or ECC writer) using CEC-approved energy modeling software. It is submitted with the building permit application and must be approved before construction begins.
+
+## What Does a CF1R Contain?
+
+The CF1R is a detailed compliance report that documents every energy measure the building is designed to include. Key sections of a residential CF1R include the building description (conditioned floor area, number of stories, climate zone), envelope measures (insulation R-values, window U-factors and Solar Heat Gain Coefficients, air sealing requirements), HVAC systems (equipment type, efficiency ratings, duct configuration, ventilation requirements), water heating (system type, efficiency, distribution system), lighting (indoor and outdoor lighting power), solar PV and battery storage (required system size and specifications under the 2022 standards), and HERS verification requirements (a list of every measure that requires HERS field verification and diagnostic testing).
+
+That last section is critical. The HERS verification measures listed on the CF1R determine exactly what a HERS Rater must test and verify on your project. This list drives the CF2R and CF3R compliance process.
+
+## Who Prepares the CF1R?
+
+The CF1R is prepared by a Title 24 energy consultant using CEC-approved compliance software such as EnergyPro (for residential and nonresidential projects) or CBECC-Res and CBECC-Com. The energy consultant models the building based on the architectural and mechanical drawings, confirms it meets the required energy budget, and generates the CF1R report.
+
+The energy consultant is responsible for the accuracy of the CF1R. If the building is constructed differently from what was modeled — different window specifications, a different HVAC system, revised insulation levels — the CF1R must be revised and resubmitted before HERS verification can proceed.
+
+## When Is a CF1R Required?
+
+A CF1R is required for virtually every permitted construction project in California that falls under Title 24 Part 6, including new single-family residential construction, new multifamily residential construction, new nonresidential and commercial construction, residential additions over a threshold conditioned floor area, HVAC system replacements and alterations that require a Title 24 calculation, and major building envelope alterations.
+
+There are limited exemptions for very small additions and certain like-for-like replacements, but most permitted work on California buildings requires a CF1R.
+
+## How the CF1R Connects to CF2R and CF3R
+
+The CF1R is the starting point. It defines what must be installed and what must be verified.
+
+The CF2R (Certificate of Installation) is completed by each licensed installing contractor after their work is done. They are attesting that what they installed matches the specifications on the CF1R.
+
+The CF3R (Certificate of Verification) is generated by the HERS Rater after they perform field verification and diagnostic testing. It confirms that the installations documented on the CF2R were actually done correctly and perform as the CF1R requires.
+
+All three documents — CF1R, CF2R, and CF3R — must be on file before a project can receive final permit sign-off from the local building department.
+
+## Common CF1R Mistakes to Avoid
+
+Submitting the CF1R late is one of the most common and costly mistakes. The CF1R must be approved with the permit before construction begins. Last-minute energy consulting can delay your permit.
+
+Not updating the CF1R when design changes occur is another frequent problem. If you change the window specifications, swap out the HVAC equipment, or modify the insulation scope, the CF1R must be revised. Running HERS verification against an outdated CF1R will result in compliance failures.
+
+Failing to review the HERS verification measures on the CF1R before construction is a third common error. Review this section early so you understand what your HERS Rater will need to test — and can schedule their site visits at the right construction phase.
+
+## Conclusion
+
+The CF1R is the compliance roadmap for every Title 24 project. It documents what must be built, drives the HERS verification process, and must match what is actually constructed. Getting it right at the design stage — and keeping it updated through construction — is the foundation of a smooth path to permit final.`,
+  },
+  'duct-leakage-testing': {
+    title: 'Duct Leakage Testing in California: What to Expect',
+    seoTitle: 'Duct Leakage Testing California Title 24 | HERS Rater Requirements',
+    description: 'Duct leakage testing is one of the most common HERS verification requirements in California. Learn what it measures, when it\'s required, and how to pass.',
+    tags: ['HVAC', 'HERS'],
+    content: `## Introduction
+
+Duct leakage testing is one of the most frequently required HERS verification measures in California. If your project involves new construction, an HVAC replacement, or a new duct system, there is a good chance duct leakage testing will appear on your CF1R as a required HERS measure.
+
+This post explains what duct leakage testing is, how it works, when it's required, what the pass/fail thresholds are, and how to set your project up for a clean test.
+
+## What Is Duct Leakage Testing?
+
+Duct leakage testing is a diagnostic procedure that measures how much air leaks out of an HVAC duct system through gaps, cracks, and poorly sealed connections. Air that leaks out of the ducts before reaching the living space represents wasted energy — your HVAC system is conditioning air that never arrives where it's needed.
+
+In California, duct leakage is measured and expressed as a percentage of the system's airflow capacity. The goal is to confirm that the duct system meets the maximum allowable leakage threshold specified in the compliance documentation.
+
+## How Duct Leakage Testing Works
+
+A certified HERS Rater performs the test using a device called a duct blaster. The duct blaster is a calibrated fan that is temporarily sealed to a duct register or the air handler. The remaining registers and grilles in the system are temporarily sealed with foam or tape.
+
+The duct blaster pressurizes the duct system to a standard test pressure (typically 25 Pascals). The airflow required to maintain that pressure is measured. That airflow measurement represents the leakage — the more air required to maintain pressure, the more the system is leaking.
+
+There are two main test protocols: total leakage testing (measures all leakage in the system including leakage to the interior of the building) and leakage to outside testing (measures only the leakage that escapes to outside the conditioned space — typically a more stringent and meaningful measure for energy compliance).
+
+The specific test protocol required on your project is determined by the CF1R.
+
+## When Is Duct Leakage Testing Required in California?
+
+Duct leakage testing is required under Title 24 for new construction with forced-air HVAC systems (virtually all new single-family homes with ducted HVAC require duct leakage testing), HVAC replacements in existing homes when the existing duct system is being retained (in many climate zones, replacing just the air handler or compressor triggers a duct leakage test on the existing ducts), new duct systems installed as part of a building alteration, and when duct leakage compliance credit is claimed on the CF1R (for projects where tight duct systems are part of the energy compliance strategy).
+
+The specific trigger conditions are defined in the Title 24 standards and vary by climate zone and project type. Review the HERS verification measures on your CF1R to confirm whether duct leakage testing is required.
+
+## What Are the Pass/Fail Thresholds?
+
+Under the 2022 Title 24 standards, the maximum allowable duct leakage for new construction is generally 5% total leakage or 4% leakage to outside (the exact threshold depends on the project type and compliance pathway). These are significantly more stringent than the thresholds in previous code cycles, reflecting California's push toward tighter building envelopes and more efficient mechanical systems.
+
+For existing duct systems being tested as part of an HVAC replacement, different — and generally less stringent — thresholds may apply.
+
+## How to Prepare for Duct Leakage Testing
+
+Coordinate with your HVAC contractor before the test. The duct system should be fully installed, all connections sealed with mastic or UL-listed tape, and all registers and grilles installed before the HERS Rater arrives. Incomplete duct work is a frequent cause of test delays.
+
+Schedule the test before final close-up where possible. Duct work in unconditioned attics or crawlspaces should be accessible at the time of testing. After drywall is installed it is much harder to access and repair leaking duct connections.
+
+Ask your HVAC contractor about their typical leakage test results. Experienced contractors who work on California projects regularly understand the Title 24 thresholds and should be sealing their work to meet them. If your contractor is unfamiliar with the duct leakage requirements, that is a red flag.
+
+## What Happens If the Test Fails?
+
+If the duct system fails the leakage test, the HVAC contractor must identify and seal the leaking connections and the test must be repeated. The HERS Rater cannot sign off on a failed test.
+
+Common causes of test failures include unsealed duct boots at registers, poorly connected flex duct sections, unsecured duct connections at the air handler, missing mastic at duct branch points, and improperly sealed return air plenums.
+
+Finding and sealing leaks after drywall has been installed is time-consuming and expensive. This is why scheduling the duct leakage test before close-up is strongly recommended.
+
+## Conclusion
+
+Duct leakage testing is a standard HERS verification requirement for most new construction and many HVAC replacement projects in California. A certified HERS Rater performs the test using a duct blaster, and results must meet the thresholds specified in the CF1R before a CF3R can be issued. Coordinating with your HVAC contractor to seal duct work properly — and scheduling the test before final close-up — are the two most important things you can do to set your project up for a clean test.`,
+  },
+  'heat-pump-water-heater-title-24': {
+    title: 'Heat Pump Water Heater Requirements Under California Title 24',
+    seoTitle: 'Heat Pump Water Heater Title 24 California | 2022 Standards Explained',
+    description: 'The 2022 Title 24 standards effectively require heat pump water heaters for most new residential construction in California. Learn what\'s required and when HERS verification applies.',
+    tags: ['HVAC', 'Compliance'],
+    content: `## Introduction
+
+Water heating is one of the largest energy uses in a California home, and the 2022 Title 24 Building Energy Efficiency Standards dramatically raised the bar for water heating efficiency. For most new residential construction, the 2022 standards have made heat pump water heaters the practical standard — not just an option.
+
+This post explains what the 2022 Title 24 water heating requirements are, why heat pump water heaters became the default compliance path, and when HERS verification applies to water heating systems.
+
+## What the 2022 Standards Require
+
+The 2022 Title 24 standards significantly increased the energy efficiency requirements for water heating in new residential construction. The standards set a minimum Energy Factor (EF) or Uniform Energy Factor (UEF) that most conventional gas and standard electric resistance water heaters cannot meet without major performance upgrades.
+
+In practice, heat pump water heaters are now the primary compliance path for new single-family and low-rise multifamily construction. A heat pump water heater moves heat from the surrounding air into the water tank rather than generating heat directly — making it two to three times more efficient than a conventional electric resistance heater and substantially more efficient than gas on an energy cost basis.
+
+The 2022 standards also include requirements for electric panel capacity and dedicated circuits to support heat pump water heaters, recognizing that new construction must be wired to accommodate them.
+
+## Why Heat Pump Water Heaters Became the Default
+
+The shift toward heat pump water heaters under the 2022 standards reflects two overlapping goals. First, the efficiency requirements were raised high enough that conventional gas water heaters — which have a UEF typically in the 0.6 to 0.7 range — cannot meet the required threshold in most climate zones without a demand recirculation system and other efficiency measures. Heat pump water heaters, with UEF ratings typically in the 3.0 to 4.0 range, exceed the requirements by a wide margin.
+
+Second, California's energy policy is moving toward electrification. Heat pump water heaters are an all-electric appliance that works well with California's increasingly renewable electricity grid. California's broader electrification goals — including its all-electric new construction policies in many jurisdictions — have pushed water heating in this direction.
+
+Some projects can still use gas water heating by combining it with a demand recirculation system and meeting other efficiency conditions on the CF1R. However, the compliance pathway is narrower, and many energy consultants and builders have shifted to heat pump water heaters as the simpler all-in-one solution.
+
+## Sizing and Installation Considerations
+
+Heat pump water heaters require more installation planning than conventional tank water heaters. They work best in spaces with adequate air volume — generally at least 700 to 1,000 cubic feet — because they pull heat from the surrounding air. In tight mechanical rooms or small closets, they can short-cycle and lose efficiency.
+
+They also produce cool, dehumidified air as a byproduct of heating the water. In conditioned spaces, this has a slight cooling effect in summer (which can be beneficial) but adds heating load in winter. Installers should consider the location carefully to minimize energy impact.
+
+Heat pump water heaters operate at a lower noise level than many mechanical systems but are not silent. Locating them in garages, utility rooms, or other areas where noise is less of a concern is generally preferable to installing them adjacent to bedrooms.
+
+## HERS Verification of Water Heating Systems
+
+Not all water heating systems require HERS verification, but some do. Water heating measures that may require HERS field verification include demand recirculation systems (when a recirculation pump is used to reduce hot water waste, the pump controls and sensor systems may require HERS verification), central water heating distribution systems in multifamily buildings, and solar water heating systems when they are part of the compliance pathway.
+
+The specific measures that require HERS verification for your project are listed on the CF1R. Review this document with your energy consultant to understand what verification your water heating system will need.
+
+## What to Tell Your HVAC or Plumbing Contractor
+
+When specifying a heat pump water heater for a new California project, confirm the specific model number matches the unit specified on the CF1R before ordering. The CF1R lists the minimum UEF or EF required — the installed unit must meet or exceed this specification. If you substitute a different model, the CF1R must be revised before HERS verification.
+
+Confirm that the electrical panel has sufficient capacity for the heat pump water heater's dedicated circuit. The 2022 standards include provisions for panel capacity, but real-world installations sometimes reveal gaps in planning.
+
+## Conclusion
+
+Heat pump water heaters are now the standard compliance path for water heating under California's 2022 Title 24 standards. Their high efficiency easily clears the new thresholds that most conventional water heaters cannot meet. For builders and contractors working on new California construction, understanding the installation requirements and planning for HERS verification where it applies will make for a smoother path to permit final.`,
+  },
+  'hvac-replacement-hers-rater': {
+    title: 'HVAC Replacement and Title 24: When Do You Need a HERS Rater?',
+    seoTitle: 'HVAC Replacement HERS Rater Required California | Title 24 Guide',
+    description: 'Replacing an HVAC system in California often triggers Title 24 HERS verification requirements. Learn when you need a HERS Rater for an HVAC replacement and what tests are required.',
+    tags: ['HVAC', 'HERS'],
+    content: `## Introduction
+
+Many homeowners and contractors are surprised to learn that replacing an HVAC system in California — even a like-for-like equipment swap — can trigger Title 24 compliance requirements including HERS verification. Understanding when a HERS Rater is required for an HVAC replacement, and what they need to test, can help you plan the project and avoid unexpected delays or costs.
+
+## Does Every HVAC Replacement Require Title 24 Compliance?
+
+Not every HVAC replacement triggers Title 24 HERS requirements, but many do. The key factors are the scope of work and the climate zone.
+
+A complete system replacement — replacing both the indoor air handler and the outdoor condensing unit — almost always requires a Title 24 compliance calculation and, in many cases, HERS verification. Replacing only the outdoor condensing unit while retaining the existing air handler and duct system may or may not require Title 24 compliance depending on the equipment efficiency and climate zone.
+
+A like-for-like equipment replacement of the same type and capacity sometimes qualifies for simplified compliance, but the equipment must meet the minimum efficiency requirements of the 2022 Title 24 standards (the current standards). Older, lower-efficiency units being replaced may require upgrading to a more efficient model to comply.
+
+## Common HERS Verification Requirements for HVAC Replacements
+
+When HERS verification is triggered by an HVAC replacement, the most common required measures include duct leakage testing (if the existing duct system is being retained with a new air handler, duct leakage testing is frequently required in many California climate zones), refrigerant charge verification (new refrigerant charge must be verified to confirm the system is properly charged — an improperly charged system runs inefficiently and wears out faster), airflow measurement (confirming adequate airflow across the coil), and fan efficacy verification (confirming the air handler fan operates within the efficiency requirements).
+
+The specific measures required on your project depend on the equipment being replaced, the climate zone, and what the energy consultant specifies on the compliance documentation.
+
+## Climate Zone Matters
+
+California's 58 counties span 16 climate zones with different weather profiles and different HVAC requirements. The HERS verification requirements for HVAC replacements vary by climate zone. Inland areas with high cooling loads (climate zones 9, 10, 11, 12, 13, 14) typically have more stringent HVAC verification requirements than coastal areas with mild climates.
+
+Your energy consultant will determine the applicable requirements for your project's climate zone.
+
+## The Role of the Title 24 Energy Consultant for HVAC Replacements
+
+For an HVAC replacement that requires Title 24 compliance, an energy consultant must prepare a compliance calculation and generate a CF1R. The CF1R specifies the required equipment efficiency ratings, the HERS verification measures, and any other compliance requirements.
+
+The HVAC contractor then completes the CF2R — a self-certification that the equipment was installed as specified. The HERS Rater visits the site, performs the required tests, and submits data to the HERS registry to generate the CF3R. All three documents may be required for permit sign-off depending on the scope of work and local building department requirements.
+
+## Practical Advice for Homeowners and Contractors
+
+Get a permit. Many HVAC replacements in California require a permit from the local building department. Unpermitted HVAC work creates liability and can complicate future home sales. Permitted HVAC work ensures the compliance and verification process runs properly.
+
+Engage the energy consultant early. The Title 24 calculation must be done before installation, not after. Call an energy consultant at the same time you're getting HVAC contractor bids.
+
+Ask the HVAC contractor about HERS coordination. Experienced contractors who regularly work on California projects understand HERS requirements and can help coordinate the HERS Rater site visit at the right point in the project. Refrigerant charge verification must be done after the system is fully installed and running. Duct leakage testing should happen before any access panels are sealed.
+
+Choose HERS-verified equipment where possible. Some HVAC equipment is available in configurations pre-approved for HERS verification, which can streamline the field verification process.
+
+## Conclusion
+
+HVAC replacements in California frequently trigger Title 24 compliance requirements, including HERS verification for duct leakage, refrigerant charge, and airflow. The specific requirements depend on your climate zone, the scope of work, and the equipment involved. Getting a permit, engaging an energy consultant before installation, and coordinating your HERS Rater at the right point in the project are the keys to a smooth process.`,
+  },
 }
 
 export const dynamic = 'force-dynamic'

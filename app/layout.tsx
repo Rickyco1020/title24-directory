@@ -69,6 +69,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <li><Link href="/get-listed" className="hover:text-white transition-colors">Get Listed Free</Link></li>
                   <li><Link href="/resources/what-is-acceptance-testing" className="hover:text-white transition-colors">Acceptance Testing</Link></li>
                   <li><Link href="/resources/hers-vs-ecc-rater" className="hover:text-white transition-colors">ECC Writer vs HERS Rater</Link></li>
+                  <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
                 </ul>
               </div>
             </div>
