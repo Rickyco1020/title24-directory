@@ -2,10 +2,12 @@
 import { createServiceClient } from '@/lib/supabase'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { createHash } from 'crypto'
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'admin123'
 const COOKIE_NAME = 'admin_auth'
-const COOKIE_VALUE = 'authenticated'
+// Cookie value is derived from the password — changing the password invalidates all existing sessions
+const COOKIE_VALUE = 'auth_' + createHash('sha256').update(ADMIN_PASSWORD).digest('hex').slice(0, 24)
 
 export async function adminLogin(prevState: { error: string }, formData: FormData): Promise<{ error: string }> {
   const password = formData.get('password') as string
@@ -20,6 +22,11 @@ export async function adminLogin(prevState: { error: string }, formData: FormDat
     redirect('/admin')
   }
   return { error: 'Incorrect password. Please try again.' }
+}
+
+export async function isAuthenticated(): Promise<boolean> {
+  const cookieStore = await cookies()
+  return cookieStore.get(COOKIE_NAME)?.value === COOKIE_VALUE
 }
 
 export async function adminLogout() {

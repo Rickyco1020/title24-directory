@@ -1,16 +1,11 @@
-import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { createServiceClient } from '@/lib/supabase'
-import { updateRaterStatus, adminLogout } from './actions'
+import { updateRaterStatus, adminLogout, isAuthenticated } from './actions'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Admin | Title 24 Directory' }
 export const dynamic = 'force-dynamic'
 
-async function isAuthenticated() {
-  const cookieStore = await cookies()
-  return cookieStore.get('admin_auth')?.value === 'authenticated'
-}
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
