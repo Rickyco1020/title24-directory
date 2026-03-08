@@ -1,20 +1,22 @@
 'use client'
-import { useState } from 'react'
+import { useFormState, useFormStatus } from 'react-dom'
+import { submitContactForm } from './actions'
 import Link from 'next/link'
 
+function SubmitButton() {
+  const { pending } = useFormStatus()
+  return (
+    <button type="submit" disabled={pending}
+      className="w-full bg-blue-700 text-white py-3 rounded-xl font-bold text-base hover:bg-blue-800 transition-colors disabled:opacity-60">
+      {pending ? 'Sending...' : 'Send Message →'}
+    </button>
+  )
+}
+
 export default function ContactForm() {
-  const [submitted, setSubmitted] = useState(false)
-  const [sending, setSending] = useState(false)
+  const [state, action] = useFormState(submitContactForm, { success: false })
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setSending(true)
-    await new Promise(r => setTimeout(r, 600))
-    setSubmitted(true)
-    setSending(false)
-  }
-
-  if (submitted) {
+  if (state.success) {
     return (
       <div className="py-16 text-center">
         <div className="text-6xl mb-6">✅</div>
@@ -25,25 +27,29 @@ export default function ContactForm() {
     )
   }
 
+  const fe = state.fieldErrors ?? {}
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form action={action} className="space-y-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Your Name <span className="text-red-500">*</span></label>
           <input required type="text" name="name" placeholder="Full name"
-            className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500" />
+            className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 ${fe.name ? 'border-red-400' : 'border-gray-300'}`} />
+          {fe.name && <p className="text-red-500 text-sm mt-1">{fe.name[0]}</p>}
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Email Address <span className="text-red-500">*</span></label>
           <input required type="email" name="email" placeholder="you@company.com"
-            className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500" />
+            className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 ${fe.email ? 'border-red-400' : 'border-gray-300'}`} />
+          {fe.email && <p className="text-red-500 text-sm mt-1">{fe.email[0]}</p>}
         </div>
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Subject <span className="text-red-500">*</span></label>
         <select required name="subject"
-          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 bg-white">
+          className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 bg-white ${fe.subject ? 'border-red-400' : 'border-gray-300'}`}>
           <option value="">Select a topic...</option>
           <option>Question about my listing</option>
           <option>Report incorrect information</option>
@@ -51,18 +57,18 @@ export default function ContactForm() {
           <option>Partnership or advertising</option>
           <option>Other</option>
         </select>
+        {fe.subject && <p className="text-red-500 text-sm mt-1">{fe.subject[0]}</p>}
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Message <span className="text-red-500">*</span></label>
         <textarea required name="message" rows={5} placeholder="How can we help?"
-          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 resize-none" />
+          className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 resize-none ${fe.message ? 'border-red-400' : 'border-gray-300'}`} />
+        {fe.message && <p className="text-red-500 text-sm mt-1">{fe.message[0]}</p>}
       </div>
 
-      <button type="submit" disabled={sending}
-        className="w-full bg-blue-700 text-white py-3 rounded-xl font-bold text-base hover:bg-blue-800 transition-colors disabled:opacity-60">
-        {sending ? 'Sending...' : 'Send Message →'}
-      </button>
+      {state.error && <p className="text-red-500 text-sm">{state.error}</p>}
+      <SubmitButton />
     </form>
   )
 }
