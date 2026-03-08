@@ -180,7 +180,7 @@ During the design phase, the project architect or designer works with an energy 
 
 The 2022 Title 24 Standards introduced several requirements builders need to know. The solar PV requirement was expanded significantly — extending the solar mandate to new high-rise multifamily buildings and many nonresidential building types, including offices, retail, schools, grocery stores, and warehouses.
 
-Battery storage was also mandated, making California the first state to require both solar and battery storage for new construction. New single-family homes and other newly constructed residential buildings that require solar PV must also include a battery storage system with a minimum usable capacity of 7.5 kWh.
+Battery energy storage systems (BESS) are now prescriptively required for newly constructed nonresidential and high-rise multifamily buildings. For new single-family homes, BESS is not mandatory, but BESS-ready infrastructure is required — meaning the home must be pre-wired to support a future battery installation. Installing a qualifying battery system (minimum 7.5 kWh usable capacity) allows the required PV system size to be reduced by up to 25%.
 
 The 2022 standards also include stronger requirements for EV charging infrastructure, heat pump-ready space and water heating, and significantly increased efficiency requirements for water heating in new residential construction — making heat pump water heaters the most common path to compliance.
 
@@ -308,7 +308,7 @@ In most cases, one person cannot fill both roles. The HERS verification system i
 
 ## What Changes for 2025+ Projects Under the 2022 Standards
 
-The 2022 Title 24 Standards, which took effect January 1, 2023, introduced several changes that affect both roles. New single-family homes must include both a solar PV system and a battery storage system with a minimum usable capacity of 7.5 kWh — California was the first state to mandate both solar and storage for new residential construction. ECC writers must account for both in the compliance calculation; HERS Raters must verify both are installed.
+The 2022 Title 24 Standards, which took effect January 1, 2023, introduced several changes that affect both roles. New single-family homes must include a solar PV system and be built with battery-ready infrastructure. Battery energy storage systems (BESS) are prescriptively required for nonresidential and high-rise multifamily buildings. ECC writers must account for solar PV (and BESS where required) in the compliance calculation; HERS Raters must verify the installed systems.
 
 Heat pump water heaters are now effectively the standard path to compliance for most new homes under the 2022 standards. New requirements for electrical panel capacity and conduit for future EV charging infrastructure also affect the compliance calculation. Updated whole-building and spot ventilation requirements affect both design compliance and HERS field verification.
 
@@ -327,23 +327,23 @@ Engage both early, keep your compliance document chain organized, and you'll be 
   'title-24-solar-requirements': {
     title: 'Title 24 Solar PV Requirements for New Construction in California',
     seoTitle: 'Title 24 Solar PV Requirements California | New Construction 2023+',
-    description: 'California requires solar PV and battery storage on most new construction. Learn what Title 24 mandates, what\'s exempt, and how a HERS Rater verifies your system.',
+    description: 'California requires solar PV on most new construction and battery storage on certain building types. Learn what Title 24 mandates, what\'s exempt, and how a HERS Rater verifies your system.',
     tags: ['Solar', 'Compliance'],
     content: `## Introduction
 
-California made history with its 2022 Building Energy Efficiency Standards by becoming the first state to require both solar photovoltaic (PV) systems and battery storage on most new construction. If you're building in California, understanding what the solar and battery mandates require — and how they're verified — is essential to getting your project to permit final.
+California made history with its 2022 Building Energy Efficiency Standards by significantly expanding solar photovoltaic (PV) requirements and introducing battery energy storage system (BESS) mandates for certain building types. If you're building in California, understanding what the solar and battery mandates require — and how they're verified — is essential to getting your project to permit final.
 
 ## What the 2022 Title 24 Standards Require
 
-Under the 2022 Title 24 standards (effective January 1, 2023), all new single-family homes and low-rise multifamily buildings (three stories or fewer) are required to include a solar PV system. This requirement was first introduced under the 2019 standards. What the 2022 cycle added was a battery storage mandate — making California the first state to require both.
+Under the 2022 Title 24 standards (effective January 1, 2023), all new single-family homes and low-rise multifamily buildings (three stories or fewer) are required to include a solar PV system. This requirement was first introduced under the 2019 standards for single-family homes.
 
-The 2022 standards also significantly expanded the solar mandate to nonresidential buildings. New commercial buildings including offices, retail stores, schools, grocery stores, warehouses, and high-rise multifamily buildings (four stories and above) must now include solar PV systems sized according to the building's conditioned floor area.
+The 2022 standards significantly expanded the solar mandate to nonresidential buildings. New commercial buildings including offices, retail stores, schools, grocery stores, warehouses, and high-rise multifamily buildings (four stories and above) must now include solar PV systems sized according to the building's conditioned floor area.
 
 ## Battery Storage Requirements
 
-For new single-family homes and low-rise multifamily buildings that require solar PV, the 2022 standards also require a battery storage system. The minimum usable capacity is 7.5 kWh for most residential applications.
+Battery energy storage systems (BESS) are prescriptively required for newly constructed nonresidential and high-rise multifamily buildings under the 2022 standards.
 
-Battery storage is not currently mandatory for nonresidential buildings under the 2022 standards, though it may be used as a compliance pathway for certain measures.
+For new single-family homes and low-rise multifamily buildings, BESS is not mandatory — but BESS-ready infrastructure is. This means the home must be built with the electrical panel capacity, dedicated space, and wiring infrastructure to support a future battery installation. Installing a qualifying battery system (minimum 7.5 kWh usable capacity, JA12-compliant) allows the required PV system size to be reduced by up to 25%, which incentivizes battery installation even though it's not required.
 
 ## How Solar System Size Is Determined
 
@@ -375,7 +375,7 @@ Work with your energy consultant early to determine the correct system size for 
 
 ## Conclusion
 
-California's 2022 Title 24 standards require solar PV on most new construction and battery storage on new residential buildings. The requirements are determined by the energy consultant, documented on the CF1R, and verified in the field by a HERS Rater. Building these requirements into your project plan from the start is the most cost-effective approach.`,
+California's 2022 Title 24 standards require solar PV on most new construction, battery storage on nonresidential and high-rise multifamily buildings, and battery-ready infrastructure on single-family homes. The requirements are determined by the energy consultant, documented on the CF1R, and verified in the field by a HERS Rater. Building these requirements into your project plan from the start is the most cost-effective approach.`,
   },
   'what-is-a-cf1r': {
     title: 'What Is a CF1R? California Title 24 Compliance Report Explained',
@@ -471,9 +471,9 @@ The specific trigger conditions are defined in the Title 24 standards and vary b
 
 ## What Are the Pass/Fail Thresholds?
 
-Under the 2022 Title 24 standards, the maximum allowable duct leakage for new construction is generally 5% total leakage or 4% leakage to outside (the exact threshold depends on the project type and compliance pathway). These are significantly more stringent than the thresholds in previous code cycles, reflecting California's push toward tighter building envelopes and more efficient mechanical systems.
+Under the 2022 Title 24 standards, the maximum allowable duct leakage thresholds depend on the scope of work. For new systems with all new ducts, the maximum allowable total leakage is 6% of the system's nominal airflow. For existing duct systems being retained with a new HVAC equipment installation, the threshold depends on whether any duct replacement occurred — existing systems with duct replacement must meet 5% or less, while existing systems with no duct replacement must meet 15% or less. Supply and return ductwork leaking specifically to the outdoors has a maximum acceptable leakage rate of 2%.
 
-For existing duct systems being tested as part of an HVAC replacement, different — and generally less stringent — thresholds may apply.
+These thresholds are more stringent than previous code cycles, reflecting California's ongoing push toward tighter duct systems and reduced energy waste.
 
 ## How to Prepare for Duct Leakage Testing
 
@@ -508,15 +508,15 @@ This post explains what the 2022 Title 24 water heating requirements are, why he
 
 ## What the 2022 Standards Require
 
-The 2022 Title 24 standards significantly increased the energy efficiency requirements for water heating in new residential construction. The standards set a minimum Energy Factor (EF) or Uniform Energy Factor (UEF) that most conventional gas and standard electric resistance water heaters cannot meet without major performance upgrades.
+The 2022 Title 24 standards significantly increased the energy efficiency requirements for water heating in new residential construction. The prescriptive path sets efficiency thresholds that are most easily met by heat pump water heaters — conventional gas and standard electric resistance water heaters typically require additional measures (such as demand recirculation systems) to comply.
 
-In practice, heat pump water heaters are now the primary compliance path for new single-family and low-rise multifamily construction. A heat pump water heater moves heat from the surrounding air into the water tank rather than generating heat directly — making it two to three times more efficient than a conventional electric resistance heater and substantially more efficient than gas on an energy cost basis.
+In practice, heat pump water heaters have become the primary compliance path for new single-family and low-rise multifamily construction. A heat pump water heater moves heat from the surrounding air into the water tank rather than generating heat directly — making it two to three times more efficient than a conventional electric resistance heater and substantially more efficient than gas on an energy cost basis.
 
 The 2022 standards also include requirements for electric panel capacity and dedicated circuits to support heat pump water heaters, recognizing that new construction must be wired to accommodate them.
 
 ## Why Heat Pump Water Heaters Became the Default
 
-The shift toward heat pump water heaters under the 2022 standards reflects two overlapping goals. First, the efficiency requirements were raised high enough that conventional gas water heaters — which have a UEF typically in the 0.6 to 0.7 range — cannot meet the required threshold in most climate zones without a demand recirculation system and other efficiency measures. Heat pump water heaters, with UEF ratings typically in the 3.0 to 4.0 range, exceed the requirements by a wide margin.
+The shift toward heat pump water heaters under the 2022 standards reflects two overlapping goals. First, the efficiency requirements were raised high enough that conventional gas water heaters — which have a UEF typically in the 0.6 to 0.7 range — struggle to meet the required thresholds without adding a demand recirculation system and other efficiency measures. Heat pump water heaters, with UEF ratings typically in the 3.0 to 4.0 range, exceed the requirements by a wide margin.
 
 Second, California's energy policy is moving toward electrification. Heat pump water heaters are an all-electric appliance that works well with California's increasingly renewable electricity grid. California's broader electrification goals — including its all-electric new construction policies in many jurisdictions — have pushed water heating in this direction.
 
