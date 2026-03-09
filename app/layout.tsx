@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Link from 'next/link'
+import MobileNav from '@/components/MobileNav'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import MobileNav from '@/components/MobileNav'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,17 +14,17 @@ export const metadata: Metadata = {
     default: 'Title 24 Directory | Find HERS & ECC Raters in California',
   },
   description: 'Find certified HERS raters, ECC raters, commissioning agents, and acceptance testers across California. The most complete Title 24 compliance directory.',
-    verification: {
-          google: '-KyQtMRifeytgspRHN_ukGNKioN5_oQ9cdnxaUMrn2U',
-    },
   metadataBase: new URL('https://title24directory.com'),
+  verification: {
+    google: '-KyQtMRifeytgspRHN_ukGNKioN5_oQ9cdnxaUMrn2U',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-50 relative">
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <Link href="/" className="flex items-center space-x-2">
@@ -70,14 +70,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <h4 className="text-white font-semibold mb-3">For Raters</h4>
                 <ul className="space-y-2 text-sm">
                   <li><Link href="/get-listed" className="hover:text-white transition-colors">Get Listed Free</Link></li>
-                  <li><Link href="/resources/what-is-acceptance-testing" className="hover:text-white transition-colors">Acceptance Testing</Link></li>
-                  <li><Link href="/resources/hers-vs-ecc-rater" className="hover:text-white transition-colors">ECC Writer vs HERS Rater</Link></li>
                   <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
                 </ul>
               </div>
             </div>
             <div className="border-t border-gray-800 mt-8 pt-8 text-sm text-gray-500">
-              <p>© {new Date().getFullYear()} Title24 Directory. All rights reserved.</p>
+              <p>Â© {new Date().getFullYear()} Title24 Directory. All rights reserved.</p>
             </div>
           </div>
         </footer>
