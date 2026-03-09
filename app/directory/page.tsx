@@ -70,8 +70,9 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
   )
 }
 
-export default function DirectoryPage({ searchParams }: { searchParams: Record<string, string> }) {
-  const sortedCounties = [...CA_COUNTIES].sort((a, b) => a.name.localeCompare(b.name))
+export default async function DirectoryPage({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
+  const resolvedParams = await searchParams
+  const counties = CA_COUNTIES.map(c => c.name).sort()
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -81,20 +82,20 @@ export default function DirectoryPage({ searchParams }: { searchParams: Record<s
       <form method="GET" className="bg-white rounded-2xl border border-gray-200 p-6 mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Search</label>
-          <input name="q" defaultValue={searchParams.q} placeholder="Name, city, keyword..." className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500" />
+          <input name="q" defaultValue={resolvedParams.q} placeholder="Name, city, keyword..." className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500" />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Service Type</label>
-          <select name="type" defaultValue={searchParams.type} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+          <select name="type" defaultValue={resolvedParams.type} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
             <option value="">All Types</option>
             {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
           </select>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">County</label>
-          <select name="county" defaultValue={searchParams.county} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+          <select name="county" defaultValue={resolvedParams.county} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
             <option value="">All Counties</option>
-            {sortedCounties.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
+            {counties.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
         <div className="flex items-end">
@@ -103,7 +104,7 @@ export default function DirectoryPage({ searchParams }: { searchParams: Record<s
       </form>
 
       <Suspense fallback={<div className="text-center py-10 text-gray-400">Loading raters...</div>}>
-        <DirectoryResults searchParams={searchParams} />
+        <DirectoryResults searchParams={resolvedParams} />
       </Suspense>
     </div>
   )
