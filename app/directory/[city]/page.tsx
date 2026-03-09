@@ -10,8 +10,9 @@ export async function generateStaticParams() {
   return CITIES.map(city => ({ city: city.slug }))
 }
 
-export async function generateMetadata({ params }: { params: { city: string } }): Promise<Metadata> {
-  const city = CITIES.find(c => c.slug === params.city)
+export async function generateMetadata({ params }: { params: Promise<{ city: string }> }): Promise<Metadata> {
+  const { city: citySlug } = await params
+  const city = CITIES.find(c => c.slug === citySlug)
   if (!city) return {}
   return {
     title: `HERS Raters in ${city.name}, CA | Title 24 Directory`,
@@ -20,8 +21,9 @@ export async function generateMetadata({ params }: { params: { city: string } })
   }
 }
 
-export default async function CityPage({ params }: { params: { city: string } }) {
-  const city = CITIES.find(c => c.slug === params.city)
+export default async function CityPage({ params }: { params: Promise<{ city: string }> }) {
+  const { city: citySlug } = await params
+  const city = CITIES.find(c => c.slug === citySlug)
   if (!city) notFound()
 
   const { data: raters } = await supabase
