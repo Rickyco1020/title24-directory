@@ -10,8 +10,9 @@ export async function generateStaticParams() {
   return CA_COUNTIES.map(county => ({ county: county.slug }))
 }
 
-export async function generateMetadata({ params }: { params: { county: string } }): Promise<Metadata> {
-  const county = CA_COUNTIES.find(c => c.slug === params.county)
+export async function generateMetadata({ params }: { params: Promise<{ county: string }> }): Promise<Metadata> {
+  const { county: countySlug } = await params
+  const county = CA_COUNTIES.find(c => c.slug === countySlug)
   if (!county) return {}
   return {
     title: `HERS Raters in ${county.name} County, CA | Title 24 Directory`,
@@ -20,18 +21,19 @@ export async function generateMetadata({ params }: { params: { county: string } 
   }
 }
 
-export default async function CountyPage({ params }: { params: { county: string } }) {
-  const county = CA_COUNTIES.find(c => c.slug === params.county)
+export default async function CountyPage({ params }: { params: Promise<{ county: string }> }) {
+  const { county: countySlug } = await params
+  const county = CA_COUNTIES.find(c => c.slug === countySlug)
   if (!county) notFound()
 
   const { data: raters } = await supabase
     .from('raters')
     .select('*')
     .in('status', ['approved', 'featured'])
-    .contains('counties_served', [params.county])
+    .contains('counties_served', [countySlug])
     .order('status', { ascending: false })
 
-  const citiesInCounty = CITIES.filter(c => c.county_slug === params.county)
+  const citiesInCounty = CITIES.filter(c => c.county_slug === countySlug)
 
   const jsonLd = {
     '@context': 'https://schema.org',
