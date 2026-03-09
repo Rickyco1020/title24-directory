@@ -1,19 +1,18 @@
-import Link from 'next/link'
 import { BADGE_COLORS, CATEGORY_LABELS } from '@/lib/categories'
-import { CA_COUNTIES } from '@/lib/california-data'
 import type { Rater } from '@/lib/supabase'
-
-function formatCounty(slug: string): string {
-  return CA_COUNTIES.find(c => c.slug === slug)?.name ?? slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
-}
 
 export default function RaterCard({ rater }: { rater: Rater }) {
   return (
-    <div className={`bg-white rounded-2xl border p-6 ${rater.status === 'featured' ? 'border-yellow-400 shadow-md' : 'border-gray-200'}`}>
-      {rater.status === 'featured' && (
-        <span className="inline-block bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded mb-3">⭐ Featured</span>
-      )}
-      <h3 className="font-bold text-gray-900 text-xl mb-2">{rater.business_name}</h3>
+    <div className={`bg-white rounded-2xl border p6 flex flex-col ${rater.status === 'featured' ? 'border-yellow-400 shadow-md ring-1 ring-yellow-200' : 'border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all'}`}>
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex-1 min-w-0">
+          {rater.status === 'featured' && (
+            <span className="inline-block bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded mb-2">Featured</span>
+          )}
+          <h3 className="font-bold text-gray-900 text-xl">{rater.business_name}</h3>
+        </div>
+      </div>
+
       <div className="flex flex-wrap gap-2 mb-3">
         {rater.services.map(s => (
           <span key={s} className={`text-xs font-semibold px-2 py-1 rounded ${BADGE_COLORS[s] ?? 'bg-gray-100 text-gray-700'}`}>
@@ -21,28 +20,42 @@ export default function RaterCard({ rater }: { rater: Rater }) {
           </span>
         ))}
       </div>
+
       {(rater.cities_served?.length || rater.counties_served?.length) && (
-        <p className="text-gray-500 text-sm mb-3">
-          📍 {[...(rater.counties_served ?? []).map(formatCounty), ...(rater.cities_served ?? [])].slice(0, 3).join(', ')}
-          {(rater.cities_served?.length ?? 0) + (rater.counties_served?.length ?? 0) > 3 ? ' +more' : ''}
+        <p className="text-gray-500 text-sm mb-2">
+          <span className="inline-block w-4 text-center mr-1">ð</span>
+          {[...(rater.counties_served ?? []).map(c => `${c} County`), ...(rater.cities_served ?? [])].slice(0, 4).join(', ')}
+          {(rater.cities_served?.length ?? 0) + (rater.counties_served?.length ?? 0) > 4 ? ' +more' : ''}
         </p>
       )}
-      {rater.description && <p className="text-gray-600 text-sm mb-4 line-clamp-2">{rater.description}</p>}
-      <div className="flex flex-wrap items-center justify-between gap-3 mt-1">
-        <div className="flex flex-wrap gap-3">
-          {rater.phone && (
-            <a href={`tel:${rater.phone}`} className="text-blue-700 font-medium text-sm hover:underline">📞 {rater.phone}</a>
-          )}
-          {rater.website && (
-            <a href={rater.website} target="_blank" rel="noopener noreferrer" className="text-blue-700 font-medium text-sm hover:underline">🌐 Website</a>
-          )}
-        </div>
-        <Link
-          href={`/directory/rater/${rater.id}`}
-          className="text-sm font-semibold text-blue-700 hover:text-blue-900 hover:underline whitespace-nowrap"
-        >
-          View Profile →
-        </Link>
+
+      {rater.license_number && (
+        <p className="text-gray-400 text-xs mb-2">License #{rater.license_number}</p>
+      )}
+
+      {rater.description && (
+        <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-grow">{rater.description}</p>
+      )}
+
+      <div className="border-t border-gray-100 pt-4 mt-auto flex flex-wrap gap-x-4 gap-y-2">
+        {rater.phone && (
+          <a href={`tel:${rater.phone}`} className="inline-flex items-center text-blue-700 font-medium text-sm hover:underline">
+            <svg className="w-4 h-4 mr-1.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+            {rater.phone}
+          </a>
+        )}
+        {rater.email && (
+          <a href={`mailto:${rater.email}`} className="inline-flex items-center text-blue-700 font-medium text-sm hover:underline">
+            <svg className="w-4 h-4 mr-1.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+            Email
+          </a>
+        )}
+        {rater.website && (
+          <a href={rater.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-700 font-medium text-sm hover:underline">
+            <svg className="w-4 h-4 mr-1.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
+            Website
+          </a>
+        )}
       </div>
     </div>
   )
