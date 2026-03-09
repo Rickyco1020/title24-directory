@@ -14,6 +14,9 @@ export const metadata: Metadata = {
     default: 'Title 24 Directory | Find HERS & ECC Raters in California',
   },
   description: 'Find certified HERS raters, ECC raters, commissioning agents, and acceptance testers across California. The most complete Title 24 compliance directory.',
+    verification: {
+          google: '-KyQtMRifeytgspRHN_ukGNKioN5_oQ9cdnxaUMrn2U',
+    },
   metadataBase: new URL('https://title24directory.com'),
 }
 
