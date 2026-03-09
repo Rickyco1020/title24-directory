@@ -25,7 +25,7 @@ function SearchForm() {
       />
       <button
         type="submit"
-        className="bg-white text-blue-700 px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-colors whitespace-nowrap"
+        className="bg-yellow-400 text-gray-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-yellow-300 transition-colors whitespace-nowrap shadow-lg"
       >
         Find Raters
       </button>
@@ -39,13 +39,35 @@ export default function HomePage() {
       <section className="bg-gradient-to-br from-blue-700 to-blue-900 text-white py-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">Find a Title 24 Rater Near You</h1>
-          <p className="text-xl text-blue-100 mb-10">California's most complete directory of HERS raters, ECC raters, commissioning agents, and acceptance testers.</p>
+          <p className="text-xl text-blue-100 mb-10">California&apos;s most complete directory of HERS raters, ECC raters, commissioning agents, and acceptance testers.</p>
           <SearchForm />
         </div>
       </section>
 
+      <section className="border-b border-gray-200 bg-white">
+        <div className="max-w-5xl mx-auto px-4 py-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div>
+            <p className="text-2xl font-bold text-blue-700">200+</p>
+            <p className="text-sm text-gray-500">Cities covered</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-blue-700">58</p>
+            <p className="text-sm text-gray-500">Counties</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-blue-700">4</p>
+            <p className="text-sm text-gray-500">Service types</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-blue-700">100%</p>
+            <p className="text-sm text-gray-500">Free to use</p>
+          </div>
+        </div>
+      </section>
+
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-10">Find the Right Professional</h2>
+        <h2 className="text-3xl font-bold text-center text-gray-900 mb-3">Find the Right Professional</h2>
+        <p className="text-center text-gray-500 mb-10 max-w-2xl mx-auto">Browse by service type to find the exact certification you need for your project.</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {CATEGORIES.map(cat => (
             <Link
@@ -54,10 +76,11 @@ export default function HomePage() {
               className="block p-6 bg-white rounded-2xl border border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all group"
             >
               <div className="text-3xl mb-3">
-                {cat.value === 'hers' ? '🏠' : cat.value === 'ecc' ? '⚡' : cat.value === 'commissioning' ? '🔧' : '✅'}
+                {cat.value === 'hers' ? 'ð ' : cat.value === 'ecc' ? 'â¡' : cat.value === 'commissioning' ? 'ð§' : 'â'}
               </div>
               <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-700 transition-colors">{cat.label}</h3>
-              <p className="text-gray-500 text-sm">{cat.description}</p>
+              <p className="text-gray-500 text-sm mb-3">{cat.description}</p>
+              <span className="text-blue-700 text-sm font-semibold group-hover:underline">Browse â</span>
             </Link>
           ))}
         </div>
@@ -85,18 +108,22 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900">Title 24 Resources</h2>
-          <Link href="/resources" className="text-blue-700 font-semibold hover:underline">View all →</Link>
+          <Link href="/resources" className="text-blue-700 font-semibold hover:underline">View all â</Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
-            { slug: 'what-is-a-hers-rater', title: 'What Is a HERS Rater (Now Called an ECC Rater)?', excerpt: 'Learn what a HERS Rater does, how the role is becoming ECC Rater under the 2025 energy code, and when you need one.', tag: 'HERS / ECC' },
-            { slug: 'cf2r-vs-cf3r', title: 'CF2R vs CF3R: What\'s the Difference?', excerpt: 'Understanding the difference between CF2R and CF3R forms for Title 24 compliance.', tag: 'Forms' },
-            { slug: 'title-24-compliance-guide', title: 'California Title 24 Compliance Guide', excerpt: 'A complete guide to Title 24 energy code compliance for builders and contractors.', tag: 'Compliance' },
+            { slug: 'what-is-a-hers-rater', title: 'What Is a HERS Rater (Now Called an ECC Rater)?', excerpt: 'Learn what a HERS Rater does, how the role is becoming ECC Rater under the 2025 energy code, and when you need one.', tag: 'HERS / ECC', readTime: '5 min read' },
+            { slug: 'cf2r-vs-cf3r', title: 'CF2R vs CF3R: What\'s the Difference?', excerpt: 'Understanding the difference between installer certificates and verifier certificates in California Title 24.', tag: 'Forms', readTime: '4 min read' },
+            { slug: 'title-24-compliance-guide', title: 'California Title 24 Compliance Guide', excerpt: 'A complete guide to Title 24 energy code compliance for builders and contractors. Stay on schedule.', tag: 'Compliance', readTime: '6 min read' },
           ].map(article => (
-            <Link key={article.slug} href={`/resources/${article.slug}`} className="block bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
-              <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded mb-3">{article.tag}</span>
-              <h3 className="font-bold text-gray-900 text-lg mb-2 hover:text-blue-700">{article.title}</h3>
-              <p className="text-gray-500 text-sm">{article.excerpt}</p>
+            <Link key={article.slug} href={`/resources/${article.slug}`} className="group block bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg hover:border-blue-300 transition-all">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">{article.tag}</span>
+                <span className="text-xs text-gray-400">{article.readTime}</span>
+              </div>
+              <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-700 transition-colors">{article.title}</h3>
+              <p className="text-gray-500 text-sm mb-4">{article.excerpt}</p>
+              <span className="text-blue-700 text-sm font-semibold group-hover:underline">Read article â</span>
             </Link>
           ))}
         </div>
@@ -105,9 +132,9 @@ export default function HomePage() {
       <section className="bg-blue-700 py-16 px-4">
         <div className="max-w-3xl mx-auto text-center text-white">
           <h2 className="text-3xl font-bold mb-4">Are You a Title 24 Rater?</h2>
-          <p className="text-blue-100 text-lg mb-8">Get your business listed in California's most complete Title 24 directory — completely free.</p>
-          <Link href="/get-listed" className="bg-white text-blue-700 px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-colors inline-block">
-            Get Listed Free →
+          <p className="text-blue-100 text-lg mb-8">Get your business listed in California&apos;s most complete Title 24 directory â completely free.</p>
+          <Link href="/get-listed" className="bg-yellow-400 text-gray-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-yellow-300 transition-colors inline-block shadow-lg">
+            Get Listed Free â
           </Link>
         </div>
       </section>
