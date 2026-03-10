@@ -76,11 +76,11 @@ export default function HomePage() {
               className="block p-6 bg-white rounded-2xl border border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all group"
             >
               <div className="text-3xl mb-3">
-                {cat.value === 'hers' ? 'ð ' : cat.value === 'ecc' ? 'â¡' : cat.value === 'commissioning' ? 'ð§' : 'â'}
+                {cat.value === 'hers' ? '🏠' : cat.value === 'ecc' ? '⚡' : cat.value === 'commissioning' ? '🔧' : '✅'}
               </div>
               <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-700 transition-colors">{cat.label}</h3>
               <p className="text-gray-500 text-sm mb-3">{cat.description}</p>
-              <span className="text-blue-700 text-sm font-semibold group-hover:underline">Browse â</span>
+              <span className="text-blue-700 text-sm font-semibold group-hover:underline">Browse →</span>
             </Link>
           ))}
         </div>
@@ -108,7 +108,7 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900">Title 24 Resources</h2>
-          <Link href="/resources" className="text-blue-700 font-semibold hover:underline">View all â</Link>
+          <Link href="/resources" className="text-blue-700 font-semibold hover:underline">View all →</Link>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
@@ -123,7 +123,7 @@ export default function HomePage() {
               </div>
               <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-700 transition-colors">{article.title}</h3>
               <p className="text-gray-500 text-sm mb-4">{article.excerpt}</p>
-              <span className="text-blue-700 text-sm font-semibold group-hover:underline">Read article â</span>
+              <span className="text-blue-700 text-sm font-semibold group-hover:underline">Read article →</span>
             </Link>
           ))}
         </div>
@@ -132,9 +132,9 @@ export default function HomePage() {
       <section className="bg-blue-700 py-16 px-4">
         <div className="max-w-3xl mx-auto text-center text-white">
           <h2 className="text-3xl font-bold mb-4">Are You a Title 24 Rater?</h2>
-          <p className="text-blue-100 text-lg mb-8">Get your business listed in California&apos;s most complete Title 24 directory â completely free.</p>
+          <p className="text-blue-100 text-lg mb-8">Get your business listed in California&apos;s most complete Title 24 directory — completely free.</p>
           <Link href="/get-listed" className="bg-yellow-400 text-gray-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-yellow-300 transition-colors inline-block shadow-lg">
-            Get Listed Free â
+            Get Listed Free →
           </Link>
         </div>
       </section>
