@@ -75,7 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
             </div>
             <div className="border-t border-gray-800 mt-8 pt-8 text-sm text-gray-500">
-              <p>Â© {new Date().getFullYear()} Title24 Directory. All rights reserved.</p>
+              <p>© {new Date().getFullYear()} Title24 Directory. All rights reserved.</p>
             </div>
           </div>
         </footer>
