@@ -10,6 +10,8 @@ export async function generateStaticParams() {
   return CITIES.map(city => ({ city: city.slug }))
 }
 
+export const revalidate = 3600
+
 export async function generateMetadata({ params }: { params: Promise<{ city: string }> }): Promise<Metadata> {
   const { city: citySlug } = await params
   const city = CITIES.find(c => c.slug === citySlug)
@@ -30,7 +32,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
     .from('raters')
     .select('*')
     .in('status', ['approved', 'featured'])
-    .contains('counties_served', [city.county])
+    .contains('counties_served', [city.county_slug])
     .order('status', { ascending: false })
 
   const jsonLd = {
