@@ -10,6 +10,8 @@ export async function generateStaticParams() {
   return CA_COUNTIES.map(county => ({ county: county.slug }))
 }
 
+export const revalidate = 3600
+
 export async function generateMetadata({ params }: { params: Promise<{ county: string }> }): Promise<Metadata> {
   const { county: countySlug } = await params
   const county = CA_COUNTIES.find(c => c.slug === countySlug)
