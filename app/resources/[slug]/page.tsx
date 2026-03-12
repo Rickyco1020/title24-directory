@@ -109,68 +109,136 @@ An ECC (Energy Code Compliance) rater performs the same fundamental role as a HE
 The answer depends on when your permit was pulled. Projects permitted under the 2022 Energy Code continue to use HERS verification. Projects permitted under the 2025 Energy Code require ECC verification.
     `,
   },
-}
+  'title-24-solar-requirements': {
+    title: 'Title 24 Solar Requirements for New Homes',
+    seoTitle: 'California Title 24 Solar Requirements | New Home Solar Mandate',
+    description: 'California requires solar panels on most new homes. Learn about Title 24 solar requirements, exceptions, and how compliance is verified.',
+    tags: ['Solar', 'Compliance'],
+    content: `## Title 24 Solar Requirements for New Homes
 
-export async function generateStaticParams() {
-  return Object.keys(articles).map(slug => ({ slug }))
-}
+Since 2020, California has required solar photovoltaic systems on most new residential construction. This mandate, part of the Title 24 Building Energy Efficiency Standards, makes California the first state in the nation to require solar on new homes.
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params
-  const article = articles[slug]
-  if (!article) return {}
-  return {
-    title: article.seoTitle,
-    description: article.description,
-    alternates: { canonical: `https://title24directory.com/resources/${slug}` },
-  }
-}
+## What Does the Solar Mandate Require?
 
-export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params
-  const article = articles[slug]
-  if (!article) notFound()
+The Title 24 solar requirement applies to all new single-family homes, duplexes, and low-rise multifamily buildings (three stories or fewer). The minimum system size is calculated based on the home's conditioned floor area and climate zone. For a typical single-family home, this usually means a 2-4 kW system.
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: article.title,
-    description: article.description,
-    datePublished: '2026-03-01',
-    author: { '@type': 'Organization', name: 'Title24 Directory' },
-    publisher: { '@type': 'Organization', name: 'Title24 Directory', url: 'https://title24directory.com' },
-  }
+## Are There Exceptions?
 
-  const renderContent = (content: string) => {
-    return content.split('\n').map((line, i) => {
-      if (line.startsWith('## ')) return <h2 key={i} className="text-2xl font-bold text-gray-900 mt-10 mb-4">{line.slice(3)}</h2>
-      if (line.trim() === '') return <div key={i} className="mb-4" />
-      return <p key={i} className="text-gray-600 leading-relaxed mb-2">{line}</p>
-    })
-  }
+Yes. Homes with significant roof shading from existing structures or trees may qualify for a reduction or exemption. Properties where the annual solar access is less than 80 percent of optimal can also receive adjustments. Additionally, homes in certain climate zones with community shared solar programs may use off-site solar to meet the requirement.
 
-  return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-6">
-        <Link href="/" className="hover:text-blue-700">Home</Link>
-        <span>âº</span>
-        <Link href="/resources" className="hover:text-blue-700">Resources</Link>
-        <span>âº</span>
-        <span className="text-gray-900 font-medium">{article.title}</span>
-      </nav>
-      <div className="flex gap-2 mb-4">
-        {article.tags.map(tag => <span key={tag} className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">{tag}</span>)}
-      </div>
-      <h1 className="text-4xl font-bold text-gray-900 mb-8">{article.title}</h1>
-      <article className="prose prose-lg max-w-none">
-        {renderContent(article.content)}
-      </article>
-      <div className="mt-12 bg-blue-50 rounded-2xl p-8 text-center">
-        <h3 className="text-xl font-bold text-gray-900 mb-2">Ready to find a Title 24 rater?</h3>
-        <p className="text-gray-500 mb-4">Search our directory of certified HERS and ECC raters across California.</p>
-        <Link href="/directory" className="bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-800 transition-colors inline-block">Search the Directory â</Link>
-      </div>
-    </div>
-  )
+## How Is Solar Compliance Verified?
+
+Solar compliance is documented on the CF1R energy compliance report and verified through building department plan review. The installed system must match or exceed the specifications in the compliance documents. Final inspection confirms the system is installed and operational before certificate of occupancy is issued.
+`,
+  },
+  'what-is-a-cf1r': {
+    title: 'What Is a CF1R? The First Step in Title 24 Compliance',
+    seoTitle: 'What Is a CF1R Form California | Title 24 Compliance Report',
+    description: 'The CF1R is the foundation of Title 24 compliance. Learn what it is, who prepares it, and why it matters for your California construction project.',
+    tags: ['Forms', 'Compliance'],
+    content: `## What Is a CF1R?
+
+The CF1R, or Certificate of Compliance, is the first document in California's Title 24 energy compliance chain. It is an energy model and report generated by an energy consultant that demonstrates how a proposed building design will meet or exceed the state's energy efficiency standards.
+
+## Who Prepares the CF1R?
+
+The CF1R is typically prepared by a Title 24 energy consultant using approved compliance software such as CBECC-Res for residential projects or CBECC-Com for commercial buildings. The consultant models the building's envelope, HVAC systems, water heating, lighting, and solar to produce a report showing code compliance.
+
+## What Does the CF1R Include?
+
+The CF1R includes the building's energy budget calculations, a list of required HERS or ECC verification measures (CF3R items), specifications for installed equipment, insulation R-values, window U-factors and SHGC ratings, and duct system requirements. It serves as the blueprint that contractors must follow and verifiers must check against.
+
+## Why the CF1R Matters for Your Project
+
+Without an approved CF1R, your building permit will not be issued. The CF1R also determines which field verification tests your project will require. Getting the CF1R done early allows your team to plan for inspections, order the right equipment, and avoid costly change orders later in construction.
+`,
+  },
+  'duct-leakage-testing': {
+    title: 'Duct Leakage Testing: What It Is and Why It Matters',
+    seoTitle: 'Duct Leakage Testing California | Title 24 HERS Verification',
+    description: 'Duct leakage testing is one of the most common Title 24 HERS verification measures. Learn how it works, what the limits are, and how to pass.',
+    tags: ['HERS', 'Testing'],
+    content: `## What Is Duct Leakage Testing?
+
+Duct leakage testing is a diagnostic procedure that measures how much conditioned air escapes from your HVAC ductwork before reaching the living space. In California, duct leakage testing is one of the most frequently required HERS verification measures under Title 24.
+
+## How Is Duct Leakage Measured?
+
+A HERS rater uses a calibrated fan and pressure gauge called a duct blaster to pressurize the duct system to 25 Pascals. The fan speed required to maintain that pressure indicates the leakage rate, measured in cubic feet per minute (CFM25). This value is then compared against the maximum allowed by the CF1R energy compliance report.
+
+## What Are the Leakage Limits?
+
+For new construction in California, total duct leakage must typically not exceed 4 percent of the nominal system airflow. For HVAC replacements and alterations, the requirement may be 8 percent or 15 percent depending on the scope of work and accessibility of the duct system.
+
+## Tips for Passing Duct Leakage Testing
+
+Seal all duct joints with mastic or approved tape before the test. Pay special attention to connections at the air handler, register boots, and takeoffs. Flex duct connections should be secured with zip ties and sealed with mastic. Schedule the test before drywall is installed so any leaks can be easily located and repaired.
+`,
+  },
+  'heat-pump-water-heater-title-24': {
+    title: 'Heat Pump Water Heaters and Title 24 Compliance',
+    seoTitle: 'Heat Pump Water Heater Title 24 California | Compliance Guide',
+    description: 'Heat pump water heaters are increasingly required by Title 24. Learn about the requirements, energy savings, and compliance verification process.',
+    tags: ['Compliance', 'HERS'],
+    content: `## Heat Pump Water Heaters and Title 24
+
+California's 2025 Energy Code strongly favors heat pump water heaters (HPWHs) for new residential construction. Under the updated Title 24 standards, heat pump water heaters are the baseline technology for calculating energy budgets, making them effectively required for most new homes unless designers offset the penalty of using a less efficient system elsewhere.
+
+## Why Heat Pump Water Heaters?
+
+Heat pump water heaters use electricity to move heat from the surrounding air into the water tank, making them two to three times more energy efficient than conventional electric resistance or gas water heaters. This efficiency gain is critical for meeting California's aggressive energy and carbon reduction goals.
+
+## Title 24 Verification Requirements
+
+When a heat pump water heater is installed, the HERS or ECC rater may need to verify proper installation including correct placement for adequate airflow, proper condensate drainage, appropriate electrical connections, and that the unit matches the specifications listed on the CF1R compliance report. Some installations also require verification of the dedicated 240-volt circuit and proper clearances.
+
+## Installation Considerations
+
+Heat pump water heaters need adequate airspace around them to operate efficiently. California's building code requires a minimum room volume or louvered door for enclosed installations. They also produce cool, dehumidified air as a byproduct, which can be beneficial in warm climates but should be considered in cooler regions.
+`,
+  },
+  'performance-path-title-24': {
+    title: 'Performance Path vs. Prescriptive Path: Title 24 Compliance Methods',
+    seoTitle: 'Performance vs Prescriptive Path Title 24 | California Energy Code',
+    description: 'California Title 24 offers two compliance approaches. Learn the difference between performance and prescriptive paths and which is right for your project.',
+    tags: ['Compliance'],
+    content: `## Performance Path vs. Prescriptive Path
+
+California's Title 24 energy code offers two methods for demonstrating compliance: the prescriptive path and the performance path. Understanding the difference is important for builders, architects, and energy consultants because the choice affects design flexibility, cost, and the verification measures required.
+
+## What Is the Prescriptive Path?
+
+The prescriptive path is a checklist approach. It specifies exact minimum requirements for each building component: insulation R-values, window U-factors, HVAC efficiency ratings, lighting power density, and more. If every component meets or exceeds the prescribed value, the building complies. No energy modeling is required.
+
+## What Is the Performance Path?
+
+The performance path uses computer energy modeling to demonstrate that the proposed building design will use equal or less energy than a standard reference design. This approach allows trade-offs between building components. For example, a designer might use higher-performance windows to offset lower insulation values, as long as the total energy budget is met.
+
+## Which Path Should You Choose?
+
+The prescriptive path is simpler but less flexible. It works well for straightforward projects with standard designs. The performance path requires an energy consultant and modeling software but offers significantly more design freedom. Most custom homes and larger projects use the performance path because it allows optimization and often results in lower construction costs through strategic trade-offs.
+`,
+  },
+  'hvac-replacement-hers-rater': {
+    title: 'Do You Need a HERS Rater for an HVAC Replacement?',
+    seoTitle: 'HERS Rater for HVAC Replacement California | When Is It Required?',
+    description: 'Replacing your HVAC system in California? Learn when Title 24 requires a HERS rater inspection and what to expect during the verification process.',
+    tags: ['HERS', 'HVAC'],
+    content: `## Do You Need a HERS Rater for an HVAC Replacement?
+
+In most cases, yes. California's Title 24 energy code requires HERS verification for HVAC system replacements in existing homes. When you replace a furnace, air conditioner, or heat pump, a certified HERS or ECC rater must verify that the new system is installed correctly and meets energy code requirements.
+
+## What Does the HERS Rater Check?
+
+For a typical HVAC replacement, the HERS rater will verify refrigerant charge to ensure the system has the correct amount of refrigerant for optimal efficiency, airflow across the indoor coil to confirm it meets manufacturer specifications, duct leakage to make sure the duct system is adequately sealed, and that the equipment matches what was specified on the compliance documents.
+
+## When Is HERS Verification Required?
+
+HERS verification is required for most HVAC change-outs that require a building permit. This includes replacing a furnace, air conditioner, heat pump, or package unit. Some exceptions exist for like-for-like replacements in certain situations, but the trend under California's updated energy codes is toward more verification, not less.
+
+## How to Prepare for the Inspection
+
+Make sure your HVAC contractor pulls the proper permits and files the CF1R before starting work. The contractor should complete and sign the CF2R installer certificate after installation. Then schedule the HERS rater to perform the CF3R verification. Having all paperwork in order before the rater arrives will help the inspection go smoothly and avoid delays in closing out the permit.
+`,
+  },
 }
