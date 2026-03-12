@@ -242,3 +242,59 @@ Make sure your HVAC contractor pulls the proper permits and files the CF1R befor
 `,
   },
 }
+
+
+export async function generateStaticParams() {
+  return Object.keys(articles).map(slug => ({ slug }))
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const article = articles[slug]
+  if (!article) return {}
+  return {
+    title: article.seoTitle,
+    description: article.description,
+  }
+}
+
+export default async function ResourceArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const article = articles[slug]
+  if (!article) notFound()
+  const sections = article.content.split(/^## /gm).filter(Boolean)
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-12">
+      <nav className="mb-8">
+        <Link href="/resources" className="text-blue-600 hover:underline">
+          \u2190 Back to Resources
+        </Link>
+      </nav>
+      <article className="prose prose-lg max-w-none">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">{article.title}</h1>
+        <div className="flex gap-2 mb-8">
+          {article.tags.map(tag => (
+            <span key={tag} className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
+              {tag}
+            </span>
+          ))}
+        </div>
+        {sections.map((section, i) => {
+          const lines = section.split('\n')
+          const heading = lines[0]
+          const body = lines.slice(1).join('\n').trim()
+          return (
+            <section key={i} className="mb-8">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">{heading}</h2>
+              {body.split('\n\n').map((paragraph, j) => (
+                <p key={j} className="text-gray-700 mb-4 leading-relaxed">
+                  {paragraph}
+                </p>
+              ))}
+            </section>
+          )
+        })}
+      </article>
+    </div>
+  )
+}
