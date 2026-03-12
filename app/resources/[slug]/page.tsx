@@ -267,7 +267,7 @@ export default async function ResourceArticlePage({ params }: { params: Promise<
     <div className="max-w-4xl mx-auto px-4 py-12">
       <nav className="mb-8">
         <Link href="/resources" className="text-blue-600 hover:underline">
-          \u2190 Back to Resources
+          
         </Link>
       </nav>
       <article className="prose prose-lg max-w-none">
