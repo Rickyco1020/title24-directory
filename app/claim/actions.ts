@@ -44,7 +44,11 @@ const VERIFY_TTL_MS = 48 * 60 * 60 * 1000
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://title24directory.com'
 const NOTIFY_TO = process.env.ADMIN_EMAIL ?? 'rickyco1020@gmail.com'
-const MAIL_FROM = 'Title 24 Directory <onboarding@resend.dev>'
+// Sent from the verified domain, not Resend's shared `resend.dev` sender: the
+// shared sender only reliably delivers to the account's own address, and it
+// rewrites every link through resend-clicks.com — which would put the
+// single-use removal token through a third-party redirector.
+const MAIL_FROM = 'Title 24 Directory <noreply@title24directory.com>'
 
 /** Only the hash is stored — the raw token exists only in the email link. */
 function hashToken(token: string): string {
@@ -189,6 +193,7 @@ export async function submitClaim(prev: ClaimState, formData: FormData): Promise
         await resend.emails.send({
           from: MAIL_FROM,
           to: verifySentTo,
+          replyTo: NOTIFY_TO,
           subject: headerSafe(`Confirm removal of ${listingName ?? 'your listing'} from Title 24 Directory`),
           html: `
             <p style="font-family:sans-serif;font-size:15px">We received a request to remove this listing from the Title 24 Directory:</p>
