@@ -1,4 +1,4 @@
-import { BADGE_COLORS, CATEGORY_LABELS } from '@/lib/categories'
+import { BADGE_COLORS, CATEGORY_LABELS, displayServices } from '@/lib/categories'
 import { safeExternalUrl } from '@/lib/security'
 import type { Rater } from '@/lib/supabase'
 import { countyName, cityName } from '@/lib/california-data'
@@ -16,7 +16,7 @@ export default function RaterCard({ rater }: { rater: Rater }) {
       </div>
 
       <div className="flex flex-wrap gap-2 mb-3">
-        {rater.services.map(s => (
+        {displayServices(rater.services).map(s => (
           <span key={s} className={`text-xs font-semibold px-2 py-1 rounded ${BADGE_COLORS[s] ?? 'bg-gray-100 text-gray-700'}`}>
             {CATEGORY_LABELS[s] ?? s}
           </span>

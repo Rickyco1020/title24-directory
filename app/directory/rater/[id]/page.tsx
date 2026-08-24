@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
-import { BADGE_COLORS, CATEGORY_LABELS } from '@/lib/categories'
+import { BADGE_COLORS, CATEGORY_LABELS, displayServices } from '@/lib/categories'
 import type { Rater } from '@/lib/supabase'
 import { CA_COUNTIES } from '@/lib/california-data'
 import { escapeForJsonLd, safeExternalUrl } from '@/lib/security'
@@ -78,7 +78,7 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
             )}
             <h1 className="text-3xl font-bold text-gray-900 mb-3">{rater.business_name}</h1>
             <div className="flex flex-wrap gap-2">
-              {rater.services.map(s => (
+              {displayServices(rater.services).map(s => (
                 <span key={s} className={`text-sm font-semibold px-3 py-1 rounded-full ${BADGE_COLORS[s] ?? 'bg-gray-100 text-gray-700'}`}>
                   {CATEGORY_LABELS[s] ?? s}
                 </span>
@@ -121,7 +121,7 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Services Offered</h2>
           <ul className="space-y-2">
-            {rater.services.map(s => (
+            {displayServices(rater.services).map(s => (
               <li key={s} className="flex items-center gap-2 text-gray-700">
                 <span className="text-green-500 font-bold">✓</span>
                 {CATEGORY_LABELS[s] ?? s}

@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og'
 import { supabase } from '@/lib/supabase'
-import { CATEGORY_LABELS } from '@/lib/categories'
+import { CATEGORY_LABELS, displayServices } from '@/lib/categories'
 
 export const runtime = 'edge'
 export const size = { width: 1200, height: 630 }
@@ -14,7 +14,7 @@ export default async function Image({ params }: { params: { id: string } }) {
     .single()
 
   const name = rater?.business_name ?? 'Title 24 Rater'
-  const services = (rater?.services ?? []).map((s: string) => CATEGORY_LABELS[s] ?? s)
+  const services = displayServices(rater?.services).map((s: string) => CATEGORY_LABELS[s] ?? s)
   const counties = (rater?.counties_served ?? []).slice(0, 3).join(', ')
 
   return new ImageResponse(

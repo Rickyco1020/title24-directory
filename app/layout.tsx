@@ -51,8 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <div>
                 <h4 className="text-white font-semibold mb-3">Directory</h4>
                 <ul className="space-y-2 text-sm">
-                  <li><Link href="/directory?type=hers" className="hover:text-white transition-colors">HERS Raters</Link></li>
-                  <li><Link href="/directory?type=ecc" className="hover:text-white transition-colors">ECC Raters</Link></li>
+                  <li><Link href="/directory?type=hers" className="hover:text-white transition-colors">HERS / ECC Raters</Link></li>
                   <li><Link href="/directory?type=commissioning" className="hover:text-white transition-colors">Commissioning Agents</Link></li>
                   <li><Link href="/directory?type=acceptance_testing" className="hover:text-white transition-colors">Acceptance Testers</Link></li>
                 </ul>

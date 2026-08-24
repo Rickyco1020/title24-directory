@@ -68,16 +68,14 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h2 className="text-3xl font-bold text-center text-gray-900 mb-3">Find the Right Professional</h2>
         <p className="text-center text-gray-500 mb-10 max-w-2xl mx-auto">Browse by service type to find the exact certification you need for your project.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {CATEGORIES.map(cat => (
             <Link
               key={cat.value}
               href={`/directory?type=${cat.value}`}
               className="block p-6 bg-white rounded-2xl border border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all group"
             >
-              <div className="text-3xl mb-3">
-                {cat.value === 'hers' ? '🏠' : cat.value === 'ecc' ? '⚡' : cat.value === 'commissioning' ? '🔧' : '✅'}
-              </div>
+              <div className="text-3xl mb-3">{cat.icon}</div>
               <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-700 transition-colors">{cat.label}</h3>
               <p className="text-gray-500 text-sm mb-3">{cat.description}</p>
               <span className="text-blue-700 text-sm font-semibold group-hover:underline">Browse →</span>

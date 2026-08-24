@@ -3,6 +3,7 @@ import { createServiceClient } from '@/lib/supabase'
 import { z } from 'zod'
 import { Resend } from 'resend'
 import { escapeHtml, isHttpUrl } from '@/lib/security'
+import { displayServices } from '@/lib/categories'
 import { clientIp, headerSafe, honeypotTripped, rateLimit, rateLimitExceeded } from '@/lib/rate-limit'
 
 const schema = z.object({
@@ -57,7 +58,10 @@ export async function submitListing(prevState: FormState, formData: FormData): P
     email: formData.get('email') as string,
     phone: formData.get('phone') as string,
     website: formData.get('website') as string,
-    services: formData.getAll('services') as string[],
+    // Collapse retired category values ('ecc' -> 'hers') so nothing new is
+    // written under a name the directory no longer offers. The form only shows
+    // current categories; this covers a hand-crafted POST.
+    services: displayServices(formData.getAll('services') as string[]),
     counties_served: formData.getAll('counties_served') as string[],
     cities_served: formData.get('cities_served') as string,
     license_number: formData.get('license_number') as string,

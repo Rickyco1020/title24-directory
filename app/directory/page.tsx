@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { supabase } from '@/lib/supabase'
 import RaterCard from '@/components/RaterCard'
-import { CATEGORIES } from '@/lib/categories'
+import { CATEGORIES, categoryMatchValues } from '@/lib/categories'
 import { CA_COUNTIES } from '@/lib/california-data'
 import Link from 'next/link'
 import type { Metadata } from 'next'
@@ -27,7 +27,7 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
     .order('status', { ascending: false })
     .range(from, to)
 
-  if (type) query = query.contains('services', [type])
+  if (type) query = query.overlaps('services', categoryMatchValues(type))
   if (county) query = query.contains('counties_served', [county])
   if (q) query = query.or(`business_name.ilike.%${q}%,description.ilike.%${q}%`)
 
