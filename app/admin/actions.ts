@@ -2,16 +2,31 @@
 import { createServiceClient } from '@/lib/supabase'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { createHash } from 'crypto'
+import { createHash, timingSafeEqual } from 'crypto'
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'admin123'
+// No fallback password. The admin panel lists every submitter's name, email and
+// phone number, so a well-known default is the same as no password at all — if
+// ADMIN_PASSWORD is missing, login is disabled rather than left wide open.
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? ''
 const COOKIE_NAME = 'admin_auth'
 // Cookie value is derived from the password — changing the password invalidates all existing sessions
 const COOKIE_VALUE = 'auth_' + createHash('sha256').update(ADMIN_PASSWORD).digest('hex').slice(0, 24)
 
+function matchesPassword(candidate: string): boolean {
+  if (!ADMIN_PASSWORD) return false
+  const a = Buffer.from(createHash('sha256').update(candidate).digest())
+  const b = Buffer.from(createHash('sha256').update(ADMIN_PASSWORD).digest())
+  return timingSafeEqual(a, b)
+}
+
 export async function adminLogin(prevState: { error: string }, formData: FormData): Promise<{ error: string }> {
-  const password = formData.get('password') as string
-  if (password === ADMIN_PASSWORD) {
+  if (!ADMIN_PASSWORD) {
+    console.error('ADMIN_PASSWORD is not set — admin login is disabled.')
+    return { error: 'Admin login is not configured. Set ADMIN_PASSWORD and redeploy.' }
+  }
+
+  const password = (formData.get('password') as string) ?? ''
+  if (matchesPassword(password)) {
     const cookieStore = await cookies()
     cookieStore.set(COOKIE_NAME, COOKIE_VALUE, {
       httpOnly: true,
@@ -25,6 +40,7 @@ export async function adminLogin(prevState: { error: string }, formData: FormDat
 }
 
 export async function isAuthenticated(): Promise<boolean> {
+  if (!ADMIN_PASSWORD) return false
   const cookieStore = await cookies()
   return cookieStore.get(COOKIE_NAME)?.value === COOKIE_VALUE
 }

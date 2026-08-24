@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import { BADGE_COLORS, CATEGORY_LABELS } from '@/lib/categories'
 import type { Rater } from '@/lib/supabase'
 import { CA_COUNTIES } from '@/lib/california-data'
+import { escapeForJsonLd, safeExternalUrl } from '@/lib/security'
 import type { Metadata } from 'next'
 
 function formatCountyName(slug: string): string {
@@ -42,6 +43,8 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
 
   const counties = rater.counties_served ?? []
   const cities = rater.cities_served ?? []
+  // Only ever emit http(s) links — a stored `javascript:` value must not become an href.
+  const website = safeExternalUrl(rater.website)
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -49,13 +52,13 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
     name: rater.business_name,
     description: rater.description ?? undefined,
     telephone: rater.phone ?? undefined,
-    url: rater.website ?? undefined,
+    url: website ?? undefined,
     areaServed: counties.map(c => ({ '@type': 'AdministrativeArea', name: formatCountyName(c) })),
   }
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeForJsonLd(jsonLd) }} />
 
       {/* Breadcrumb */}
       <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-6">
@@ -93,9 +96,9 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
                 <span>📞</span> {rater.phone}
               </a>
             )}
-            {rater.website && (
+            {website && (
               <a
-                href={rater.website}
+                href={website}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 bg-white border border-gray-200 text-blue-700 px-5 py-3 rounded-xl font-semibold hover:border-blue-400 transition-colors"
@@ -187,11 +190,11 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
                 </dd>
               </div>
             )}
-            {rater.website && (
+            {website && (
               <div>
                 <dt className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Website</dt>
                 <dd className="mt-0.5">
-                  <a href={rater.website} target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline break-all">{rater.website}</a>
+                  <a href={website} target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline break-all">{website}</a>
                 </dd>
               </div>
             )}

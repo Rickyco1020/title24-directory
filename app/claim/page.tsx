@@ -19,8 +19,15 @@ export default async function ClaimPage({
 
   let businessName: string | undefined
   if (listing) {
+    // Only ever prefill from a listing that is already public. Without the
+    // status filter a guessed id would confirm the existence — and name — of a
+    // row still sitting in the review queue.
     const { data } = await createServiceClient()
-      .from('raters').select('business_name').eq('id', listing).single()
+      .from('raters')
+      .select('business_name')
+      .eq('id', listing)
+      .in('status', ['approved', 'featured'])
+      .single()
     businessName = data?.business_name
   }
 

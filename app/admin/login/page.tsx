@@ -1,5 +1,6 @@
 'use client'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
 import { adminLogin } from '../actions'
 
 function LoginButton() {
@@ -16,7 +17,7 @@ function LoginButton() {
 }
 
 export default function AdminLoginPage() {
-  const [state, action] = useFormState(adminLogin, { error: '' })
+  const [state, action] = useActionState(adminLogin, { error: '' })
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">

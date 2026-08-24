@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createServiceClient } from '@/lib/supabase'
 import { updateRaterStatus, adminLogout, isAuthenticated } from './actions'
+import { safeExternalUrl } from '@/lib/security'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Admin | Title 24 Directory' }
@@ -16,6 +17,32 @@ function StatusBadge({ status }: { status: string }) {
   return (
     <span className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${colors[status] ?? 'bg-gray-100 text-gray-700'}`}>
       {status.charAt(0).toUpperCase() + status.slice(1)}
+    </span>
+  )
+}
+
+function VerificationBadge({ status, sentTo }: { status?: string; sentTo?: string | null }) {
+  const map: Record<string, { label: string; cls: string; title: string }> = {
+    verified: {
+      label: 'CONFIRMED',
+      cls: 'bg-green-200 text-green-900',
+      title: 'The address on file for this listing confirmed the removal.',
+    },
+    pending: {
+      label: 'AWAITING CONFIRMATION',
+      cls: 'bg-yellow-200 text-yellow-900',
+      title: `Confirmation email sent to ${sentTo ?? 'the address on file'} — not yet confirmed.`,
+    },
+    unverifiable: {
+      label: 'UNVERIFIED',
+      cls: 'bg-gray-200 text-gray-800',
+      title: 'No listing on file to confirm against. Verify by hand before actioning.',
+    },
+  }
+  const badge = map[status ?? ''] ?? map.unverifiable
+  return (
+    <span title={badge.title} className={`inline-block px-2 py-0.5 rounded text-xs font-bold mr-2 ${badge.cls}`}>
+      {badge.label}
     </span>
   )
 }
@@ -88,6 +115,7 @@ export default async function AdminPage() {
                   r.kind === 'remove' ? 'bg-red-200 text-red-900' : 'bg-orange-200 text-orange-900'}`}>
                   {r.kind.toUpperCase()}
                 </span>
+                {r.kind === 'remove' && <VerificationBadge status={r.verification_status} sentTo={r.verify_sent_to} />}
                 <strong>{r.business_name || '(no business given)'}</strong>
                 {' — '}{r.contact_name}{' · '}
                 <a href={`mailto:${r.email}`} className="underline">{r.email}</a>
@@ -97,7 +125,10 @@ export default async function AdminPage() {
             ))}
           </ul>
           <p className="text-xs text-orange-700 mt-3">
-            Removal requests should be actioned promptly. Mark handled in the database once done.
+            Only action a removal once it shows <strong>CONFIRMED</strong> — anyone can file one, and
+            the listing&apos;s id is printed on its own public card. Unconfirmed ones are waiting on
+            the address already on file for the listing; check by hand before acting on any marked
+            unverified. Mark handled in the database once done.
           </p>
         </div>
       )}
@@ -143,7 +174,18 @@ export default async function AdminPage() {
                       <StatusBadge status={rater.status} />
                     </div>
                     <p className="text-sm text-gray-600 mb-1">{rater.contact_name} · <a href={`mailto:${rater.email}`} className="text-blue-600 hover:underline">{rater.email}</a>{rater.phone ? ` · ${rater.phone}` : ''}</p>
-                    {rater.website && <p className="text-sm text-blue-600 hover:underline mb-1"><a href={rater.website} target="_blank" rel="noopener noreferrer">{rater.website}</a></p>}
+                    {safeExternalUrl(rater.website) && (
+                      <p className="text-sm text-blue-600 hover:underline mb-1">
+                        <a href={safeExternalUrl(rater.website)!} target="_blank" rel="noopener noreferrer">
+                          {safeExternalUrl(rater.website)}
+                        </a>
+                      </p>
+                    )}
+                    {rater.website && !safeExternalUrl(rater.website) && (
+                      <p className="text-sm text-red-600 mb-1" title="Not an http(s) URL — shown as plain text, not linked">
+                        ⚠ Unsafe website value: <span className="font-mono">{rater.website}</span>
+                      </p>
+                    )}
                     {rater.license_number && <p className="text-sm text-gray-500 mb-2">License: {rater.license_number}</p>}
                     <div className="flex flex-wrap gap-1 mb-2">
                       {rater.services?.map((s: string) => (

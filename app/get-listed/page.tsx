@@ -1,6 +1,8 @@
 'use client'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
 import { submitListing } from './actions'
+import { HONEYPOT_FIELD } from '@/lib/forms'
 import { CATEGORIES } from '@/lib/categories'
 import { CA_COUNTIES } from '@/lib/california-data'
 import { useState } from 'react'
@@ -15,7 +17,7 @@ function SubmitButton() {
 }
 
 export default function GetListedPage() {
-  const [state, action] = useFormState(submitListing, { success: false })
+  const [state, action] = useActionState(submitListing, { success: false })
   const [description, setDescription] = useState('')
 
   if (state.success) {
@@ -37,6 +39,12 @@ export default function GetListedPage() {
       <p className="text-gray-500 mb-8">Free listings for HERS raters, ECC raters, commissioning agents, and acceptance testers across California.</p>
 
       <form action={action} className="space-y-6">
+        {/* Honeypot — hidden from humans, irresistible to form-filling bots. */}
+        <div aria-hidden="true" className="hidden">
+          <label htmlFor={HONEYPOT_FIELD}>Fax number</label>
+          <input id={HONEYPOT_FIELD} name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" />
+        </div>
+
         {[
           { name: 'business_name', label: 'Business Name', required: true, type: 'text', placeholder: 'Your company name' },
           { name: 'contact_name', label: 'Contact Name', required: true, type: 'text', placeholder: 'Your full name' },

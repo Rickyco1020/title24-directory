@@ -1,13 +1,14 @@
 'use client'
 import { useActionState } from 'react'
 import { submitClaim, type ClaimState } from './actions'
+import { HONEYPOT_FIELD } from '@/lib/forms'
 
 const initial: ClaimState = { success: false }
 
 const OPTIONS = [
   { value: 'claim',   title: 'This is my business',   blurb: 'Take ownership so you can keep the details current.' },
   { value: 'correct', title: 'Something is wrong',    blurb: 'Phone, service area, or services need correcting.' },
-  { value: 'remove',  title: 'Remove this listing',   blurb: "We'll take it down. No reason required." },
+  { value: 'remove',  title: 'Remove this listing',   blurb: "We'll email the address on file to confirm, then take it down. No reason required." },
 ]
 
 export default function ClaimForm({
@@ -19,10 +20,17 @@ export default function ClaimForm({
     return (
       <div className="bg-green-50 border border-green-200 rounded-2xl p-8 text-center">
         <h2 className="text-xl font-bold text-gray-900 mb-2">Request received</h2>
-        <p className="text-gray-600">
-          Thanks — we&rsquo;ve got it and will be in touch at the email you gave us.
-          Removal requests are actioned promptly.
-        </p>
+        {state.awaitingVerification ? (
+          <p className="text-gray-600">
+            Thanks — we&rsquo;ve sent a confirmation email to the address already on file for this
+            listing. Once it&rsquo;s confirmed from there, we&rsquo;ll take the listing down. If that
+            address is out of date, reply to us and we&rsquo;ll sort it out by hand.
+          </p>
+        ) : (
+          <p className="text-gray-600">
+            Thanks — we&rsquo;ve got it and will be in touch at the email you gave us.
+          </p>
+        )}
       </div>
     )
   }
@@ -32,6 +40,12 @@ export default function ClaimForm({
   return (
     <form action={action} className="space-y-6">
       <input type="hidden" name="rater_id" value={raterId ?? ''} />
+
+      {/* Honeypot — hidden from humans, irresistible to form-filling bots. */}
+      <div aria-hidden="true" className="hidden">
+        <label htmlFor={HONEYPOT_FIELD}>Fax number</label>
+        <input id={HONEYPOT_FIELD} name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" />
+      </div>
 
       <fieldset>
         <legend className="block text-sm font-semibold text-gray-900 mb-3">What would you like to do?</legend>

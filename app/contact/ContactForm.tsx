@@ -1,5 +1,7 @@
 'use client'
-import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
+import { HONEYPOT_FIELD } from '@/lib/forms'
 import { submitContactForm } from './actions'
 import Link from 'next/link'
 
@@ -14,7 +16,7 @@ function SubmitButton() {
 }
 
 export default function ContactForm() {
-  const [state, action] = useFormState(submitContactForm, { success: false })
+  const [state, action] = useActionState(submitContactForm, { success: false })
 
   if (state.success) {
     return (
@@ -31,6 +33,12 @@ export default function ContactForm() {
 
   return (
     <form action={action} className="space-y-5">
+      {/* Honeypot — hidden from humans, irresistible to form-filling bots. */}
+      <div aria-hidden="true" className="hidden">
+        <label htmlFor={HONEYPOT_FIELD}>Fax number</label>
+        <input id={HONEYPOT_FIELD} name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" />
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Your Name <span className="text-red-500">*</span></label>

@@ -1,4 +1,5 @@
 import { BADGE_COLORS, CATEGORY_LABELS } from '@/lib/categories'
+import { safeExternalUrl } from '@/lib/security'
 import type { Rater } from '@/lib/supabase'
 import { countyName, cityName } from '@/lib/california-data'
 
@@ -56,8 +57,8 @@ export default function RaterCard({ rater }: { rater: Rater }) {
             Email
           </a>
         )}
-        {rater.website && (
-          <a href={rater.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-700 font-medium text-sm hover:underline">
+        {safeExternalUrl(rater.website) && (
+          <a href={safeExternalUrl(rater.website)!} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-700 font-medium text-sm hover:underline">
             <svg className="w-4 h-4 mr-1.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
             Website
           </a>
