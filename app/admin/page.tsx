@@ -51,8 +51,15 @@ export default async function AdminPage() {
     .in('status', ['approved', 'featured'])
     .order('created_at', { ascending: false })
 
+  const { data: requests } = await supabase
+    .from('listing_requests')
+    .select('*')
+    .eq('handled', false)
+    .order('created_at', { ascending: true })
+
   const pendingCount = pending?.length ?? 0
   const approvedCount = approved?.length ?? 0
+  const requestCount = requests?.length ?? 0
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
@@ -68,6 +75,32 @@ export default async function AdminPage() {
           </button>
         </form>
       </div>
+
+      {requestCount > 0 && (
+        <div className="bg-orange-50 border border-orange-300 rounded-xl p-5 mb-8">
+          <h2 className="font-bold text-orange-900 mb-3">
+            {requestCount} open listing {requestCount === 1 ? 'request' : 'requests'}
+          </h2>
+          <ul className="space-y-3">
+            {requests!.map((r: any) => (
+              <li key={r.id} className="text-sm text-orange-900">
+                <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold mr-2 ${
+                  r.kind === 'remove' ? 'bg-red-200 text-red-900' : 'bg-orange-200 text-orange-900'}`}>
+                  {r.kind.toUpperCase()}
+                </span>
+                <strong>{r.business_name || '(no business given)'}</strong>
+                {' — '}{r.contact_name}{' · '}
+                <a href={`mailto:${r.email}`} className="underline">{r.email}</a>
+                {r.phone ? ` · ${r.phone}` : ''}
+                {r.message ? <span className="block text-orange-800 mt-1 pl-1">{r.message}</span> : null}
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs text-orange-700 mt-3">
+            Removal requests should be actioned promptly. Mark handled in the database once done.
+          </p>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-10">

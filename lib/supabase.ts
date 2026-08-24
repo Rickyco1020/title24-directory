@@ -26,6 +26,7 @@ export type Rater = {
   counties_served: string[] | null
   description: string | null
   license_number: string | null
+  source?: 'self' | 'seeded'
 }
 
 export type City = {

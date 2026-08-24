@@ -63,6 +63,15 @@ export default function RaterCard({ rater }: { rater: Rater }) {
           </a>
         )}
       </div>
+
+      {rater.source === 'seeded' && (
+        <p className="mt-3 text-xs text-gray-400">
+          Compiled from public business information.{' '}
+          <a href={`/claim?listing=${rater.id}`} className="underline hover:text-gray-600">
+            Claim or remove this listing
+          </a>
+        </p>
+      )}
     </div>
   )
 }
