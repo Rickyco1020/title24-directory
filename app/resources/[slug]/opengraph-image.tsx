@@ -9,7 +9,7 @@ const articles: Record<string, { title: string; tags: string[] }> = {
   'cf2r-vs-cf3r': { title: 'CF2R vs CF3R: What\'s the Difference?', tags: ['Forms'] },
   'title-24-compliance-guide': { title: 'California Title 24 Compliance: A Builder\'s Complete Guide', tags: ['Compliance'] },
   'what-is-acceptance-testing': { title: 'What Does an Acceptance Tester Do?', tags: ['Compliance'] },
-  'hers-vs-ecc-rater': { title: 'ECC Writer vs. HERS Rater: Which One Does Your Project Need?', tags: ['HERS', 'ECC'] },
+  'hers-vs-ecc-rater': { title: 'HERS Rater or ECC Rater? Same Role, New Name', tags: ['HERS', 'ECC'] },
   'title-24-solar-requirements': { title: 'Title 24 Solar PV Requirements for New Construction', tags: ['Solar', 'Compliance'] },
   'what-is-a-cf1r': { title: 'What Is a CF1R? California Title 24 Compliance Report Explained', tags: ['Forms'] },
   'duct-leakage-testing': { title: 'Duct Leakage Testing in California: What to Expect', tags: ['HVAC', 'HERS'] },

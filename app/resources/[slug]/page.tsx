@@ -88,25 +88,43 @@ Use our directory to find certified acceptance testers serving your project's lo
     `,
   },
   'hers-vs-ecc-rater': {
-    title: 'ECC Rater vs HERS Rater: Which Do You Need?',
-    seoTitle: 'ECC Rater vs HERS Rater California | Which Do You Need in 2026?',
-    description: 'California\'s energy code is changing in 2026. Here\'s the difference between ECC raters and HERS raters and which one your project requires.',
+    title: 'HERS Rater or ECC Rater? Same Role, New Name',
+    seoTitle: 'HERS Rater vs ECC Rater California | Same Role, New Name (2026)',
+    description: 'HERS raters and ECC raters are the same role under two names — the 2025 California Energy Code renamed the program. Here is which term applies to your project, and the distinction that does matter.',
     tags: ['HERS', 'ECC'],
-    content: `## ECC Rater vs HERS Rater: Which Do You Need?
+    content: `## HERS Rater or ECC Rater?
 
-If you're starting a California construction project in 2026, you may have heard that HERS raters are being replaced by ECC raters. This change stems from California's new 2025 Energy Code, which replaced the Home Energy Rating System program with the Energy Code Compliance program effective January 1, 2026.
+They are the same person doing the same job. If you are searching for one and not the other, you are cutting your options in half for no reason.
 
-## What Is a HERS Rater?
+California's 2025 Energy Code, effective January 1, 2026, renamed the Home Energy Rating System (HERS) program to Energy Code Compliance (ECC). The certification changed name; the work did not. A rater who was certified under HERS is the same rater you hire under ECC.
 
-A HERS (Home Energy Rating System) rater is a certified field verifier who inspects and tests residential buildings to confirm that energy systems comply with California's Title 24 standards.
+## What the Rater Actually Does
 
-## What Is an ECC Rater?
+Whichever name is on the certificate, this is a certified independent field verifier. They come to the site, test and inspect the installed energy measures called out on your CF1R — duct leakage, refrigerant charge, airflow, insulation quality, whole-house ventilation — and sign the CF3R that lets the building department close out the permit.
 
-An ECC (Energy Code Compliance) rater performs the same fundamental role as a HERS rater but under the new program framework established by the 2025 California Energy Code.
+Independent is the operative word. The rater cannot be the contractor who installed the work, which is exactly why the verification carries weight.
 
-## Which Do You Need?
+## Which Term Applies to Your Project
 
-The answer depends on when your permit was pulled. Projects permitted under the 2022 Energy Code continue to use HERS verification. Projects permitted under the 2025 Energy Code require ECC verification.
+It follows the code cycle your permit was pulled under:
+
+- Permitted under the 2022 Energy Code — the paperwork says HERS verification.
+- Permitted under the 2025 Energy Code — the paperwork says ECC verification.
+
+Either way you are looking for the same professional, and most active raters carry both. Ask which certification they hold for your code cycle rather than screening on the name.
+
+## The Distinction That Does Matter: Writer vs. Rater
+
+The confusing pair is not HERS versus ECC. It is the person who **writes** the compliance report versus the person who **verifies** it in the field.
+
+- The **ECC Writer**, usually called the Title 24 energy consultant, models your building in approved compliance software and produces the CF1R. This happens before permit, at the design stage.
+- The **HERS / ECC Rater** shows up after installation, tests what was built, and signs the CF3R.
+
+Two different people, two different points in the project, and on most California projects you need both. Hiring a rater does not get you a CF1R, and hiring a consultant does not get your permit signed off.
+
+## Finding One
+
+Browse the directory under the **HERS / ECC Rater** service type to see certified verifiers serving your city or county. The listing covers both names, because it is one role.
     `,
   },
   'title-24-solar-requirements': {
