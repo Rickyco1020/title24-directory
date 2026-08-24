@@ -213,3 +213,17 @@ export const CITIES = CA_CITIES.filter(c => {
   seen.add(c.slug)
   return true
 })
+
+// ---- slug -> display-name lookups -------------------------------------
+// Listings store slugs (that is what the Get Listed form submits and what the
+// city/county page queries match on). These turn them back into labels.
+const COUNTY_BY_SLUG = new Map(CA_COUNTIES.map(c => [c.slug, c.name]))
+const CITY_BY_SLUG   = new Map(CITIES.map(c => [c.slug, c.name]))
+
+export function countyName(slug: string): string {
+  return COUNTY_BY_SLUG.get(slug) ?? slug
+}
+
+export function cityName(slug: string): string {
+  return CITY_BY_SLUG.get(slug) ?? slug
+}

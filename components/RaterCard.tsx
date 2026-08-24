@@ -1,9 +1,10 @@
 import { BADGE_COLORS, CATEGORY_LABELS } from '@/lib/categories'
 import type { Rater } from '@/lib/supabase'
+import { countyName, cityName } from '@/lib/california-data'
 
 export default function RaterCard({ rater }: { rater: Rater }) {
   return (
-    <div className={`bg-white rounded-2xl border p6 flex flex-col ${rater.status === 'featured' ? 'border-yellow-400 shadow-md ring-1 ring-yellow-200' : 'border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all'}`}>
+    <div className={`bg-white rounded-2xl border p-6 flex flex-col ${rater.status === 'featured' ? 'border-yellow-400 shadow-md ring-1 ring-yellow-200' : 'border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all'}`}>
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1 min-w-0">
           {rater.status === 'featured' && (
@@ -21,11 +22,16 @@ export default function RaterCard({ rater }: { rater: Rater }) {
         ))}
       </div>
 
-      {(rater.cities_served?.length || rater.counties_served?.length) && (
-        <p className="text-gray-500 text-sm mb-2">
-          <span className="inline-block w-4 text-center mr-1">ð</span>
-          {[...(rater.counties_served ?? []).map(c => `${c} County`), ...(rater.cities_served ?? [])].slice(0, 4).join(', ')}
-          {(rater.cities_served?.length ?? 0) + (rater.counties_served?.length ?? 0) > 4 ? ' +more' : ''}
+      {((rater.cities_served?.length ?? 0) + (rater.counties_served?.length ?? 0)) > 0 && (
+        <p className="flex items-start text-gray-500 text-sm mb-2">
+          <svg className="w-4 h-4 mr-1.5 mt-0.5 shrink-0 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          <span>
+            {[
+              ...(rater.counties_served ?? []).map(c => `${countyName(c)} County`),
+              ...(rater.cities_served ?? []).map(cityName),
+            ].slice(0, 4).join(', ')}
+            {(rater.cities_served?.length ?? 0) + (rater.counties_served?.length ?? 0) > 4 ? ' +more' : ''}
+          </span>
         </p>
       )}
 
