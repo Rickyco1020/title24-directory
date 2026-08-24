@@ -14,14 +14,16 @@ DO $$ BEGIN
     CHECK (verification_status IN ('not_required','pending','verified','unverifiable'));
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
--- Random, single-use, service-role-only. Never rendered to the public.
-ALTER TABLE listing_requests ADD COLUMN IF NOT EXISTS verify_token   TEXT;
+-- SHA-256 of a single-use random token. Only the hash is stored — the token
+-- itself exists only in the confirmation link, so a database read cannot be
+-- turned into a confirmation.
+ALTER TABLE listing_requests ADD COLUMN IF NOT EXISTS verify_token_hash TEXT;
 -- The on-file address the confirmation went to, so the admin can see who vouched.
 ALTER TABLE listing_requests ADD COLUMN IF NOT EXISTS verify_sent_to TEXT;
 ALTER TABLE listing_requests ADD COLUMN IF NOT EXISTS verified_at    TIMESTAMPTZ;
 
-CREATE UNIQUE INDEX IF NOT EXISTS listing_requests_verify_token_idx
-  ON listing_requests (verify_token) WHERE verify_token IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS listing_requests_verify_token_hash_idx
+  ON listing_requests (verify_token_hash) WHERE verify_token_hash IS NOT NULL;
 
 -- Existing rows predate the loop; leave them as-is rather than retroactively
 -- marking them unverified.
@@ -33,5 +35,5 @@ COMMIT;
 -- verification
 SELECT column_name FROM information_schema.columns
  WHERE table_name = 'listing_requests'
-   AND column_name IN ('verification_status','verify_token','verify_sent_to','verified_at')
+   AND column_name IN ('verification_status','verify_token_hash','verify_sent_to','verified_at')
  ORDER BY 1;

@@ -1,7 +1,7 @@
 'use client'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
-import { HONEYPOT_FIELD } from '@/lib/forms'
+import { HONEYPOT_FIELD, HONEYPOT_STYLE } from '@/lib/forms'
 import { submitContactForm } from './actions'
 import Link from 'next/link'
 
@@ -33,9 +33,9 @@ export default function ContactForm() {
 
   return (
     <form action={action} className="space-y-5">
-      {/* Honeypot — hidden from humans, irresistible to form-filling bots. */}
-      <div aria-hidden="true" className="hidden">
-        <label htmlFor={HONEYPOT_FIELD}>Fax number</label>
+      {/* Honeypot — off-screen for humans, irresistible to form-filling bots. */}
+      <div aria-hidden="true" style={HONEYPOT_STYLE}>
+        <label htmlFor={HONEYPOT_FIELD}>Leave this field empty</label>
         <input id={HONEYPOT_FIELD} name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" />
       </div>
 

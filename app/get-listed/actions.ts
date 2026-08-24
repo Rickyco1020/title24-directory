@@ -3,7 +3,7 @@ import { createServiceClient } from '@/lib/supabase'
 import { z } from 'zod'
 import { Resend } from 'resend'
 import { escapeHtml, isHttpUrl } from '@/lib/security'
-import { clientIp, honeypotTripped, rateLimit } from '@/lib/rate-limit'
+import { clientIp, headerSafe, honeypotTripped, rateLimit, rateLimitExceeded } from '@/lib/rate-limit'
 
 const schema = z.object({
   business_name: z.string().min(2, 'Business name is required').max(200, 'Max 200 characters'),
@@ -33,13 +33,18 @@ const RATE_LIMIT = 3
 const RATE_WINDOW_MS = 60 * 60 * 1000
 
 export async function submitListing(prevState: FormState, formData: FormData): Promise<FormState> {
-  // Bots that fill every field trip the hidden input. Report success so they
-  // learn nothing, but write nothing and send nothing.
-  if (honeypotTripped(formData)) return { success: true }
-
   const ip = await clientIp()
-  const limit = rateLimit(`get-listed:${ip}`, RATE_LIMIT, RATE_WINDOW_MS)
-  if (!limit.allowed) {
+
+  // Bots that fill every field trip the hidden input. Report success so they
+  // learn nothing, but write nothing and send nothing — and log it, so a false
+  // positive shows up somewhere instead of vanishing.
+  if (honeypotTripped(formData)) {
+    console.warn('get-listed: honeypot tripped', { ip, business: formData.get('business_name') })
+    return { success: true }
+  }
+
+  const key = `get-listed:${ip}`
+  if (rateLimitExceeded(key, RATE_LIMIT)) {
     return {
       success: false,
       error: 'Too many submissions from this connection. Please try again later, or email us directly.',
@@ -61,13 +66,18 @@ export async function submitListing(prevState: FormState, formData: FormData): P
 
   const result = schema.safeParse(raw)
   if (!result.success) {
+    // Deliberately before the quota is consumed: a rater who mistypes their
+    // email twice should not be locked out of a free signup form for an hour.
     return { success: false, fieldErrors: result.error.flatten().fieldErrors }
   }
 
+  rateLimit(key, RATE_LIMIT, RATE_WINDOW_MS)
+
   const supabase = createServiceClient()
 
-  // Durable half of the flood defence: the in-memory limiter above is per
-  // serverless instance, this one holds across all of them.
+  // Duplicate guard, not a flood defence — the submitter picks the email, so
+  // one character of variation resets it. It exists to stop the same rater
+  // filing the same listing five times while it sits in the queue.
   const { count: recentCount } = await supabase
     .from('raters')
     .select('id', { count: 'exact', head: true })
@@ -77,7 +87,7 @@ export async function submitListing(prevState: FormState, formData: FormData): P
   if ((recentCount ?? 0) >= 3) {
     return {
       success: false,
-      error: 'You already have a listing awaiting review. We will be in touch shortly.',
+      error: 'You already have listings awaiting review under this email. We will be in touch shortly.',
     }
   }
 
@@ -150,7 +160,7 @@ export async function submitListing(prevState: FormState, formData: FormData): P
       await resend.emails.send({
         from: 'Title24 Directory <noreply@title24directory.com>',
         to: adminEmail,
-        subject: `New listing submission: ${d.business_name}`,
+        subject: headerSafe(`New listing submission: ${d.business_name}`),
         html: `<!DOCTYPE html>
 <html>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f9fafb; margin: 0; padding: 40px 20px;">

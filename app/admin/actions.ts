@@ -52,6 +52,10 @@ export async function adminLogout() {
 }
 
 export async function updateRaterStatus(id: string, status: 'approved' | 'featured' | 'rejected') {
+  // The page checks this too, but the action is exported from a 'use server'
+  // module: one stray client import away from being callable by anyone.
+  if (!(await isAuthenticated())) throw new Error('Not authorised')
+
   const supabase = createServiceClient()
   if (status === 'rejected') {
     await supabase.from('raters').delete().eq('id', id)

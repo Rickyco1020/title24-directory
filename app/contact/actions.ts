@@ -2,7 +2,7 @@
 import { z } from 'zod'
 import { Resend } from 'resend'
 import { escapeHtml } from '@/lib/security'
-import { clientIp, honeypotTripped, rateLimit } from '@/lib/rate-limit'
+import { clientIp, headerSafe, honeypotTripped, rateLimit, rateLimitExceeded } from '@/lib/rate-limit'
 
 const schema = z.object({
   name: z.string().min(2, 'Name is required').max(120, 'Max 120 characters'),
@@ -22,10 +22,15 @@ const RATE_WINDOW_MS = 60 * 60 * 1000
 export type ContactFormState = { success: boolean; error?: string; fieldErrors?: Record<string, string[]> }
 
 export async function submitContactForm(prevState: ContactFormState, formData: FormData): Promise<ContactFormState> {
-  if (honeypotTripped(formData)) return { success: true }
-
   const ip = await clientIp()
-  if (!rateLimit(`contact:${ip}`, RATE_LIMIT, RATE_WINDOW_MS).allowed) {
+
+  if (honeypotTripped(formData)) {
+    console.warn('contact: honeypot tripped', { ip })
+    return { success: true }
+  }
+
+  const key = `contact:${ip}`
+  if (rateLimitExceeded(key, RATE_LIMIT)) {
     return {
       success: false,
       error: 'Too many messages from this connection. Please try again later.',
@@ -41,8 +46,11 @@ export async function submitContactForm(prevState: ContactFormState, formData: F
 
   const result = schema.safeParse(raw)
   if (!result.success) {
+    // Quota is consumed only by valid submissions — see get-listed.
     return { success: false, fieldErrors: result.error.flatten().fieldErrors }
   }
+
+  rateLimit(key, RATE_LIMIT, RATE_WINDOW_MS)
 
   const adminEmail = process.env.ADMIN_EMAIL ?? 'rickydcc137@gmail.com'
 
@@ -62,7 +70,7 @@ export async function submitContactForm(prevState: ContactFormState, formData: F
         from: 'Title24 Directory <noreply@title24directory.com>',
         to: adminEmail,
         replyTo: result.data.email,
-        subject: `Contact form: ${result.data.subject}`,
+        subject: headerSafe(`Contact form: ${result.data.subject}`),
         html: `<!DOCTYPE html>
   <html>
   <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f9fafb; margin: 0; padding: 40px 20px;">

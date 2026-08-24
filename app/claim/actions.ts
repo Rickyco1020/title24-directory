@@ -2,9 +2,9 @@
 import { createServiceClient } from '@/lib/supabase'
 import { z } from 'zod'
 import { Resend } from 'resend'
-import { randomBytes } from 'crypto'
+import { createHash, randomBytes } from 'crypto'
 import { escapeHtml } from '@/lib/security'
-import { clientIp, honeypotTripped, rateLimit } from '@/lib/rate-limit'
+import { clientIp, headerSafe, honeypotTripped, rateLimit, rateLimitExceeded } from '@/lib/rate-limit'
 
 const schema = z.object({
   rater_id: z.string().uuid().optional().or(z.literal('')),
@@ -33,22 +33,40 @@ const LABEL: Record<string, string> = {
 const RATE_LIMIT = 5
 const RATE_WINDOW_MS = 60 * 60 * 1000
 
+// A confirmation email is sent to a third party (the listing's on-file
+// contact), so one listing can only be made to send a few a day no matter how
+// many removal requests are filed against it.
+const VERIFY_EMAILS_PER_LISTING = 3
+const VERIFY_WINDOW_MS = 24 * 60 * 60 * 1000
+
+/** A confirmation link is single-use and stops working after two days. */
+const VERIFY_TTL_MS = 48 * 60 * 60 * 1000
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://title24directory.com'
 const NOTIFY_TO = process.env.ADMIN_EMAIL ?? 'rickyco1020@gmail.com'
 const MAIL_FROM = 'Title 24 Directory <onboarding@resend.dev>'
 
+/** Only the hash is stored — the raw token exists only in the email link. */
+function hashToken(token: string): string {
+  return createHash('sha256').update(token).digest('hex')
+}
+
 function maskEmail(email: string): string {
   const [user, domain] = email.split('@')
   if (!domain) return '•••'
-  const head = user.slice(0, 1)
-  return `${head}${'•'.repeat(Math.max(user.length - 1, 1))}@${domain}`
+  return `${user.slice(0, 1)}${'•'.repeat(Math.max(user.length - 1, 1))}@${domain}`
 }
 
 export async function submitClaim(prev: ClaimState, formData: FormData): Promise<ClaimState> {
-  if (honeypotTripped(formData)) return { success: true }
-
   const ip = await clientIp()
-  if (!rateLimit(`claim:${ip}`, RATE_LIMIT, RATE_WINDOW_MS).allowed) {
+
+  if (honeypotTripped(formData)) {
+    console.warn('claim: honeypot tripped', { ip, kind: formData.get('kind') })
+    return { success: true }
+  }
+
+  const key = `claim:${ip}`
+  if (rateLimitExceeded(key, RATE_LIMIT)) {
     return {
       success: false,
       error: 'Too many requests from this connection. Please try again later, or email us directly.',
@@ -66,20 +84,25 @@ export async function submitClaim(prev: ClaimState, formData: FormData): Promise
   })
 
   if (!parsed.success) {
+    // Quota is consumed only by valid submissions, so a typo is not a lockout.
     return { success: false, fieldErrors: parsed.error.flatten().fieldErrors }
   }
-  const d = parsed.data
+  rateLimit(key, RATE_LIMIT, RATE_WINDOW_MS)
 
+  const d = parsed.data
   const supabase = createServiceClient()
 
   // A removal takes a listing off the public site, and the listing's UUID is
   // printed on its own public card — so anyone can file one in a competitor's
-  // name. Nothing here is actionable until the address already on file for the
+  // name. Nothing is actionable until the address already on file for the
   // listing confirms it. Claims and corrections are reviewed by hand and carry
   // no such risk, so they skip the loop.
   let verificationStatus: 'not_required' | 'pending' | 'unverifiable' = 'not_required'
-  let verifyToken: string | null = null
+  let rawToken: string | null = null
   let verifySentTo: string | null = null
+  // Always the row's own name, never the submitter's — the submitter does not
+  // get to choose what a third party reads in an email from this domain.
+  let listingName: string | null = null
 
   if (d.kind === 'remove') {
     verificationStatus = 'unverifiable'
@@ -88,12 +111,24 @@ export async function submitClaim(prev: ClaimState, formData: FormData): Promise
         .from('raters')
         .select('email, business_name')
         .eq('id', d.rater_id)
+        // Same filter as every other public lookup: a request against a row
+        // still in the review queue must not behave differently from one
+        // against an id that doesn't exist.
+        .in('status', ['approved', 'featured'])
         .single()
 
       if (rater?.email) {
-        verificationStatus = 'pending'
-        verifyToken = randomBytes(32).toString('hex')
-        verifySentTo = rater.email
+        const listingKey = `claim-verify:${d.rater_id}`
+        if (rateLimitExceeded(listingKey, VERIFY_EMAILS_PER_LISTING)) {
+          // Someone is using the confirmation loop to mail this business.
+          console.warn('claim: verification email cap reached for listing', d.rater_id)
+        } else {
+          rateLimit(listingKey, VERIFY_EMAILS_PER_LISTING, VERIFY_WINDOW_MS)
+          verificationStatus = 'pending'
+          rawToken = randomBytes(32).toString('hex')
+          verifySentTo = rater.email
+          listingName = rater.business_name ?? null
+        }
       }
     }
   }
@@ -111,16 +146,17 @@ export async function submitClaim(prev: ClaimState, formData: FormData): Promise
   let { error } = await supabase.from('listing_requests').insert({
     ...baseRow,
     verification_status: verificationStatus,
-    verify_token: verifyToken,
+    verify_token_hash: rawToken ? hashToken(rawToken) : null,
     verify_sent_to: verifySentTo,
   })
 
-  // supabase/003_request_verification.sql adds those three columns. If the code
-  // ships before the migration is run, save the request anyway rather than
-  // losing it — but skip the confirmation email, since nothing would record it.
-  if (error && /column|schema cache/i.test(error.message)) {
+  // supabase/003_request_verification.sql adds those three columns. PGRST204 is
+  // PostgREST's "column not in the schema cache". If the code ships before the
+  // migration runs, save the request anyway rather than losing it — but skip
+  // the confirmation email, since nothing would record the token.
+  if (error && error.code === 'PGRST204') {
     console.error('listing_requests: verification columns missing — run supabase/003_request_verification.sql')
-    verifyToken = null
+    rawToken = null
     verifySentTo = null
     verificationStatus = d.kind === 'remove' ? 'unverifiable' : 'not_required'
     ;({ error } = await supabase.from('listing_requests').insert(baseRow))
@@ -144,22 +180,24 @@ export async function submitClaim(prev: ClaimState, formData: FormData): Promise
   if (process.env.RESEND_API_KEY) {
     const resend = new Resend(process.env.RESEND_API_KEY)
 
-    // Confirmation request to the address on file for the listing.
-    if (verifyToken && verifySentTo) {
-      const link = `${SITE_URL}/claim/verify?token=${verifyToken}`
+    // Confirmation request to the address on file for the listing. Nothing the
+    // submitter typed appears in this email — only the listing's own name.
+    if (rawToken && verifySentTo) {
+      const link = `${SITE_URL}/claim/verify?token=${rawToken}`
+      const safeName = escapeHtml(listingName ?? 'your listing')
       try {
         await resend.emails.send({
           from: MAIL_FROM,
           to: verifySentTo,
-          subject: `Confirm removal of ${d.business_name || 'your listing'} from Title 24 Directory`,
+          subject: headerSafe(`Confirm removal of ${listingName ?? 'your listing'} from Title 24 Directory`),
           html: `
-            <p style="font-family:sans-serif;font-size:15px">Someone asked us to remove this listing from the Title 24 Directory:</p>
-            <p style="font-family:sans-serif;font-size:15px"><strong>${e.business_name || '(listing)'}</strong></p>
-            <p style="font-family:sans-serif;font-size:15px">We only act on removals confirmed from this address, which is the one on file for the listing. If this was you, confirm below and we&rsquo;ll take it down.</p>
+            <p style="font-family:sans-serif;font-size:15px">We received a request to remove this listing from the Title 24 Directory:</p>
+            <p style="font-family:sans-serif;font-size:15px"><strong>${safeName}</strong></p>
+            <p style="font-family:sans-serif;font-size:15px">We only act on removals confirmed from this address, which is the one on file for the listing. If this was you, confirm below and we&rsquo;ll take it down. The link works once and expires in 48 hours.</p>
             <p style="font-family:sans-serif;font-size:15px">
               <a href="${escapeHtml(link)}" style="display:inline-block;background:#1d4ed8;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600">Confirm removal</a>
             </p>
-            <p style="font-family:sans-serif;font-size:13px;color:#6b7280">If you didn&rsquo;t ask for this, ignore this email — nothing will change. Requested by ${e.contact_name} (${e.email}).</p>`,
+            <p style="font-family:sans-serif;font-size:13px;color:#6b7280">If you didn&rsquo;t ask for this, ignore this email — nothing will change. Reply to us if you&rsquo;d like to know more.</p>`,
         })
       } catch (err) {
         console.error('removal verification email failed:', err)
@@ -171,14 +209,14 @@ export async function submitClaim(prev: ClaimState, formData: FormData): Promise
       verificationStatus === 'pending'
         ? `Awaiting confirmation from the address on file (${escapeHtml(maskEmail(verifySentTo ?? ''))}). Do not action until confirmed.`
         : verificationStatus === 'unverifiable'
-          ? 'UNVERIFIED — no listing on file to confirm against. Check by hand before actioning.'
+          ? 'UNVERIFIED — nothing on file to confirm against. Check by hand before actioning.'
           : 'Reviewed by hand — no verification required for this request type.'
 
     try {
       await resend.emails.send({
         from: MAIL_FROM,
         to: NOTIFY_TO,
-        subject: `[${LABEL[d.kind]}] ${d.business_name || d.contact_name}`,
+        subject: headerSafe(`[${LABEL[d.kind]}] ${d.business_name || d.contact_name}`),
         html: `
           <h2>${e.label}</h2>
           <table style="font-family:sans-serif;font-size:14px">
@@ -200,34 +238,50 @@ export async function submitClaim(prev: ClaimState, formData: FormData): Promise
   return { success: true, awaitingVerification: verificationStatus === 'pending' }
 }
 
-/** Called from the confirmation link's page. Marks one removal request verified. */
-export async function confirmRemoval(token: string): Promise<{ ok: boolean; businessName?: string }> {
-  if (!token || !/^[a-f0-9]{64}$/.test(token)) return { ok: false }
+export type ConfirmResult = { ok: boolean; reason?: 'invalid' | 'expired' | 'error'; businessName?: string }
+
+/**
+ * Called from the confirmation link's page. Marks one removal request verified.
+ * The update is conditional on the token hash still being present, so it is
+ * atomically single-use even if the button is double-submitted.
+ */
+export async function confirmRemoval(token: string): Promise<ConfirmResult> {
+  if (!token || !/^[a-f0-9]{64}$/.test(token)) return { ok: false, reason: 'invalid' }
 
   const supabase = createServiceClient()
+  const tokenHash = hashToken(token)
+
   const { data: request } = await supabase
     .from('listing_requests')
-    .select('id, business_name, verification_status')
-    .eq('verify_token', token)
+    .select('id, business_name, created_at')
+    .eq('verify_token_hash', tokenHash)
     .single()
 
-  if (!request) return { ok: false }
-  if (request.verification_status === 'verified') {
-    return { ok: true, businessName: request.business_name ?? undefined }
+  if (!request) return { ok: false, reason: 'invalid' }
+
+  if (Date.now() - new Date(request.created_at).getTime() > VERIFY_TTL_MS) {
+    return { ok: false, reason: 'expired', businessName: request.business_name ?? undefined }
   }
 
-  const { error } = await supabase
+  // Clearing the hash in the same statement that matches on it means a second
+  // submit updates zero rows rather than re-notifying the admin.
+  const { data: updated, error } = await supabase
     .from('listing_requests')
     .update({
       verification_status: 'verified',
       verified_at: new Date().toISOString(),
-      verify_token: null, // single use
+      verify_token_hash: null,
     })
-    .eq('id', request.id)
+    .eq('verify_token_hash', tokenHash)
+    .select('id, business_name')
 
   if (error) {
     console.error('removal confirmation failed:', error.message)
-    return { ok: false }
+    return { ok: false, reason: 'error' }
+  }
+  if (!updated || updated.length === 0) {
+    // Someone else (or a double-click) got there first. Already confirmed.
+    return { ok: true, businessName: request.business_name ?? undefined }
   }
 
   if (process.env.RESEND_API_KEY) {
@@ -236,7 +290,7 @@ export async function confirmRemoval(token: string): Promise<{ ok: boolean; busi
       await resend.emails.send({
         from: MAIL_FROM,
         to: NOTIFY_TO,
-        subject: `[Removal confirmed] ${request.business_name || 'listing'}`,
+        subject: headerSafe(`[Removal confirmed] ${request.business_name || 'listing'}`),
         html: `<p style="font-family:sans-serif;font-size:14px">The address on file confirmed the removal of <strong>${escapeHtml(request.business_name)}</strong>. This one is safe to action.</p>
                <p style="font-family:sans-serif;font-size:14px"><a href="${SITE_URL}/admin">Open the admin panel</a></p>`,
       })

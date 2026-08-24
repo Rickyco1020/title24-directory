@@ -5,9 +5,13 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Confirm a removal | Title 24 Directory',
   robots: { index: false },
+  // The token rides in the query string; don't leak it in a Referer header.
+  referrer: 'no-referrer',
 }
 
 export const dynamic = 'force-dynamic'
+
+const TOKEN_RE = /^[a-f0-9]{64}$/
 
 function Shell({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -18,12 +22,25 @@ function Shell({ title, children }: { title: string; children: React.ReactNode }
   )
 }
 
+function InvalidLink() {
+  return (
+    <Shell title={`This link isn’t valid`}>
+      <p>
+        The confirmation link is missing, has expired, or has already been used. If the listing is
+        still up and you want it gone, start again from the{' '}
+        <a href="/claim" className="text-blue-700 hover:underline">claim page</a> — we&rsquo;ll send a
+        fresh confirmation email.
+      </p>
+    </Shell>
+  )
+}
+
 export default async function VerifyRemovalPage({
   searchParams,
-}: { searchParams: Promise<{ token?: string; done?: string }> }) {
-  const { token, done } = await searchParams
+}: { searchParams: Promise<{ token?: string; state?: string }> }) {
+  const { token, state } = await searchParams
 
-  if (done === '1') {
+  if (state === 'done') {
     return (
       <Shell title="Removal confirmed">
         <p>
@@ -34,47 +51,49 @@ export default async function VerifyRemovalPage({
     )
   }
 
-  if (!token || !/^[a-f0-9]{64}$/.test(token)) {
+  if (state === 'failed') {
     return (
-      <Shell title={`This link isn\u2019t valid`}>
+      <Shell title={`We couldn’t confirm that`}>
         <p>
-          The confirmation link is missing or has already been used. If you still want the listing
-          removed, start again from the <a href="/claim" className="text-blue-700 hover:underline">claim page</a>.
+          Something went wrong on our side, so the removal is <strong>not</strong> confirmed yet.
+          Please email us at{' '}
+          <a href="mailto:hello@title24directory.com" className="text-blue-700 hover:underline">
+            hello@title24directory.com
+          </a>{' '}
+          and we&rsquo;ll take the listing down by hand.
         </p>
       </Shell>
     )
   }
 
-  // Look up by token only — nothing about the request is exposed without it.
+  if (state === 'expired') return <InvalidLink />
+  if (!token || !TOKEN_RE.test(token)) return <InvalidLink />
+
+  // Looked up by the token's hash only — nothing about the request is reachable
+  // without the link, and the raw token is never stored.
+  const { createHash } = await import('crypto')
+  const tokenHash = createHash('sha256').update(token).digest('hex')
+
   const { data: request } = await createServiceClient()
     .from('listing_requests')
-    .select('business_name, verification_status, created_at')
-    .eq('verify_token', token)
+    .select('business_name, verification_status')
+    .eq('verify_token_hash', tokenHash)
     .single()
 
-  if (!request) {
-    return (
-      <Shell title={`This link isn\u2019t valid`}>
-        <p>
-          The confirmation link is missing or has already been used. If the listing is still up and
-          you want it gone, start again from the{' '}
-          <a href="/claim" className="text-blue-700 hover:underline">claim page</a>.
-        </p>
-      </Shell>
-    )
-  }
+  if (!request) return <InvalidLink />
 
   async function confirm() {
     'use server'
     const { redirect } = await import('next/navigation')
-    await confirmRemoval(token!)
-    redirect('/claim/verify?done=1')
+    const result = await confirmRemoval(token!)
+    if (result.ok) redirect('/claim/verify?state=done')
+    redirect(`/claim/verify?state=${result.reason === 'expired' ? 'expired' : 'failed'}`)
   }
 
   return (
     <Shell title="Confirm this removal">
       <p>
-        Someone asked us to remove{' '}
+        We received a request to remove{' '}
         <strong className="text-gray-900">{request.business_name || 'this listing'}</strong> from the
         Title 24 Directory. Because this address is the one on file for the listing, we&rsquo;re
         asking you to confirm before we act.
