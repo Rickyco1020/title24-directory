@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { CATEGORIES } from '@/lib/categories'
+import CaliforniaClimateZones from '@/components/CaliforniaClimateZones'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -36,8 +37,13 @@ function SearchForm() {
 export default function HomePage() {
   return (
     <div>
-      <section className="bg-gradient-to-br from-blue-700 to-blue-900 text-white py-24 px-4">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="relative overflow-hidden bg-gradient-to-br from-blue-700 to-blue-900 text-white py-24 px-4">
+        {/* Decorative: California's 16 CEC building climate zones */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 flex items-center justify-center sm:justify-end py-4 sm:pr-4 lg:pr-10 xl:pr-24 select-none">
+          <CaliforniaClimateZones className="h-[80%] max-w-[72%] sm:h-full sm:max-w-none w-auto text-white opacity-25 sm:opacity-70 sm:[mask-image:linear-gradient(to_left,black_60%,transparent_100%)]" />
+        </div>
+
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4">Find a Title 24 Rater Near You</h1>
           <p className="text-xl text-blue-100 mb-10">California&apos;s most complete directory of HERS raters, ECC raters, commissioning agents, and acceptance testers.</p>
           <SearchForm />
