@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 import { supabase } from '@/lib/supabase'
 import RaterCard from '@/components/RaterCard'
 import { CATEGORIES, categoryMatchValues } from '@/lib/categories'
-import { CA_COUNTIES } from '@/lib/california-data'
+import { CA_COUNTIES, CITIES, slugify } from '@/lib/california-data'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -28,8 +28,29 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
     .range(from, to)
 
   if (type) query = query.overlaps('services', categoryMatchValues(type))
-  if (county) query = query.contains('counties_served', [county])
-  if (q) query = query.or(`business_name.ilike.%${q}%,description.ilike.%${q}%`)
+  // counties_served stores slugs ('los-angeles'). slugify() is idempotent, so this
+  // accepts both the slug the form now submits and the display name older links carry.
+  if (county) query = query.contains('counties_served', [slugify(county)])
+  if (q) {
+    // The box is labelled "Name, city, keyword", so a place name has to work.
+    // counties_served / cities_served hold slugs, and array containment can't be
+    // OR'd with an ilike in one PostgREST call — so resolve a recognised place to
+    // its slug and filter on that; anything else stays a name/description search.
+    const term = q.trim()
+    const termSlug = slugify(term)
+    const matchedCounty = CA_COUNTIES.find(c => c.slug === termSlug)
+    const matchedCity = matchedCounty ? undefined : CITIES.find(c => c.slug === termSlug)
+
+    if (matchedCounty) {
+      query = query.contains('counties_served', [matchedCounty.slug])
+    } else if (matchedCity) {
+      query = query.contains('cities_served', [matchedCity.slug])
+    } else {
+      // or() takes a raw filter string; strip what would break out of it.
+      const safe = term.replace(/[(),*\\]/g, ' ').trim()
+      if (safe) query = query.or(`business_name.ilike.*${safe}*,description.ilike.*${safe}*`)
+    }
+  }
 
   const { data: raters, count } = await query
 
@@ -72,7 +93,7 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
 
 export default async function DirectoryPage({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
   const resolvedParams = await searchParams
-  const counties = CA_COUNTIES.map(c => c.name).sort()
+  const counties = [...CA_COUNTIES].sort((a, b) => a.name.localeCompare(b.name))
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -93,9 +114,9 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Pr
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">County</label>
-          <select name="county" defaultValue={resolvedParams.county} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+          <select name="county" defaultValue={resolvedParams.county ? slugify(resolvedParams.county) : ''} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
             <option value="">All Counties</option>
-            {counties.map(c => <option key={c} value={c}>{c}</option>)}
+            {counties.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
           </select>
         </div>
         <div className="flex items-end">
