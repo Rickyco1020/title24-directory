@@ -21,6 +21,23 @@ function countyList(slugs: string[]): string {
   return `${names.slice(0, -1).join(', ')}, or ${names[names.length - 1]}`
 }
 
+function NoResults({ title, body }: { title: string; body: string }) {
+  return (
+    <div className="text-center py-16">
+      <p className="text-2xl font-bold text-gray-700 mb-2">{title}</p>
+      <p className="text-gray-500 mb-6">{body}</p>
+      <div className="flex flex-wrap justify-center gap-3">
+        <Link href="/directory" className="bg-white border border-gray-200 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:border-blue-400 transition-colors">
+          Browse all raters
+        </Link>
+        <Link href="/get-listed" className="bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-800 transition-colors">
+          Get Listed Free
+        </Link>
+      </div>
+    </div>
+  )
+}
+
 async function DirectoryResults({ searchParams }: { searchParams: Record<string, string> }) {
   const { q, type, county, page } = searchParams
   const currentPage = parseInt(page ?? '1', 10)
@@ -77,47 +94,32 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
     }
   }
 
+  // A ZIP we can't place is not a match for all 52 listings — say so rather
+  // than handing back the unfiltered directory as if it answered the question.
+  if (unplaceableZip) {
+    return (
+      <NoResults
+        title={`${unplaceableZip} isn't a California ZIP code`}
+        body="This directory covers California only."
+      />
+    )
+  }
+
   const { data: raters, count } = await query
 
   const totalPages = Math.ceil((count ?? 0) / perPage)
 
   if (!raters?.length) {
-    return (
-      <div className="text-center py-16">
-        {unplaceableZip ? (
-          <>
-            <p className="text-2xl font-bold text-gray-700 mb-2">
-              {unplaceableZip} isn&apos;t a California ZIP code
-            </p>
-            <p className="text-gray-500 mb-6">
-              This directory covers California only.
-            </p>
-          </>
-        ) : zipScope ? (
-          <>
-            <p className="text-2xl font-bold text-gray-700 mb-2">
-              No raters serving {countyList(zipScope.counties)} yet
-            </p>
-            <p className="text-gray-500 mb-6">
-              {zipScope.zip} is in {countyList(zipScope.counties)}. Browse every California
-              rater, or be the first listed in this area.
-            </p>
-          </>
-        ) : (
-          <>
-            <p className="text-2xl font-bold text-gray-700 mb-2">No raters found</p>
-            <p className="text-gray-500 mb-6">Try adjusting your search, or be the first rater listed in this area.</p>
-          </>
-        )}
-        <div className="flex flex-wrap justify-center gap-3">
-          <Link href="/directory" className="bg-white border border-gray-200 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:border-blue-400 transition-colors">
-            Browse all raters
-          </Link>
-          <Link href="/get-listed" className="bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-800 transition-colors">
-            Get Listed Free
-          </Link>
-        </div>
-      </div>
+    return zipScope ? (
+      <NoResults
+        title={`No raters serving ${countyList(zipScope.counties)} yet`}
+        body={`${zipScope.zip} is in ${countyList(zipScope.counties)}. Browse every California rater, or be the first listed in this area.`}
+      />
+    ) : (
+      <NoResults
+        title="No raters found"
+        body="Try adjusting your search, or be the first rater listed in this area."
+      />
     )
   }
 
