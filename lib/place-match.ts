@@ -288,9 +288,37 @@ function editDistance(a: string, b: string): number {
   return prev[n]
 }
 
+/**
+ * Every query token must prefix some token the entry knows about.
+ *
+ * Whole-string matching alone cannot handle a half-typed multi-word query:
+ * 'la coun' is not a prefix, substring or near-miss of 'los angeles county',
+ * and 'la' only appears as a separate alias term. Matching token-by-token is
+ * what makes the dropdown useful while someone is still typing.
+ */
+function tokenScore(qTokens: string[], entry: Suggestion): number {
+  if (qTokens.length < 2) return 0
+  let total = 0
+  for (const qt of qTokens) {
+    let best = 0
+    for (const t of entry.terms) {
+      for (const et of t.split(' ')) {
+        if (et === qt) best = Math.max(best, 100)
+        else if (et.startsWith(qt)) best = Math.max(best, 90 - Math.min(30, et.length - qt.length))
+      }
+    }
+    // One unmatched token disqualifies the entry, so 'la coun' cannot drag in
+    // every place whose name merely contains 'la'.
+    if (best === 0) return 0
+    total += best
+  }
+  // Ranks above a bare substring hit, below a clean whole-string prefix.
+  return 500 + total / qTokens.length
+}
+
 /** Higher is better. 0 means no match at all. */
-function score(term: string, entry: Suggestion): number {
-  let best = 0
+function score(term: string, entry: Suggestion, qTokens: string[]): number {
+  let best = tokenScore(qTokens, entry)
   for (const t of entry.terms) {
     let s = 0
     if (t === term) s = 1000
@@ -315,9 +343,12 @@ function score(term: string, entry: Suggestion): number {
 export function suggest(term: string, limit = 8): Suggestion[] {
   const n = normalize(term)
   if (!n) return []
+  // 'the' carries no signal and would disqualify every entry under the
+  // all-tokens-must-match rule; the whole-string path still catches 'the OC'.
+  const qTokens = n.split(' ').filter(t => t && t !== 'the')
   const scored: Array<{ e: Suggestion; s: number }> = []
   for (const e of PLACE_INDEX) {
-    const s = score(n, e)
+    const s = score(n, e, qTokens)
     if (s > 0) scored.push({ e, s })
   }
   scored.sort((a, b) => b.s - a.s || a.e.label.localeCompare(b.e.label))

@@ -262,6 +262,42 @@ check('countyList 3', countyList(['orange', 'los-angeles', 'kern']) === 'Orange 
 // ---------------------------------------------------------------------
 
 check('"los" ranks Los Angeles County first', suggest('los', 5)[0]?.label === 'Los Angeles County')
+
+// Half-typed multi-word queries — what someone actually sees while typing.
+// The dropdown showing nothing here was a real bug the whole-string scorer had.
+const PARTIALS: Array<[string, string]> = [
+  ['la coun', 'Los Angeles County'],
+  ['la county', 'Los Angeles County'],
+  ['los ang', 'Los Angeles County'],
+  ['los angeles c', 'Los Angeles County'],
+  ['orange c', 'Orange County'],
+  ['sacramento c', 'Sacramento County'],
+  ['san ber', 'San Bernardino County'],
+  ['santa b', 'Santa Barbara County'],
+  ['culver c', 'Culver City'],
+  ['san luis', 'San Luis Obispo County'],
+  ['contra c', 'Contra Costa County'],
+  ['the oc', 'Orange County'],
+  ['inland', 'Inland Empire'],
+]
+for (const [q, want] of PARTIALS) {
+  const top = suggest(q, 5)[0]
+  check(`partial "${q}" suggests ${want}`, top?.label === want, `got ${top?.label ?? 'nothing'}`)
+}
+
+// Every prefix of a real query must keep offering something, or the dropdown
+// blinks empty mid-word.
+for (const full of ['los angeles county', 'la county', 'orange county', 'culver city', 'san bernardino']) {
+  for (let i = 2; i <= full.length; i++) {
+    const prefix = full.slice(0, i)
+    check(`prefix "${prefix}" offers something`, suggest(prefix, 5).length > 0)
+  }
+}
+
+// An unmatched token must disqualify the entry rather than dragging in
+// everything that merely contains the first word.
+check('"la zzzz" offers nothing', suggest('la zzzz', 5).length === 0)
+check('"orange zzzz" offers nothing', suggest('orange zzzz', 5).length === 0)
 check('"san" returns several', suggest('san', 8).length >= 5)
 check('"orange" ranks the county over the city', suggest('orange', 3)[0]?.kind === 'county')
 check('suggest respects the limit', suggest('san', 3).length === 3)
