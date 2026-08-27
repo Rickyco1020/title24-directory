@@ -1,7 +1,9 @@
 import { MetadataRoute } from 'next'
 import { CITIES, CA_COUNTIES } from '@/lib/california-data'
+import { SITE_URL } from '@/lib/site'
+import { supabase } from '@/lib/supabase'
 
-const BASE_URL = 'https://title24directory.com'
+const BASE_URL = SITE_URL
 
 const articles = [
   'what-is-a-hers-rater',
@@ -17,7 +19,7 @@ const articles = [
   'hvac-replacement-hers-rater',
 ]
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const cityPages = CITIES.map(city => ({
     url: `${BASE_URL}/directory/${city.slug}`,
     lastModified: new Date(),
@@ -47,5 +49,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.5 },
   ]
 
-  return [...corePages, ...countyPages, ...cityPages, ...articlePages]
+  // Rater detail pages exist and render, but nothing linked to them and they
+  // were missing here, so they were unreachable. Listed last; failures are
+  // swallowed so a Supabase hiccup degrades the sitemap instead of breaking it.
+  let raterPages: MetadataRoute.Sitemap = []
+  try {
+    const { data } = await supabase
+      .from('raters')
+      .select('id, updated_at')
+      .in('status', ['approved', 'featured'])
+    raterPages = (data ?? []).map((r: { id: string; updated_at?: string | null }) => ({
+      url: `${BASE_URL}/directory/rater/${r.id}`,
+      lastModified: r.updated_at ? new Date(r.updated_at) : new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }))
+  } catch {
+    raterPages = []
+  }
+
+  return [...corePages, ...countyPages, ...cityPages, ...articlePages, ...raterPages]
 }

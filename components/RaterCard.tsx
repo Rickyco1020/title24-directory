@@ -2,6 +2,7 @@ import { BADGE_COLORS, CATEGORY_LABELS, displayServices } from '@/lib/categories
 import { safeExternalUrl } from '@/lib/security'
 import type { Rater } from '@/lib/supabase'
 import { countyName, cityName } from '@/lib/california-data'
+import Link from 'next/link'
 
 export default function RaterCard({ rater }: { rater: Rater }) {
   return (
@@ -11,7 +12,11 @@ export default function RaterCard({ rater }: { rater: Rater }) {
           {rater.status === 'featured' && (
             <span className="inline-block bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded mb-2">Featured</span>
           )}
-          <h3 className="font-bold text-gray-900 text-xl">{rater.business_name}</h3>
+          <h3 className="font-bold text-gray-900 text-xl">
+            <Link href={`/directory/rater/${rater.id}`} className="hover:text-blue-700 hover:underline">
+              {rater.business_name}
+            </Link>
+          </h3>
         </div>
       </div>
 

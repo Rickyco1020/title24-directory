@@ -5,6 +5,33 @@ import { Resend } from 'resend'
 import { escapeHtml, isHttpUrl } from '@/lib/security'
 import { displayServices } from '@/lib/categories'
 import { clientIp, headerSafe, honeypotTripped, rateLimit, rateLimitExceeded } from '@/lib/rate-limit'
+import { absoluteUrl } from '@/lib/site'
+import { resolvePlace } from '@/lib/place-match'
+import { slugify } from '@/lib/california-data'
+
+// The cities box is free text but the search matches cities_served against
+// slugs ('irvine'). Without normalising here, a rater who types "Irvine" or
+// "Irvine, CA" is invisible to city search while one who types "irvine" is
+// found — so everything gets resolved to a slug on the way in.
+//
+// Unrecognised entries are kept, slugified, rather than dropped: plenty of
+// small California cities are legitimate even when they are not in our list,
+// and silently discarding a rater's service area would be worse than storing
+// it in a consistent shape. County names are skipped — counties have their own
+// checkboxes and would otherwise land in the wrong column.
+function parseCitiesServed(raw?: string): string[] {
+  if (!raw) return []
+  const out: string[] = []
+  for (const part of raw.split(',')) {
+    const trimmed = part.trim()
+    if (!trimmed) continue
+    const resolved = resolvePlace(trimmed)
+    if (resolved?.kind === 'county') continue
+    const slug = resolved?.kind === 'city' ? resolved.citySlug : slugify(trimmed)
+    if (slug && !out.includes(slug)) out.push(slug)
+  }
+  return out.slice(0, 60)
+}
 
 const schema = z.object({
   business_name: z.string().min(2, 'Business name is required').max(200, 'Max 200 characters'),
@@ -97,7 +124,7 @@ export async function submitListing(prevState: FormState, formData: FormData): P
 
   const { error } = await supabase.from('raters').insert({
     ...result.data,
-    cities_served: result.data.cities_served ? result.data.cities_served.split(',').map(s => s.trim()).filter(Boolean) : [],
+    cities_served: parseCitiesServed(result.data.cities_served),
     status: 'pending',
   })
 
@@ -185,7 +212,7 @@ export async function submitListing(prevState: FormState, formData: FormData): P
         ${e.description ? `<tr><td style="padding: 8px 0; color: #6b7280; vertical-align: top;">Description</td><td style="padding: 8px 0; color: #111827;">${e.description}</td></tr>` : ''}
       </table>
       <div style="margin-top: 24px;">
-        <a href="https://title24directory.com/admin" style="display: inline-block; background: #1d4ed8; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">Review in Admin Panel →</a>
+        <a href="${absoluteUrl('/admin')}" style="display: inline-block; background: #1d4ed8; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">Review in Admin Panel →</a>
       </div>
     </div>
   </div>
