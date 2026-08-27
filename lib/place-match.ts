@@ -186,7 +186,9 @@ function buildIndex(): Suggestion[] {
     out.push({
       id: `county:${c.slug}`,
       label: `${c.name} County`,
-      sublabel: 'County',
+      // No sublabel: the label already ends in "County", and repeating it just
+      // to fill the second line is noise.
+      sublabel: '',
       kind: 'county',
       query: `${c.name} County`,
       terms: [n, `${n} county`],
@@ -234,7 +236,10 @@ function buildIndex(): Suggestion[] {
       const row: Suggestion = {
         id,
         label: alias.label,
-        sublabel: `Region · ${alias.targets.length} counties`,
+        sublabel: alias.targets
+          .map(t => COUNTY_BY_NORM.get(t)?.name)
+          .filter(Boolean)
+          .join(', '),
         kind: 'region',
         query: alias.label,
         terms: [key, labelNorm],

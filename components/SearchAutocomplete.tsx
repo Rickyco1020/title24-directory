@@ -10,12 +10,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { suggest, TOP_PLACES, type Suggestion } from '@/lib/place-match'
 
-const KIND_STYLES: Record<Suggestion['kind'], string> = {
-  county: 'bg-blue-50 text-blue-700',
-  city: 'bg-gray-100 text-gray-600',
-  region: 'bg-amber-50 text-amber-700',
-}
-
 export default function SearchAutocomplete({ defaultValue = '' }: { defaultValue?: string }) {
   const [value, setValue] = useState(defaultValue)
   const [open, setOpen] = useState(false)
@@ -126,17 +120,12 @@ export default function SearchAutocomplete({ defaultValue = '' }: { defaultValue
                 choose(s)
               }}
               onMouseEnter={() => setActive(i)}
-              className={`flex items-center justify-between gap-3 px-3 py-2 cursor-pointer ${
-                i === active ? 'bg-blue-50' : 'bg-white'
-              }`}
+              className={`px-3 py-2 cursor-pointer ${i === active ? 'bg-blue-50' : 'bg-white'}`}
             >
-              <span className="min-w-0">
-                <span className="block text-sm text-gray-900 truncate">{s.label}</span>
+              <span className="block text-sm text-gray-900 truncate">{s.label}</span>
+              {s.sublabel && (
                 <span className="block text-xs text-gray-500 truncate">{s.sublabel}</span>
-              </span>
-              <span className={`shrink-0 text-[11px] px-2 py-0.5 rounded-full ${KIND_STYLES[s.kind]}`}>
-                {s.kind}
-              </span>
+              )}
             </li>
           ))}
         </ul>

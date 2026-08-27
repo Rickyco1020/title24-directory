@@ -302,6 +302,19 @@ check('"san" returns several', suggest('san', 8).length >= 5)
 check('"orange" ranks the county over the city', suggest('orange', 3)[0]?.kind === 'county')
 check('suggest respects the limit', suggest('san', 3).length === 3)
 check('TOP_PLACES has 6', TOP_PLACES.length === 6)
+
+// A row must never repeat itself: "Los Angeles County / County" reads as filler.
+for (const e of PLACE_INDEX) {
+  const l = e.label.toLowerCase()
+  const sub = e.sublabel.toLowerCase()
+  check(`"${e.label}" sublabel is not a repeat of its label`, !sub || !l.includes(sub))
+}
+const laRow = PLACE_INDEX.find(e => e.id === 'county:los-angeles')
+check('county rows carry no filler sublabel', laRow?.sublabel === '')
+const ieRow = PLACE_INDEX.find(e => e.label === 'Inland Empire')
+check('region sublabel names its counties', ieRow?.sublabel === 'Riverside, San Bernardino', `got "${ieRow?.sublabel}"`)
+const irvine = PLACE_INDEX.find(e => e.id === 'city:irvine')
+check('city sublabel names its county', irvine?.sublabel === 'City · Orange County', `got "${irvine?.sublabel}"`)
 check('index covers counties + cities', PLACE_INDEX.length >= CA_COUNTIES.length + CITIES.length - 30)
 
 // ---------------------------------------------------------------------
