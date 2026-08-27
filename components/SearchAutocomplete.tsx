@@ -92,6 +92,10 @@ export default function SearchAutocomplete({ defaultValue = '' }: { defaultValue
           setActive(0)
         }}
         onFocus={() => setOpen(true)}
+        // Options are chosen on mousedown with preventDefault, so the input
+        // never blurs on a click — this only fires when focus genuinely leaves,
+        // which is what closes the list for someone tabbing past the field.
+        onBlur={() => setOpen(false)}
         onKeyDown={onKeyDown}
         placeholder="County, city, ZIP, or company name..."
         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
