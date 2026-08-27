@@ -5,6 +5,7 @@ import RaterCard from '@/components/RaterCard'
 import Breadcrumb from '@/components/Breadcrumb'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { absoluteUrl } from '@/lib/site'
 
 export async function generateStaticParams() {
   return CA_COUNTIES.map(county => ({ county: county.slug }))
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ county: s
   return {
     title: `HERS Raters in ${county.name} County, CA | Title 24 Directory`,
     description: `Find certified HERS raters, ECC raters, and Title 24 acceptance testers in ${county.name} County, California.`,
-    alternates: { canonical: `https://title24directory.com/directory/county/${county.slug}` },
+    alternates: { canonical: absoluteUrl(`/directory/county/${county.slug}`) },
   }
 }
 
@@ -41,9 +42,9 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://title24directory.com' },
-      { '@type': 'ListItem', position: 2, name: 'Directory', item: 'https://title24directory.com/directory' },
-      { '@type': 'ListItem', position: 3, name: `${county.name} County`, item: `https://title24directory.com/directory/county/${county.slug}` },
+      { '@type': 'ListItem', position: 1, name: 'Home', item: absoluteUrl('/') },
+      { '@type': 'ListItem', position: 2, name: 'Directory', item: absoluteUrl('/directory') },
+      { '@type': 'ListItem', position: 3, name: `${county.name} County`, item: absoluteUrl(`/directory/county/${county.slug}`) },
     ],
   }
 

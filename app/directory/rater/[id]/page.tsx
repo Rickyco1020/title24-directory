@@ -6,6 +6,7 @@ import type { Rater } from '@/lib/supabase'
 import { CA_COUNTIES } from '@/lib/california-data'
 import { escapeForJsonLd, safeExternalUrl } from '@/lib/security'
 import type { Metadata } from 'next'
+import { absoluteUrl } from '@/lib/site'
 
 function formatCountyName(slug: string): string {
   const county = CA_COUNTIES.find(c => c.slug === slug)
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return {
     title: `${rater.business_name} | Title 24 Rater — ${counties}`,
     description: rater.description ?? `${rater.business_name} is a certified Title 24 rater serving ${counties}. View services, coverage area, and contact details.`,
-    alternates: { canonical: `https://title24directory.com/directory/rater/${id}` },
+    alternates: { canonical: absoluteUrl(`/directory/rater/${id}`) },
   }
 }
 

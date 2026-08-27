@@ -5,6 +5,7 @@ import { Resend } from 'resend'
 import { createHash, randomBytes } from 'crypto'
 import { escapeHtml } from '@/lib/security'
 import { clientIp, headerSafe, honeypotTripped, rateLimit, rateLimitExceeded } from '@/lib/rate-limit'
+import { SITE_URL as SITE_URL_FROM_CONFIG } from '@/lib/site'
 
 const schema = z.object({
   rater_id: z.string().uuid().optional().or(z.literal('')),
@@ -42,7 +43,7 @@ const VERIFY_WINDOW_MS = 24 * 60 * 60 * 1000
 /** A confirmation link is single-use and stops working after two days. */
 const VERIFY_TTL_MS = 48 * 60 * 60 * 1000
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://title24directory.com'
+const SITE_URL = SITE_URL_FROM_CONFIG
 const NOTIFY_TO = process.env.ADMIN_EMAIL ?? 'rickyco1020@gmail.com'
 // Sent from the verified domain, not Resend's shared `resend.dev` sender: the
 // shared sender only reliably delivers to the account's own address, and it

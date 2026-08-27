@@ -5,6 +5,7 @@ import Link from 'next/link'
 import MobileNav from '@/components/MobileNav'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { SITE_URL } from '@/lib/site'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
     default: 'Title 24 Directory | Find HERS & ECC Raters in California',
   },
   description: 'Find certified HERS raters, ECC raters, commissioning agents, and acceptance testers across California. The most complete Title 24 compliance directory.',
-  metadataBase: new URL('https://title24directory.com'),
+  metadataBase: new URL(SITE_URL),
   verification: {
     google: '-KyQtMRifeytgspRHN_ukGNKioN5_oQ9cdnxaUMrn2U',
   },
