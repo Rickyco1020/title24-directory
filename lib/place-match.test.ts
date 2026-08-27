@@ -317,6 +317,43 @@ const irvine = PLACE_INDEX.find(e => e.id === 'city:irvine')
 check('city sublabel names its county', irvine?.sublabel === 'City · Orange County', `got "${irvine?.sublabel}"`)
 check('index covers counties + cities', PLACE_INDEX.length >= CA_COUNTIES.length + CITIES.length - 30)
 
+// ---- a city resolution must carry its county -------------------------
+//
+// A city search is not just the raters who typed that city's name — whoever
+// covers the whole county covers the city too. Both the city page and the
+// search rely on resolvePlace() handing back the county alongside the city;
+// without it the union query cannot be built and city pages silently narrow
+// back to the small, wrong answer this release exists to fix.
+
+for (const c of CITIES) {
+  const r = resolvePlace(c.name)
+  if (r && r.kind === 'city') {
+    check(`"${c.name}" resolution carries its county`, r.countySlug === c.county_slug, `got ${r.countySlug}, want ${c.county_slug}`)
+  }
+}
+
+check('Thousand Oaks is in Ventura County, not Los Angeles',
+  CITIES.find(c => c.slug === 'thousand-oaks')?.county_slug === 'ventura',
+  `got ${CITIES.find(c => c.slug === 'thousand-oaks')?.county_slug}`)
+
+// Cities named in the audit as missing — each returned "No results" before.
+for (const name of ['Santa Clarita', 'Jurupa Valley', 'South Gate', 'San Leandro', 'Monterey Park', 'La Habra', 'Davis', 'Watsonville']) {
+  const r = resolvePlace(name)
+  check(`"${name}" is a real place, not a text search`, r !== null && r.kind === 'city', JSON.stringify(r))
+}
+
+// Yolo and Santa Cruz had no cities at all.
+for (const countySlug of ['yolo', 'santa-cruz']) {
+  check(`${countySlug} county has at least one city`, CITIES.some(c => c.county_slug === countySlug))
+}
+
+// Every city page is generated from this list, so a bad county_slug is a page
+// whose breadcrumb sends the visitor to the wrong county.
+const countySlugs = new Set(CA_COUNTIES.map(c => c.slug))
+for (const c of CITIES) {
+  check(`"${c.name}" county_slug is a real county`, countySlugs.has(c.county_slug), `got ${c.county_slug}`)
+}
+
 // ---------------------------------------------------------------------
 
 console.log(`\n${passed} passed, ${failures.length} failed\n`)

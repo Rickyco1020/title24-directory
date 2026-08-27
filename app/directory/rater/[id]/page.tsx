@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import { BADGE_COLORS, CATEGORY_LABELS, displayServices } from '@/lib/categories'
 import type { Rater } from '@/lib/supabase'
-import { CA_COUNTIES } from '@/lib/california-data'
+import { CA_COUNTIES, cityName } from '@/lib/california-data'
 import { escapeForJsonLd, safeExternalUrl } from '@/lib/security'
 import type { Metadata } from 'next'
 import { absoluteUrl } from '@/lib/site'
@@ -153,7 +153,20 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
           {cities.length > 0 && (
             <div>
               <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Cities</p>
-              <p className="text-gray-600 text-sm">{cities.join(', ')}</p>
+              {/* Stored as slugs. Printing the array raw rendered
+                  "irvine, rancho-cucamonga" at visitors, right under a Counties
+                  block that was correctly formatted. */}
+              <div className="flex flex-wrap gap-2">
+                {cities.map(c => (
+                  <Link
+                    key={c}
+                    href={`/directory/${c}`}
+                    className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full hover:bg-blue-100 hover:text-blue-800 transition-colors"
+                  >
+                    {cityName(c)}
+                  </Link>
+                ))}
+              </div>
             </div>
           )}
         </div>

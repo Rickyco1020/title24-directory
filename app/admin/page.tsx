@@ -3,6 +3,7 @@ import { createServiceClient } from '@/lib/supabase'
 import { updateRaterStatus, adminLogout, isAuthenticated } from './actions'
 import { safeExternalUrl } from '@/lib/security'
 import type { Metadata } from 'next'
+import { cityName, countyName } from '@/lib/california-data'
 
 export const metadata: Metadata = { title: 'Admin | Title 24 Directory' }
 export const dynamic = 'force-dynamic'
@@ -193,11 +194,11 @@ export default async function AdminPage() {
                       ))}
                     </div>
                     <p className="text-xs text-gray-500 mb-1">
-                      <strong>Counties:</strong> {rater.counties_served?.join(', ') || '—'}
+                      <strong>Counties:</strong> {rater.counties_served?.map(countyName).join(', ') || '—'}
                     </p>
                     {rater.cities_served?.length > 0 && (
                       <p className="text-xs text-gray-500 mb-1">
-                        <strong>Cities:</strong> {rater.cities_served.join(', ')}
+                        <strong>Cities:</strong> {rater.cities_served.map(cityName).join(', ')}
                       </p>
                     )}
                     {rater.description && (

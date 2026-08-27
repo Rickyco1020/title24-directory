@@ -5,6 +5,11 @@ import { supabase } from '@/lib/supabase'
 
 const BASE_URL = SITE_URL
 
+// One timestamp per generation. Stamping `new Date()` on each of the ~540 static
+// place URLs tells Google every page changed on every rebuild, which is false —
+// and lastmod that is observably unreliable gets ignored wholesale.
+const GENERATED_AT = new Date()
+
 const articles = [
   'what-is-a-hers-rater',
   'cf2r-vs-cf3r',
@@ -22,31 +27,31 @@ const articles = [
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const cityPages = CITIES.map(city => ({
     url: `${BASE_URL}/directory/${city.slug}`,
-    lastModified: new Date(),
+    lastModified: GENERATED_AT,
     changeFrequency: 'daily' as const,
     priority: 0.7,
   }))
 
   const countyPages = CA_COUNTIES.map(county => ({
     url: `${BASE_URL}/directory/county/${county.slug}`,
-    lastModified: new Date(),
+    lastModified: GENERATED_AT,
     changeFrequency: 'daily' as const,
     priority: 0.8,
   }))
 
   const articlePages = articles.map(slug => ({
     url: `${BASE_URL}/resources/${slug}`,
-    lastModified: new Date(),
+    lastModified: GENERATED_AT,
     changeFrequency: 'monthly' as const,
     priority: 0.6,
   }))
 
   const corePages = [
-    { url: BASE_URL, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 1.0 },
-    { url: `${BASE_URL}/directory`, lastModified: new Date(), changeFrequency: 'daily' as const, priority: 0.9 },
-    { url: `${BASE_URL}/get-listed`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.8 },
-    { url: `${BASE_URL}/resources`, lastModified: new Date(), changeFrequency: 'weekly' as const, priority: 0.7 },
-    { url: `${BASE_URL}/contact`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: 0.5 },
+    { url: BASE_URL, lastModified: GENERATED_AT, changeFrequency: 'daily' as const, priority: 1.0 },
+    { url: `${BASE_URL}/directory`, lastModified: GENERATED_AT, changeFrequency: 'daily' as const, priority: 0.9 },
+    { url: `${BASE_URL}/get-listed`, lastModified: GENERATED_AT, changeFrequency: 'monthly' as const, priority: 0.8 },
+    { url: `${BASE_URL}/resources`, lastModified: GENERATED_AT, changeFrequency: 'weekly' as const, priority: 0.7 },
+    { url: `${BASE_URL}/contact`, lastModified: GENERATED_AT, changeFrequency: 'monthly' as const, priority: 0.5 },
   ]
 
   // Rater detail pages exist and render, but nothing linked to them and they
@@ -58,6 +63,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .from('raters')
       .select('id, created_at')
       .in('status', ['approved', 'featured'])
+      // Supabase truncates at db-max-rows without saying so. 50k is the sitemap
+      // spec's own per-file limit, so anything past it needs a split anyway.
+      .range(0, 49_999)
     if (error) throw error
     raterPages = (data ?? []).map((r: { id: string; created_at?: string | null }) => ({
       url: `${BASE_URL}/directory/rater/${r.id}`,

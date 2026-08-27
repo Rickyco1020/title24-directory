@@ -60,6 +60,8 @@ type QueryOpts = {
   place?: PlaceResolution | null
   zipCounties?: string[] | null
   text?: string | null
+  /** Which columns a free-text term is allowed to hit. */
+  textFields?: 'name' | 'name+description'
   from: number
   to: number
 }
@@ -69,7 +71,11 @@ function runQuery(opts: QueryOpts) {
     .from('raters')
     .select('*', { count: 'exact' })
     .in('status', ['approved', 'featured'])
+    // status first, then a stable tiebreaker: without a unique second key
+    // Postgres may order ties differently between range() calls, so a rater
+    // could appear on two pages or on none.
     .order('status', { ascending: false })
+    .order('id', { ascending: true })
     .range(opts.from, opts.to)
 
   if (opts.type) query = query.overlaps('services', categoryMatchValues(opts.type))
@@ -93,8 +99,19 @@ function runQuery(opts: QueryOpts) {
 
   if (opts.text) {
     // or() takes a raw filter string; strip what would break out of it.
-    const safe = opts.text.replace(/[(),*\\]/g, ' ').trim()
-    if (safe) query = query.or(`business_name.ilike.*${safe}*,description.ilike.*${safe}*`)
+    // '%' is stripped too — it would turn ilike.*term* into match-everything.
+    const safe = opts.text.replace(/[(),*%\\]/g, ' ').trim()
+    if (safe) {
+      // Business name only, by default. Matching description text turned every
+      // unrecognised place name into an authoritative-looking result set:
+      // 'Santa Clarita' returned 21 raters, not one of which was a Santa Clarita
+      // result — they were listings whose blurb happened to contain the words,
+      // presented under a plain "21 raters found". Description is still
+      // searchable, but only as a labelled last resort, never as a place answer.
+      query = opts.textFields === 'name+description'
+        ? query.or(`business_name.ilike.*${safe}*,description.ilike.*${safe}*`)
+        : query.ilike('business_name', `*${safe}*`)
+    }
   }
 
   return query
@@ -102,7 +119,9 @@ function runQuery(opts: QueryOpts) {
 
 async function DirectoryResults({ searchParams }: { searchParams: Record<string, string> }) {
   const { q, type, county, page } = searchParams
-  const currentPage = parseInt(page ?? '1', 10)
+  // ?page=abc would become range(NaN, NaN) and ?page=0 range(-20, -1);
+  // both are PostgREST errors that would render as an innocuous empty state.
+  const currentPage = Math.max(1, parseInt(page ?? '1', 10) || 1)
   const perPage = 20
   const from = (currentPage - 1) * perPage
   const to = from + perPage - 1
@@ -139,9 +158,15 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
     )
   }
 
-  let { data: raters, count } = await runQuery({
+  const first = await runQuery({
     type, county, place, zipCounties: zipScope?.counties, text: textTerm, from, to,
   })
+  let { data: raters, count } = first
+  // A failed query returns data:null, which is indistinguishable from an honest
+  // "nobody matches" unless we look. An empty state is a claim about the data
+  // and must not be used to report our own outage.
+  let queryFailed = Boolean(first.error)
+  if (first.error) console.error('directory search failed', { term, type, county }, first.error)
 
   // A free-text term that matched no business name may still have been a place,
   // just misspelled or abbreviated. Only retry once the literal search has come
@@ -154,7 +179,9 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
       const retry = await runQuery({
         type, county, place: candidatePlace, text: null, from, to,
       })
+      if (retry.error) console.error('directory did-you-mean retry failed', retry.error)
       if (retry.data?.length) {
+        queryFailed = false
         raters = retry.data
         count = retry.count
         place = candidatePlace
@@ -164,7 +191,33 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
     }
   }
 
+  // Last resort: the words appear in someone's blurb. That is a real thing to
+  // offer, but it is not an answer to "who works in X" — so it runs only after
+  // both the name search and the place retry have failed, and it says what it is.
+  let descriptionOnly = false
+  if (!raters?.length && textTerm) {
+    const loose = await runQuery({
+      type, county, text: textTerm, textFields: 'name+description', from, to,
+    })
+    if (loose.error) console.error('directory description fallback failed', loose.error)
+    if (loose.data?.length) {
+      queryFailed = false
+      raters = loose.data
+      count = loose.count
+      descriptionOnly = true
+    }
+  }
+
   const totalPages = Math.ceil((count ?? 0) / perPage)
+
+  if (queryFailed) {
+    return (
+      <NoResults
+        title="We couldn't run that search just now"
+        body="This is a problem on our end, not an empty directory. Please try again in a moment."
+      />
+    )
+  }
 
   if (!raters?.length) {
     if (zipScope) {
@@ -200,8 +253,15 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
           <span className="font-medium text-gray-900">{didYouMean.label}</span>.
         </p>
       )}
+      {descriptionOnly && (
+        <p className="text-sm text-gray-600 mb-4">
+          <span className="font-medium text-gray-900">&ldquo;{term}&rdquo;</span> isn&rsquo;t a California city or
+          county we cover, and no company goes by that name. These are raters who mention it somewhere in their
+          listing &mdash; not a search by location.
+        </p>
+      )}
       <p className="text-gray-500 mb-6">
-        {count} rater{count !== 1 ? 's' : ''} found
+        {count} {descriptionOnly ? 'listing' : 'rater'}{count !== 1 ? 's' : ''} {descriptionOnly ? 'mention it' : 'found'}
         {zipScope && ` serving ${countyList(zipScope.counties)} (${zipScope.zip})`}
         {!zipScope && place && ` serving ${place.label}`}
       </p>
