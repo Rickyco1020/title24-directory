@@ -212,12 +212,16 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
                 </dd>
               </div>
             )}
-            <div>
-              <dt className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Email</dt>
-              <dd className="mt-0.5">
-                <a href={`mailto:${rater.email}`} className="text-blue-700 hover:underline">{rater.email}</a>
-              </dd>
-            </div>
+            {/* Guarded like phone and website above. Unguarded, a seeded listing
+                with no email rendered an empty link to mailto:null. */}
+            {rater.email && (
+              <div>
+                <dt className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Email</dt>
+                <dd className="mt-0.5">
+                  <a href={`mailto:${rater.email}`} className="text-blue-700 hover:underline">{rater.email}</a>
+                </dd>
+              </div>
+            )}
           </dl>
         </div>
       </div>
