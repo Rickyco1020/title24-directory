@@ -54,13 +54,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // swallowed so a Supabase hiccup degrades the sitemap instead of breaking it.
   let raterPages: MetadataRoute.Sitemap = []
   try {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('raters')
-      .select('id, updated_at')
+      .select('id, created_at')
       .in('status', ['approved', 'featured'])
-    raterPages = (data ?? []).map((r: { id: string; updated_at?: string | null }) => ({
+    if (error) throw error
+    raterPages = (data ?? []).map((r: { id: string; created_at?: string | null }) => ({
       url: `${BASE_URL}/directory/rater/${r.id}`,
-      lastModified: r.updated_at ? new Date(r.updated_at) : new Date(),
+      lastModified: r.created_at ? new Date(r.created_at) : new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     }))
