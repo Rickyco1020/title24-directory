@@ -19,12 +19,19 @@ import { slugify } from '@/lib/california-data'
 // and silently discarding a rater's service area would be worse than storing
 // it in a consistent shape. County names are skipped — counties have their own
 // checkboxes and would otherwise land in the wrong column.
+
+// What is left over when someone writes 'Irvine, CA' and the list is split on
+// commas. On its own it names no place; without this check the state name was
+// stored as a city slug — a live test submission produced ["irvine","ca",...].
+const STATE_TAILS = new Set(['ca', 'cal', 'calif', 'california', 'usa', 'us', 'united states'])
+
 function parseCitiesServed(raw?: string): string[] {
   if (!raw) return []
   const out: string[] = []
-  for (const part of raw.split(',')) {
+  // Commas, semicolons and newlines are all things people separate lists with.
+  for (const part of raw.split(/[,;\n]/)) {
     const trimmed = part.trim()
-    if (!trimmed) continue
+    if (!trimmed || STATE_TAILS.has(trimmed.toLowerCase())) continue
     const resolved = resolvePlace(trimmed)
     if (resolved?.kind === 'county') continue
     const slug = resolved?.kind === 'city' ? resolved.citySlug : slugify(trimmed)
