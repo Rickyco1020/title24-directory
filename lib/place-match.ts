@@ -364,14 +364,14 @@ export function suggest(term: string, limit = 8): Suggestion[] {
 
 export type PlaceResolution =
   | { kind: 'county'; countySlugs: string[]; label: string }
-  | { kind: 'city'; citySlug: string; label: string }
+  | { kind: 'city'; citySlug: string; countySlug: string; label: string }
 
 /** Exact resolution of a single canonical phrase. No fuzz, no aliases. */
 function resolvePhrase(phrase: string): PlaceResolution | null {
   const county = COUNTY_BY_NORM.get(phrase)
   if (county) return { kind: 'county', countySlugs: [county.slug], label: `${county.name} County` }
   const city = CITY_BY_NORM.get(phrase)
-  if (city) return { kind: 'city', citySlug: city.slug, label: city.name }
+  if (city) return { kind: 'city', citySlug: city.slug, countySlug: city.county_slug, label: city.name }
   return null
 }
 

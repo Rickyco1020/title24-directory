@@ -81,7 +81,14 @@ function runQuery(opts: QueryOpts) {
   // overlaps() rather than contains() throughout: a region alias ('Inland Empire')
   // and a straddling ZIP prefix both resolve to more than one county.
   if (opts.place?.kind === 'county') query = query.overlaps('counties_served', opts.place.countySlugs)
-  if (opts.place?.kind === 'city') query = query.contains('cities_served', [opts.place.citySlug])
+  // A rater covering all of Riverside County does serve Jurupa Valley, so a
+  // city search has to include county-wide coverage — otherwise searching a
+  // city returns 'none yet' while that city's own page lists seventeen.
+  if (opts.place?.kind === 'city') {
+    query = query.or(
+      `cities_served.cs.{${opts.place.citySlug}},counties_served.cs.{${opts.place.countySlug}}`,
+    )
+  }
   if (opts.zipCounties?.length) query = query.overlaps('counties_served', opts.zipCounties)
 
   if (opts.text) {
