@@ -35,8 +35,10 @@ export default function SearchAutocomplete({ defaultValue = '' }: { defaultValue
   function choose(s: Suggestion) {
     setValue(s.query)
     setOpen(false)
-    // Let React commit the value before the form reads it.
-    requestAnimationFrame(() => inputRef.current?.form?.requestSubmit())
+    // Let React commit the value before the form reads it. A timer rather than
+    // requestAnimationFrame: rAF is paused in a background tab, which would
+    // leave a chosen suggestion sitting there never submitting.
+    setTimeout(() => inputRef.current?.form?.requestSubmit(), 0)
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
