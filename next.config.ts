@@ -14,6 +14,18 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
+  async redirects() {
+    return [
+      // The site is title24directory.com. The *.vercel.app deployment domain
+      // serves an indexable duplicate otherwise - send it home permanently.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "title24-directory.vercel.app" }],
+        destination: "https://www.title24directory.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
