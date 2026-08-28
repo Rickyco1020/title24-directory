@@ -6,6 +6,12 @@ type Props = {
    * state); pass a county's zones to mark them (the county/city state).
    */
   activeZones?: readonly string[]
+  /**
+   * Draw the watermark map. The homepage turns it off: since the zone map
+   * became a real control further down the page, a second faded copy of the
+   * same coastline in the hero reads as the broken one.
+   */
+  showMap?: boolean
   children: React.ReactNode
 }
 
@@ -17,27 +23,31 @@ type Props = {
  * apart. Zone numbers are never invented here — callers pass what
  * lib/climate-zones knows, which is nothing until that table is filled.
  */
-export default function ZoneSheet({ activeZones, children }: Props) {
+export default function ZoneSheet({ activeZones, showMap = true, children }: Props) {
   const marked = Boolean(activeZones?.length)
 
   return (
     <section className="relative isolate overflow-hidden border-b border-ink bg-paper">
       <div className="sheet-grid" aria-hidden="true" />
 
-      <div className="sheet-map" aria-hidden="true">
-        <CaliforniaClimateZones activeZones={activeZones} />
-      </div>
+      {showMap && (
+        <div className="sheet-map" aria-hidden="true">
+          <CaliforniaClimateZones activeZones={activeZones} />
+        </div>
+      )}
 
       <div className="relative z-[2] mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
         {children}
       </div>
 
-      <p className="sheet-legend t-label" aria-hidden="true">
-        <span
-          className={`inline-block h-[9px] w-[9px] rounded-[2px] ${marked ? 'bg-accent' : 'bg-ink/30'}`}
-        />
-        {marked ? 'Active zone' : 'CEC building climate zones 1–16'}
-      </p>
+      {showMap && (
+        <p className="sheet-legend t-label" aria-hidden="true">
+          <span
+            className={`inline-block h-[9px] w-[9px] rounded-[2px] ${marked ? 'bg-accent' : 'bg-ink/30'}`}
+          />
+          {marked ? 'Active zone' : 'CEC building climate zones 1–16'}
+        </p>
+      )}
     </section>
   )
 }

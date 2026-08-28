@@ -26,6 +26,14 @@ const ZONES: Zone[] = [
 
 export const CZ_VIEWBOX = '0 0 1000.0 1153.7'
 
+/**
+ * The zone geometry itself, so the interactive picker on the homepage draws
+ * the same coastline as the decorative watermark. One copy of a 60 KB path
+ * set, two renderers — if these ever diverge the map is lying somewhere.
+ */
+export type CzZone = Zone
+export const CZ_ZONES: readonly Zone[] = ZONES
+
 /** Every zone number the map knows about, in map order. */
 export const CZ_NUMBERS = ZONES.map(z => z.z)
 

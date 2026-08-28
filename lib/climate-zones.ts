@@ -33,6 +33,8 @@
 // plain base sheet and say nothing. Silence beats a wrong number on a
 // compliance directory. All 472 city pages now resolve.
 
+import { CITIES, countyName } from './california-data'
+
 export const CITY_ZONES: Record<string, readonly string[]> = {
   'adelanto': ['14'],
   'agoura-hills': ['9'],
@@ -554,4 +556,57 @@ export function zoneLabel(zones: readonly string[]): string | null {
 /** Title-block value: "12" / "6 · 8 · 9". Null when unknown. */
 export function zoneCallout(zones: readonly string[]): string | null {
   return zones.length ? zones.join(' · ') : null
+}
+
+// ---- zone → counties (the inverse map) --------------------------------
+// The homepage map is clicked from the other direction: a visitor points at
+// where they are and wants the counties inside that zone. Built by inverting
+// the two tables above rather than typed out a second time, so it can never
+// disagree with the county and city pages.
+
+
+export type ZoneCounties = {
+  /** Counties whose own CEC county-level zone set includes this zone. */
+  readonly full: readonly string[]
+  /**
+   * Counties with no county-level entry at all — the seven the ZIP→place
+   * source doesn't cover — that have at least one town in this zone. Listed
+   * separately and labelled as such: "this county has towns in zone 1" is a
+   * sourced claim, "this county is zone 1" would not be.
+   */
+  readonly partial: readonly string[]
+}
+
+const ZONE_TO_COUNTIES: ReadonlyMap<string, ZoneCounties> = (() => {
+  const full = new Map<string, Set<string>>()
+  const partial = new Map<string, Set<string>>()
+  const bucket = (m: Map<string, Set<string>>, zone: string) => {
+    let s = m.get(zone)
+    if (!s) m.set(zone, (s = new Set()))
+    return s
+  }
+
+  for (const [county, zones] of Object.entries(COUNTY_ZONES)) {
+    for (const zone of zones) bucket(full, zone).add(county)
+  }
+
+  for (const city of CITIES) {
+    if (COUNTY_ZONES[city.county_slug]) continue
+    for (const zone of CITY_ZONES[city.slug] ?? []) bucket(partial, zone).add(city.county_slug)
+  }
+
+  const byName = (a: string, b: string) => countyName(a).localeCompare(countyName(b))
+  const out = new Map<string, ZoneCounties>()
+  for (const zone of new Set([...full.keys(), ...partial.keys()])) {
+    out.set(zone, {
+      full: [...(full.get(zone) ?? [])].sort(byName),
+      partial: [...(partial.get(zone) ?? [])].sort(byName),
+    })
+  }
+  return out
+})()
+
+/** Counties inside a CEC zone. Both lists empty for a zone number we don't know. */
+export function countiesForZone(zone: string): ZoneCounties {
+  return ZONE_TO_COUNTIES.get(zone) ?? { full: [], partial: [] }
 }

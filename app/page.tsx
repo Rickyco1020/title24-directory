@@ -2,9 +2,12 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { CATEGORIES } from '@/lib/categories'
-import { CA_COUNTIES, CITIES } from '@/lib/california-data'
+import { CITIES, countyName } from '@/lib/california-data'
+import { countiesForZone } from '@/lib/climate-zones'
 import { supabase } from '@/lib/supabase'
 import ZoneSheet from '@/components/ZoneSheet'
+import { CZ_NUMBERS } from '@/components/CaliforniaClimateZones'
+import ZoneMapPicker, { type ZoneCounty, type ZonePanel } from '@/components/ZoneMapPicker'
 
 export const metadata: Metadata = {
   title: 'Title 24 Directory | Find HERS & ECC Raters in California',
@@ -16,12 +19,6 @@ export const metadata: Metadata = {
 // "100% free" as if they were achievements; the listing count is the only
 // figure here a visitor actually cares about, so it comes from the database.
 export const revalidate = 3600
-
-const FEATURED_COUNTIES = [
-  'los-angeles', 'orange', 'san-diego', 'riverside', 'san-bernardino',
-  'santa-clara', 'alameda', 'sacramento', 'fresno', 'kern',
-  'ventura', 'contra-costa',
-]
 
 const FEATURED_ARTICLES = [
   {
@@ -58,6 +55,29 @@ async function listingCount(): Promise<number | null> {
   return count ?? null
 }
 
+/**
+ * Listings per county, tallied in one pass over `counties_served` — the same
+ * column the county page filters on, so a number here always matches the page
+ * it links to. Null on failure: the panels then link without counts rather
+ * than telling every county it has none.
+ */
+async function ratersByCounty(): Promise<Map<string, number> | null> {
+  const { data, error } = await supabase
+    .from('raters')
+    .select('counties_served')
+    .in('status', ['approved', 'featured'])
+  if (error || !data) return null
+
+  const rows = data as { counties_served: string[] | null }[]
+  const counts = new Map<string, number>()
+  for (const row of rows) {
+    for (const slug of row.counties_served ?? []) {
+      counts.set(slug, (counts.get(slug) ?? 0) + 1)
+    }
+  }
+  return counts
+}
+
 function SearchForm() {
   async function handleSearch(formData: FormData) {
     'use server'
@@ -86,20 +106,43 @@ function SearchForm() {
 }
 
 export default async function HomePage() {
-  const count = await listingCount()
-  const counties = FEATURED_COUNTIES.map(slug => CA_COUNTIES.find(c => c.slug === slug)).filter(
-    (c): c is { name: string; slug: string } => Boolean(c),
-  )
+  const [count, ratersPerCounty] = await Promise.all([listingCount(), ratersByCounty()])
+
+  const decorate = (slugs: readonly string[]): ZoneCounty[] =>
+    slugs
+      .map(slug => ({
+        slug,
+        name: countyName(slug),
+        raters: ratersPerCounty ? (ratersPerCounty.get(slug) ?? 0) : null,
+      }))
+      // Busiest county first — on a directory the useful answer outranks the
+      // alphabet. Falls back to name order when the count query failed.
+      .sort((a, b) => (b.raters ?? 0) - (a.raters ?? 0) || a.name.localeCompare(b.name))
+
+  const zonePanels: ZonePanel[] = CZ_NUMBERS.map(zone => {
+    const { full, partial } = countiesForZone(zone)
+    return { zone, counties: decorate(full), partial: decorate(partial) }
+  })
+
+  // What the panel shows before a zone is picked. This is the one thing worth
+  // keeping from the old hand-picked county grid: the shortcut for someone who
+  // just wants the busy county they already know the name of.
+  const topCounties = ratersPerCounty
+    ? decorate([...ratersPerCounty.keys()])
+        .filter(c => (c.raters ?? 0) > 0)
+        .slice(0, 8)
+    : []
 
   return (
     <>
-      <ZoneSheet>
-        <h1 className="max-w-[15ch] text-[clamp(1.9rem,4.6vw,3rem)] font-bold leading-[1.04]">
-          Every certified rater in California, <span className="marked">before your inspection date</span>.
+      <ZoneSheet showMap={false}>
+        <h1 className="max-w-[16ch] text-[clamp(1.9rem,4.6vw,3rem)] font-bold leading-[1.04]">
+          Find a certified rater <span className="marked">near you</span>, before your inspection
+          date.
         </h1>
         <p className="mt-4 max-w-[48ch] text-[0.98rem] leading-relaxed">
           HERS and ECC field verification, mechanical commissioning, and non-residential acceptance
-          testing. Searchable by city, county, or ZIP.
+          testing. Search by city, county, or ZIP — or find your climate zone on the map below.
         </p>
 
         <SearchForm />
@@ -157,13 +200,14 @@ export default async function HomePage() {
         </ul>
       </section>
 
-      {/* ── Browse by county. Replaces the old "How It Works" panel, which
-             explained a search box to people who use search boxes. This is
-             the thing they'd have used it for. ── */}
+      {/* ── Browse by climate zone. Replaces a twelve-cell grid of the
+             counties we guessed were popular. Point at where the job is
+             instead: a visitor knows where they are on a map of California
+             long before they know their county is called "Contra Costa". ── */}
       <section className="border-y border-rule bg-sunk">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-            <h2 className="text-[clamp(1.4rem,2.6vw,1.85rem)] font-bold">Browse by county</h2>
+            <h2 className="text-[clamp(1.4rem,2.6vw,1.85rem)] font-bold">Browse by climate zone</h2>
             <Link
               href="/directory"
               className="text-sm font-semibold text-accent underline decoration-accent-rule underline-offset-4 hover:decoration-accent"
@@ -172,18 +216,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <ul className="cell-grid mt-7 sm:grid-cols-2 lg:grid-cols-4">
-            {counties.map(county => (
-              <li key={county.slug}>
-                <Link
-                  href={`/directory/county/${county.slug}`}
-                  className="block bg-surface px-4 py-3 text-sm font-medium text-ink transition-colors hover:bg-accent-wash hover:text-accent"
-                >
-                  {county.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <ZoneMapPicker panels={zonePanels} topCounties={topCounties} />
         </div>
       </section>
 
