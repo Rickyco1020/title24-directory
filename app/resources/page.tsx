@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Title 24 Resources | HERS Rater Guides & Compliance Articles',
+  title: 'Title 24 Guides & Resources',
   description: 'Free guides and articles about California Title 24 energy code compliance, HERS ratings, ECC requirements, and more.',
 }
 

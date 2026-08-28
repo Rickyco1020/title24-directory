@@ -32,7 +32,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   if (!rater) return {}
   const counties = rater.counties_served?.slice(0, 2).map(formatCountyName).join(', ') ?? 'California'
   return {
-    title: `${rater.business_name} | Title 24 Rater — ${counties}`,
+    // `absolute` opts out of the layout's '%s | Title 24 Directory' template:
+    // with it, a long business name pushed these past 90 characters and Google
+    // truncated the part that identifies the company.
+    title: { absolute: `${rater.business_name} | Title 24 Rater` },
     description: rater.description ?? `${rater.business_name} is a certified Title 24 rater serving ${counties}. View services, coverage area, and contact details.`,
     alternates: { canonical: absoluteUrl(`/directory/rater/${id}`) },
   }

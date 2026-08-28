@@ -6,7 +6,7 @@ import type { Metadata } from 'next'
 const articles: Record<string, { title: string; seoTitle: string; description: string; tags: string[]; content: string }> = {
   'what-is-a-hers-rater': {
     title: 'What is a HERS Rater? (And When Do You Need One)',
-    seoTitle: 'What is a HERS Rater California',
+    seoTitle: 'What Is a HERS Rater in California',
     description: 'Learn what a HERS rater is, why California requires them, and when you need one for your construction or renovation project.',
     tags: ['HERS'],
     content: `## What is a HERS Rater?
@@ -28,7 +28,7 @@ Starting with the 2025 California Energy Code, the HERS program is being phased 
   },
   'cf2r-vs-cf3r': {
     title: 'CF2R vs CF3R: What\'s the Difference?',
-    seoTitle: 'CF2R vs CF3R Difference | Title 24 California Forms Explained',
+    seoTitle: 'CF2R vs CF3R Explained',
     description: 'Confused about CF2R and CF3R forms? Here\'s a clear explanation of the difference between installer certificates and verifier certificates in California Title 24.',
     tags: ['Forms'],
     content: `## CF2R vs CF3R: Understanding Title 24 Compliance Forms
@@ -46,7 +46,7 @@ California's Title 24 compliance system is built on the principle that self-cert
   },
   'title-24-compliance-guide': {
     title: 'California Title 24 Compliance: A Builder\'s Guide',
-    seoTitle: 'California Title 24 Compliance Guide for Builders',
+    seoTitle: 'Title 24 Compliance: Builder\'s Guide',
     description: 'A complete guide to California Title 24 energy code compliance for new construction and renovations. Learn what\'s required, who verifies it, and how to stay on schedule.',
     tags: ['Compliance'],
     content: `## California Title 24 Compliance: A Builder's Complete Guide
@@ -68,7 +68,7 @@ Title 24 inspections are a frequent source of construction delays. To stay on tr
   },
   'what-is-acceptance-testing': {
     title: 'What Does an Acceptance Tester Do?',
-    seoTitle: 'Title 24 Acceptance Testing California | What Does an Acceptance Tester Do?',
+    seoTitle: 'Title 24 Acceptance Testing Explained',
     description: 'Learn what Title 24 acceptance testing covers in California, when it\'s required, and how to find a certified acceptance tester for your project.',
     tags: ['Compliance'],
     content: `## What Does a Title 24 Acceptance Tester Do?
@@ -90,7 +90,7 @@ Use our directory to find certified acceptance testers serving your project's lo
   },
   'hers-vs-ecc-rater': {
     title: 'HERS Rater or ECC Rater? Same Role, New Name',
-    seoTitle: 'HERS Rater vs ECC Rater California | Same Role, New Name (2026)',
+    seoTitle: 'HERS Rater vs ECC Rater',
     description: 'HERS raters and ECC raters are the same role under two names — the 2025 California Energy Code renamed the program. Here is which term applies to your project, and the distinction that does matter.',
     tags: ['HERS', 'ECC'],
     content: `## HERS Rater or ECC Rater?
@@ -130,7 +130,7 @@ Browse the directory under the **HERS / ECC Rater** service type to see certifie
   },
   'title-24-solar-requirements': {
     title: 'Title 24 Solar Requirements for New Homes',
-    seoTitle: 'California Title 24 Solar Requirements | New Home Solar Mandate',
+    seoTitle: 'Title 24 Solar Requirements',
     description: 'California requires solar panels on most new homes. Learn about Title 24 solar requirements, exceptions, and how compliance is verified.',
     tags: ['Solar', 'Compliance'],
     content: `## Title 24 Solar Requirements for New Homes
@@ -152,7 +152,7 @@ Solar compliance is documented on the CF1R energy compliance report and verified
   },
   'what-is-a-cf1r': {
     title: 'What Is a CF1R? The First Step in Title 24 Compliance',
-    seoTitle: 'What Is a CF1R Form California | Title 24 Compliance Report',
+    seoTitle: 'What Is a CF1R Form?',
     description: 'The CF1R is the foundation of Title 24 compliance. Learn what it is, who prepares it, and why it matters for your California construction project.',
     tags: ['Forms', 'Compliance'],
     content: `## What Is a CF1R?
@@ -174,7 +174,7 @@ Without an approved CF1R, your building permit will not be issued. The CF1R also
   },
   'duct-leakage-testing': {
     title: 'Duct Leakage Testing: What It Is and Why It Matters',
-    seoTitle: 'Duct Leakage Testing California | Title 24 HERS Verification',
+    seoTitle: 'Duct Leakage Testing in California',
     description: 'Duct leakage testing is one of the most common Title 24 HERS verification measures. Learn how it works, what the limits are, and how to pass.',
     tags: ['HERS', 'Testing'],
     content: `## What Is Duct Leakage Testing?
@@ -196,7 +196,7 @@ Seal all duct joints with mastic or approved tape before the test. Pay special a
   },
   'heat-pump-water-heater-title-24': {
     title: 'Heat Pump Water Heaters and Title 24 Compliance',
-    seoTitle: 'Heat Pump Water Heater Title 24 California | Compliance Guide',
+    seoTitle: 'Heat Pump Water Heaters Under Title 24',
     description: 'Heat pump water heaters are increasingly required by Title 24. Learn about the requirements, energy savings, and compliance verification process.',
     tags: ['Compliance', 'HERS'],
     content: `## Heat Pump Water Heaters and Title 24
@@ -218,7 +218,7 @@ Heat pump water heaters need adequate airspace around them to operate efficientl
   },
   'performance-path-title-24': {
     title: 'Performance Path vs. Prescriptive Path: Title 24 Compliance Methods',
-    seoTitle: 'Performance vs Prescriptive Path Title 24 | California Energy Code',
+    seoTitle: 'Title 24 Performance vs Prescriptive',
     description: 'California Title 24 offers two compliance approaches. Learn the difference between performance and prescriptive paths and which is right for your project.',
     tags: ['Compliance'],
     content: `## Performance Path vs. Prescriptive Path
@@ -240,7 +240,7 @@ The prescriptive path is simpler but less flexible. It works well for straightfo
   },
   'hvac-replacement-hers-rater': {
     title: 'Do You Need a HERS Rater for an HVAC Replacement?',
-    seoTitle: 'HERS Rater for HVAC Replacement California | When Is It Required?',
+    seoTitle: 'HERS Rater for HVAC Replacement',
     description: 'Replacing your HVAC system in California? Learn when Title 24 requires a HERS rater inspection and what to expect during the verification process.',
     tags: ['HERS', 'HVAC'],
     content: `## Do You Need a HERS Rater for an HVAC Replacement?

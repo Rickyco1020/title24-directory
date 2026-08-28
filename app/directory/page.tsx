@@ -10,7 +10,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Find a Title 24 Rater | California HERS & ECC Directory',
+  title: 'Find a Title 24 Rater in California',
   description: 'Browse California\'s complete directory of HERS raters, ECC raters, commissioning agents, and acceptance testers. Filter by city, county, and service type.',
 }
 
