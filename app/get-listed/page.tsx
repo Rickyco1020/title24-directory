@@ -5,14 +5,37 @@ import { submitListing } from './actions'
 import { HONEYPOT_FIELD, HONEYPOT_STYLE } from '@/lib/forms'
 import { CATEGORIES } from '@/lib/categories'
 import { CA_COUNTIES } from '@/lib/california-data'
+import Link from 'next/link'
 import { useState } from 'react'
+
+const FIELDS = [
+  { name: 'business_name', label: 'Business name', required: true, type: 'text', placeholder: 'Your company name' },
+  { name: 'contact_name', label: 'Contact name', required: true, type: 'text', placeholder: 'Your full name' },
+  { name: 'email', label: 'Email address', required: true, type: 'email', placeholder: 'you@company.com' },
+  { name: 'phone', label: 'Phone number', required: false, type: 'tel', placeholder: '(555) 555-5555' },
+  { name: 'website', label: 'Website', required: false, type: 'url', placeholder: 'https://yoursite.com' },
+  { name: 'license_number', label: 'License / certification number', required: false, type: 'text', placeholder: 'CalCERTS or CHEERS ID' },
+]
 
 function SubmitButton() {
   const { pending } = useFormStatus()
   return (
-    <button type="submit" disabled={pending} className="w-full bg-blue-700 text-white py-3 rounded-xl font-bold text-lg hover:bg-blue-800 transition-colors disabled:opacity-60">
-      {pending ? 'Submitting...' : 'Submit My Listing →'}
+    <button
+      type="submit"
+      disabled={pending}
+      className="btn-red w-full px-6 py-3.5 text-[0.95rem] disabled:cursor-not-allowed disabled:opacity-60"
+    >
+      {pending ? 'Submitting…' : 'Submit my listing →'}
     </button>
+  )
+}
+
+function FieldError({ message }: { message?: string }) {
+  if (!message) return null
+  return (
+    <p role="alert" className="mt-1.5 text-sm text-red-text">
+      {message}
+    </p>
   )
 }
 
@@ -22,89 +45,182 @@ export default function GetListedPage() {
 
   if (state.success) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <div className="text-6xl mb-6">✅</div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Listing Submitted!</h1>
-        <p className="text-gray-600 text-lg mb-8">Your listing has been submitted! We'll review it within 1–2 business days and email you when it goes live.</p>
-        <a href="/get-listed" className="text-blue-700 font-semibold hover:underline">Submit another listing →</a>
+      <div className="mx-auto max-w-2xl px-4 py-20 sm:px-6">
+        <div className="border-t border-ink pt-8">
+          <p className="t-label text-ink">Received</p>
+          <h1 className="mt-3 text-[clamp(1.7rem,3.4vw,2.3rem)] font-bold">Your listing is in the queue.</h1>
+          <p className="mt-4 max-w-[54ch] leading-relaxed">
+            We review submissions within one to two business days and email you the moment it goes
+            live. Nothing else is needed from you.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/directory" className="btn-quiet px-5 py-2.5 text-sm">
+              Browse the directory
+            </Link>
+            <a href="/get-listed" className="btn-quiet px-5 py-2.5 text-sm">
+              Submit another listing
+            </a>
+          </div>
+        </div>
       </div>
     )
   }
 
   const fe = state.fieldErrors ?? {}
+  const inputClass = (hasError: boolean) =>
+    `w-full rounded border bg-surface px-3.5 py-2.5 text-sm text-ink transition-colors placeholder:text-muted focus:outline-none ${
+      hasError ? 'border-red focus:border-red' : 'border-rule focus:border-ink'
+    }`
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Get Listed in the Title 24 Directory</h1>
-      <p className="text-gray-500 mb-8">Free listings for HERS raters, ECC raters, commissioning agents, and acceptance testers across California.</p>
+    <div className="mx-auto max-w-2xl px-4 pb-20 pt-12 sm:px-6">
+      <h1 className="text-[clamp(1.7rem,3.4vw,2.4rem)] font-bold">Get listed, free</h1>
+      <p className="mt-3 max-w-[56ch] leading-relaxed">
+        For certified HERS and ECC raters, commissioning agents, and acceptance testers working in
+        California. No fee, no account, no renewal.
+      </p>
 
-      <form action={action} className="space-y-6">
+      <form action={action} className="mt-10 space-y-7">
         {/* Honeypot — off-screen for humans, irresistible to form-filling bots. */}
         <div aria-hidden="true" style={HONEYPOT_STYLE}>
           <label htmlFor={HONEYPOT_FIELD}>Leave this field empty</label>
           <input id={HONEYPOT_FIELD} name={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" />
         </div>
 
-        {[
-          { name: 'business_name', label: 'Business Name', required: true, type: 'text', placeholder: 'Your company name' },
-          { name: 'contact_name', label: 'Contact Name', required: true, type: 'text', placeholder: 'Your full name' },
-          { name: 'email', label: 'Email Address', required: true, type: 'email', placeholder: 'you@company.com' },
-          { name: 'phone', label: 'Phone Number', required: false, type: 'tel', placeholder: '(555) 555-5555' },
-          { name: 'website', label: 'Website', required: false, type: 'url', placeholder: 'https://yoursite.com' },
-          { name: 'license_number', label: 'License / Certification Number', required: false, type: 'text', placeholder: 'Optional' },
-        ].map(field => (
-          <div key={field.name}>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              {field.label} {field.required && <span className="text-red-500">*</span>}
-            </label>
-            <input type={field.type} name={field.name} placeholder={field.placeholder} required={field.required}
-              className={`w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 ${fe[field.name] ? 'border-red-400' : 'border-gray-300'}`} />
-            {fe[field.name] && <p className="text-red-500 text-sm mt-1">{fe[field.name][0]}</p>}
-          </div>
-        ))}
+        <fieldset className="border-t border-ink pt-6">
+          <legend className="sr-only">Business details</legend>
+          <p className="t-label mb-5">Business</p>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Services Offered <span className="text-red-500">*</span></label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {CATEGORIES.map(cat => (
-              <label key={cat.value} className="flex items-center space-x-2 bg-gray-50 rounded-lg p-3 cursor-pointer hover:bg-blue-50 transition-colors">
-                <input type="checkbox" name="services" value={cat.value} className="rounded" />
-                <span className="text-sm font-medium text-gray-700">{cat.label}</span>
-              </label>
+          <div className="space-y-5">
+            {FIELDS.map(field => (
+              <div key={field.name}>
+                <label htmlFor={field.name} className="mb-1.5 block text-sm font-medium text-ink">
+                  {field.label}
+                  {field.required && (
+                    <span className="ml-1 text-red-text" aria-hidden="true">
+                      *
+                    </span>
+                  )}
+                  {!field.required && <span className="ml-1.5 text-muted">optional</span>}
+                </label>
+                <input
+                  id={field.name}
+                  type={field.type}
+                  name={field.name}
+                  placeholder={field.placeholder}
+                  required={field.required}
+                  aria-invalid={fe[field.name] ? true : undefined}
+                  aria-describedby={fe[field.name] ? `${field.name}-error` : undefined}
+                  className={inputClass(Boolean(fe[field.name]))}
+                />
+                <span id={`${field.name}-error`}>
+                  <FieldError message={fe[field.name]?.[0]} />
+                </span>
+              </div>
             ))}
           </div>
-          {fe.services && <p className="text-red-500 text-sm mt-1">{fe.services[0]}</p>}
-        </div>
+        </fieldset>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Counties Served <span className="text-red-500">*</span></label>
-          <div className="border border-gray-300 rounded-lg p-3 h-40 overflow-y-auto grid grid-cols-2 gap-1">
-            {CA_COUNTIES.map(c => (
-              <label key={c.slug} className="flex items-center space-x-2 cursor-pointer hover:text-blue-700">
-                <input type="checkbox" name="counties_served" value={c.slug} className="rounded" />
-                <span className="text-sm text-gray-700">{c.name}</span>
+        <fieldset className="border-t border-ink pt-6">
+          <legend className="sr-only">Coverage</legend>
+          <p className="t-label mb-5">Coverage</p>
+
+          <div className="space-y-6">
+            <div>
+              <p className="mb-2.5 text-sm font-medium text-ink">
+                Services offered
+                <span className="ml-1 text-red-text" aria-hidden="true">*</span>
+              </p>
+              <div className="cell-grid">
+                {CATEGORIES.map(cat => (
+                  <label
+                    key={cat.value}
+                    className="flex cursor-pointer items-start gap-3 bg-surface px-4 py-3 transition-colors hover:bg-sunk"
+                  >
+                    <input
+                      type="checkbox"
+                      name="services"
+                      value={cat.value}
+                      className="mt-1 h-4 w-4 shrink-0 accent-[oklch(0.505_0.198_28)]"
+                    />
+                    <span>
+                      <span className="block text-sm font-medium text-ink">{cat.label}</span>
+                      <span className="mt-0.5 block text-xs leading-relaxed">{cat.description}</span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+              <FieldError message={fe.services?.[0]} />
+            </div>
+
+            <div>
+              <p className="mb-2.5 text-sm font-medium text-ink">
+                Counties served
+                <span className="ml-1 text-red-text" aria-hidden="true">*</span>
+              </p>
+              <div className="grid max-h-52 grid-cols-2 gap-x-4 gap-y-1 overflow-y-auto rounded border border-rule bg-surface p-3.5">
+                {CA_COUNTIES.map(c => (
+                  <label key={c.slug} className="flex cursor-pointer items-center gap-2 py-0.5 text-sm hover:text-ink">
+                    <input
+                      type="checkbox"
+                      name="counties_served"
+                      value={c.slug}
+                      className="h-4 w-4 shrink-0 accent-[oklch(0.505_0.198_28)]"
+                    />
+                    <span>{c.name}</span>
+                  </label>
+                ))}
+              </div>
+              <FieldError message={fe.counties_served?.[0]} />
+            </div>
+
+            <div>
+              <label htmlFor="cities_served" className="mb-1.5 block text-sm font-medium text-ink">
+                Specific cities <span className="ml-1 text-muted">optional</span>
               </label>
-            ))}
+              <textarea
+                id="cities_served"
+                name="cities_served"
+                rows={3}
+                placeholder="Leave blank if you cover every city in the counties above"
+                className={inputClass(false)}
+              />
+            </div>
           </div>
-          {fe.counties_served && <p className="text-red-500 text-sm mt-1">{fe.counties_served[0]}</p>}
-        </div>
+        </fieldset>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Specific Cities Served (optional)</label>
-          <textarea name="cities_served" rows={3} placeholder="List specific cities, or leave blank to indicate all cities in your selected counties"
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 text-sm" />
-        </div>
+        <fieldset className="border-t border-ink pt-6">
+          <legend className="sr-only">Description</legend>
+          <p className="t-label mb-5">Listing copy</p>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Business Description (optional)</label>
-          <textarea name="description" rows={4} maxLength={500} value={description} onChange={e => setDescription(e.target.value)}
-            placeholder="Briefly describe your services, certifications, and service area..."
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 text-sm" />
-          <p className="text-gray-400 text-xs mt-1 text-right">{description.length}/500</p>
-        </div>
+          <label htmlFor="description" className="mb-1.5 block text-sm font-medium text-ink">
+            Business description <span className="ml-1 text-muted">optional</span>
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            rows={4}
+            maxLength={500}
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            placeholder="What you do, what you're certified for, and anything a GC would want to know before calling."
+            className={inputClass(false)}
+          />
+          <p className="t-label mt-1.5 text-right">{description.length} / 500</p>
+        </fieldset>
 
-        {state.error && <p className="text-red-500 text-sm">{state.error}</p>}
+        {state.error && (
+          <p role="alert" className="rounded border border-red-rule bg-red-wash px-4 py-3 text-sm text-red-text">
+            {state.error}
+          </p>
+        )}
+
         <SubmitButton />
+
+        <p className="text-xs text-muted">
+          Submissions are reviewed within one to two business days. We never sell listing data or
+          charge for placement.
+        </p>
       </form>
     </div>
   )

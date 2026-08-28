@@ -19,14 +19,14 @@ export const dynamic = 'force-dynamic'
 function SuggestionChips({ items }: { items: Suggestion[] }) {
   if (!items.length) return null
   return (
-    <div className="mb-6">
-      <p className="text-sm text-gray-500 mb-3">Did you mean:</p>
+    <div className="mb-7">
+      <p className="t-label mb-2.5">Did you mean</p>
       <div className="flex flex-wrap justify-center gap-2">
         {items.map(s => (
           <Link
             key={s.id}
             href={`/directory?q=${encodeURIComponent(s.query)}`}
-            className="bg-blue-50 text-blue-700 border border-blue-100 px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-100 transition-colors"
+            className="rounded border border-rule bg-surface px-3.5 py-1.5 text-sm font-medium text-ink transition-colors hover:border-ink"
           >
             {s.label}
           </Link>
@@ -38,16 +38,16 @@ function SuggestionChips({ items }: { items: Suggestion[] }) {
 
 function NoResults({ title, body, suggestions = [] }: { title: string; body: string; suggestions?: Suggestion[] }) {
   return (
-    <div className="text-center py-16">
-      <p className="text-2xl font-bold text-gray-700 mb-2">{title}</p>
-      <p className="text-gray-500 mb-6">{body}</p>
+    <div className="border-t border-ink py-16 text-center">
+      <p className="text-xl font-bold text-ink">{title}</p>
+      <p className="mx-auto mt-2 mb-7 max-w-[52ch] text-[0.95rem]">{body}</p>
       <SuggestionChips items={suggestions} />
       <div className="flex flex-wrap justify-center gap-3">
-        <Link href="/directory" className="bg-white border border-gray-200 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:border-blue-400 transition-colors">
+        <Link href="/directory" className="btn-quiet px-5 py-2.5 text-sm">
           Browse all raters
         </Link>
-        <Link href="/get-listed" className="bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-800 transition-colors">
-          Get Listed Free
+        <Link href="/get-listed" className="btn-red px-5 py-2.5 text-sm">
+          Get listed free
         </Link>
       </div>
     </div>
@@ -238,7 +238,7 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
     }
     return (
       <NoResults
-        title={`No results for "${term}"`}
+        title={`No results for “${term}”`}
         body="Search by county, city, ZIP code, or company name."
         suggestions={textTerm ? suggest(textTerm, 4) : []}
       />
@@ -248,38 +248,59 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
   return (
     <div>
       {didYouMean && (
-        <p className="text-sm text-gray-600 mb-4">
-          No company matched <span className="font-medium">&ldquo;{term}&rdquo;</span>. Showing raters for{' '}
-          <span className="font-medium text-gray-900">{didYouMean.label}</span>.
+        <p className="mb-4 border-l-0 text-sm">
+          No company matched <span className="font-medium text-ink">“{term}”</span>. Showing raters for{' '}
+          <span className="font-medium text-ink">{didYouMean.label}</span>.
         </p>
       )}
       {descriptionOnly && (
-        <p className="text-sm text-gray-600 mb-4">
-          <span className="font-medium text-gray-900">&ldquo;{term}&rdquo;</span> isn&rsquo;t a California city or
+        <p className="mb-4 max-w-[74ch] text-sm">
+          <span className="font-medium text-ink">“{term}”</span> isn&rsquo;t a California city or
           county we cover, and no company goes by that name. These are raters who mention it somewhere in their
-          listing &mdash; not a search by location.
+          listing, not a search by location.
         </p>
       )}
-      <p className="text-gray-500 mb-6">
-        {count} {descriptionOnly ? 'listing' : 'rater'}{count !== 1 ? 's' : ''} {descriptionOnly ? 'mention it' : 'found'}
-        {zipScope && ` serving ${countyList(zipScope.counties)} (${zipScope.zip})`}
-        {!zipScope && place && ` serving ${place.label}`}
-      </p>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <div className="mb-6 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t border-ink pt-3">
+        <p className="text-sm">
+          <span className="font-bold text-ink">{count}</span>{' '}
+          {descriptionOnly ? 'listing' : 'rater'}{count !== 1 ? 's' : ''}{' '}
+          {descriptionOnly ? 'mention it' : 'found'}
+          {zipScope && ` serving ${countyList(zipScope.counties)} (${zipScope.zip})`}
+          {!zipScope && place && ` serving ${place.label}`}
+        </p>
+        {totalPages > 1 && (
+          <p className="t-label">
+            Page {currentPage} of {totalPages}
+          </p>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {raters.map((rater: any) => <RaterCard key={rater.id} rater={rater} />)}
       </div>
+
       {totalPages > 1 && (
-        <div className="flex justify-center gap-2 mt-10">
+        <nav aria-label="Pagination" className="mt-10 flex flex-wrap justify-center gap-2">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => {
             const params = new URLSearchParams({ ...searchParams, page: String(p) })
+            const current = p === currentPage
             return (
-              <Link key={p} href={`/directory?${params}`}
-                className={`px-4 py-2 rounded-lg font-medium ${p === currentPage ? 'bg-blue-700 text-white' : 'bg-white border border-gray-200 text-gray-700 hover:border-blue-400'}`}>
+              <Link
+                key={p}
+                href={`/directory?${params}`}
+                aria-current={current ? 'page' : undefined}
+                className={`min-w-[2.5rem] rounded px-3 py-2 text-center text-sm font-medium transition-colors ${
+                  current
+                    ? 'bg-ink text-surface'
+                    : 'border border-rule bg-surface text-ink hover:border-ink'
+                }`}
+              >
                 {p}
               </Link>
             )
           })}
-        </div>
+        </nav>
       )}
     </div>
   )
@@ -290,32 +311,65 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Pr
   const counties = [...CA_COUNTIES].sort((a, b) => a.name.localeCompare(b.name))
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">California Title 24 Rater Directory</h1>
-      <p className="text-gray-500 mb-8">Find certified raters across California</p>
+    <div className="mx-auto max-w-7xl px-4 pb-20 pt-10 sm:px-6 lg:px-8">
+      <h1 className="text-[clamp(1.65rem,3.2vw,2.25rem)] font-bold">
+        California Title 24 rater directory
+      </h1>
+      <p className="mt-2 max-w-[58ch] text-[0.95rem]">
+        Certified HERS and ECC raters, commissioning agents, and acceptance testers, filterable by
+        place and service.
+      </p>
 
-      <form method="GET" className="bg-white rounded-2xl border border-gray-200 p-6 mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <form
+        method="GET"
+        className="mt-8 mb-9 grid grid-cols-1 gap-4 rounded border border-rule bg-surface p-5 sm:grid-cols-2 lg:grid-cols-4"
+      >
         <SearchAutocomplete defaultValue={resolvedParams.q} />
+
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Service Type</label>
-          <select name="type" defaultValue={resolvedParams.type} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
-            <option value="">All Types</option>
+          <label htmlFor="type" className="t-label mb-1.5 block">
+            Service type
+          </label>
+          <select
+            id="type"
+            name="type"
+            defaultValue={resolvedParams.type}
+            className="w-full rounded border border-rule bg-surface px-3 py-2 text-sm text-ink transition-colors focus:border-ink focus:outline-none"
+          >
+            <option value="">All types</option>
             {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
           </select>
         </div>
+
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">County</label>
-          <select name="county" defaultValue={resolvedParams.county ? slugify(resolvedParams.county) : ''} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
-            <option value="">All Counties</option>
+          <label htmlFor="county" className="t-label mb-1.5 block">
+            County
+          </label>
+          <select
+            id="county"
+            name="county"
+            defaultValue={resolvedParams.county ? slugify(resolvedParams.county) : ''}
+            className="w-full rounded border border-rule bg-surface px-3 py-2 text-sm text-ink transition-colors focus:border-ink focus:outline-none"
+          >
+            <option value="">All counties</option>
             {counties.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
           </select>
         </div>
+
         <div className="flex items-end">
-          <button type="submit" className="w-full bg-blue-700 text-white rounded-lg px-4 py-2 font-semibold hover:bg-blue-800 transition-colors">Search</button>
+          <button type="submit" className="btn-red w-full px-4 py-2 text-sm">
+            Search
+          </button>
         </div>
       </form>
 
-      <Suspense fallback={<div className="text-center py-10 text-gray-400">Loading raters...</div>}>
+      <Suspense
+        fallback={
+          <div className="border-t border-ink py-14 text-center">
+            <p className="t-label">Loading raters</p>
+          </div>
+        }
+      >
         <DirectoryResults searchParams={resolvedParams} />
       </Suspense>
     </div>

@@ -26,7 +26,26 @@ const ZONES: Zone[] = [
 
 export const CZ_VIEWBOX = '0 0 1000.0 1153.7'
 
-export default function CaliforniaClimateZones({ className = '' }: { className?: string }) {
+/** Every zone number the map knows about, in map order. */
+export const CZ_NUMBERS = ZONES.map(z => z.z)
+
+type Props = {
+  className?: string
+  /**
+   * Zone numbers to redline. The base sheet is always drawn in graphite;
+   * anything listed here is redrawn on top in red, the way a correction
+   * sits over a base drawing. Pass nothing for the plain base sheet.
+   */
+  activeZones?: readonly string[]
+}
+
+export default function CaliforniaClimateZones({ className = '', activeZones }: Props) {
+  // Filtering from ZONES rather than mapping over activeZones keeps draw order
+  // stable and silently ignores a zone number that isn't on the map.
+  const marked = activeZones?.length
+    ? ZONES.filter(z => activeZones.includes(z.z))
+    : []
+
   return (
     <svg
       viewBox={CZ_VIEWBOX}
@@ -35,11 +54,35 @@ export default function CaliforniaClimateZones({ className = '' }: { className?:
       focusable="false"
       preserveAspectRatio="xMidYMid meet"
     >
-      <g stroke="currentColor" strokeWidth={1.6} strokeLinejoin="round" vectorEffect="non-scaling-stroke">
+      {/* Base sheet: the whole state in graphite hairline. `currentColor` is
+          set by the wrapping element, so the same geometry serves the light
+          hero and any future inverted surface without a second copy. */}
+      <g
+        className="text-ink"
+        stroke="currentColor"
+        strokeWidth={1}
+        strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
+        opacity={0.88}
+      >
         {ZONES.map(zone => (
-          <path key={zone.z} d={zone.d} fill="currentColor" fillOpacity={zone.o} strokeOpacity={0.45} />
+          <path key={zone.z} d={zone.d} fill="currentColor" fillOpacity={zone.o} strokeOpacity={0.28} />
         ))}
       </g>
+
+      {marked.length > 0 && (
+        <g
+          className="text-red"
+          stroke="currentColor"
+          strokeWidth={2.2}
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+        >
+          {marked.map(zone => (
+            <path key={`mark-${zone.z}`} d={zone.d} fill="currentColor" fillOpacity={0.1} strokeOpacity={0.95} />
+          ))}
+        </g>
+      )}
     </svg>
   )
 }

@@ -1,10 +1,11 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
-import { BADGE_COLORS, CATEGORY_LABELS, displayServices } from '@/lib/categories'
+import { CATEGORY_LABELS, displayServices } from '@/lib/categories'
 import type { Rater } from '@/lib/supabase'
 import { CA_COUNTIES, cityName } from '@/lib/california-data'
 import { escapeForJsonLd, safeExternalUrl } from '@/lib/security'
+import Breadcrumb from '@/components/Breadcrumb'
 import type { Metadata } from 'next'
 import { absoluteUrl } from '@/lib/site'
 
@@ -44,6 +45,7 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
 
   const counties = rater.counties_served ?? []
   const cities = rater.cities_served ?? []
+  const services = displayServices(rater.services)
   // Only ever emit http(s) links — a stored `javascript:` value must not become an href.
   const website = safeExternalUrl(rater.website)
 
@@ -58,43 +60,37 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+    <div className="mx-auto max-w-5xl px-4 pb-20 pt-10 sm:px-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeForJsonLd(jsonLd) }} />
 
-      {/* Breadcrumb */}
-      <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-6">
-        <Link href="/" className="hover:text-blue-700">Home</Link>
-        <span>›</span>
-        <Link href="/directory" className="hover:text-blue-700">Directory</Link>
-        <span>›</span>
-        <span className="text-gray-900 font-medium">{rater.business_name}</span>
-      </nav>
+      <Breadcrumb items={[
+        { label: 'Home', href: '/' },
+        { label: 'Directory', href: '/directory' },
+        { label: rater.business_name },
+      ]} />
 
-      {/* Header */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-8 mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
-          <div>
-            {rater.status === 'featured' && (
-              <span className="inline-block bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded mb-3">⭐ Featured</span>
+      {/* ── Sheet head ── */}
+      <header className="border-t border-ink pt-6">
+        {rater.status === 'featured' && <p className="t-label mb-2 text-ink">Featured listing</p>}
+
+        <div className="flex flex-wrap items-start justify-between gap-x-8 gap-y-5">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-[clamp(1.7rem,3.4vw,2.4rem)] font-bold leading-[1.06]">
+              {rater.business_name}
+            </h1>
+            {services.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {services.map(s => (
+                  <span key={s} className="tag">{CATEGORY_LABELS[s] ?? s}</span>
+                ))}
+              </div>
             )}
-            <h1 className="text-3xl font-bold text-gray-900 mb-3">{rater.business_name}</h1>
-            <div className="flex flex-wrap gap-2">
-              {displayServices(rater.services).map(s => (
-                <span key={s} className={`text-sm font-semibold px-3 py-1 rounded-full ${BADGE_COLORS[s] ?? 'bg-gray-100 text-gray-700'}`}>
-                  {CATEGORY_LABELS[s] ?? s}
-                </span>
-              ))}
-            </div>
           </div>
 
-          {/* Contact CTA */}
-          <div className="flex flex-col gap-2 shrink-0">
+          <div className="flex shrink-0 flex-wrap gap-2.5">
             {rater.phone && (
-              <a
-                href={`tel:${rater.phone}`}
-                className="flex items-center justify-center gap-2 bg-blue-700 text-white px-5 py-3 rounded-xl font-semibold hover:bg-blue-800 transition-colors"
-              >
-                <span>📞</span> {rater.phone}
+              <a href={`tel:${rater.phone}`} className="btn-red px-5 py-3 text-[0.95rem]">
+                {rater.phone}
               </a>
             )}
             {website && (
@@ -102,47 +98,83 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
                 href={website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 bg-white border border-gray-200 text-blue-700 px-5 py-3 rounded-xl font-semibold hover:border-blue-400 transition-colors"
+                className="btn-quiet px-5 py-3 text-[0.95rem]"
               >
-                <span>🌐</span> Visit Website
+                Visit website
               </a>
             )}
           </div>
         </div>
 
         {rater.description && (
-          <p className="text-gray-600 text-base leading-relaxed border-t border-gray-100 pt-6">{rater.description}</p>
+          <p className="mt-6 max-w-[68ch] border-t border-rule pt-6 leading-relaxed">
+            {rater.description}
+          </p>
         )}
-      </div>
+      </header>
 
-      {/* Details grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      {/* ── Title block: everything factual, in labelled cells ── */}
+      <dl className="cell-grid mt-8 sm:grid-cols-2 lg:grid-cols-4">
+        {rater.contact_name && (
+          <div className="bg-surface px-4 py-3.5">
+            <dt className="t-label">Contact</dt>
+            <dd className="mt-1 text-sm text-ink">{rater.contact_name}</dd>
+          </div>
+        )}
+        {rater.license_number && (
+          <div className="bg-surface px-4 py-3.5">
+            <dt className="t-label">Certification</dt>
+            <dd className="mt-1 font-mono text-sm text-ink">{rater.license_number}</dd>
+          </div>
+        )}
+        {rater.phone && (
+          <div className="bg-surface px-4 py-3.5">
+            <dt className="t-label">Phone</dt>
+            <dd className="mt-1 text-sm">
+              <a href={`tel:${rater.phone}`} className="text-red-text underline decoration-red-rule underline-offset-2 hover:decoration-red">
+                {rater.phone}
+              </a>
+            </dd>
+          </div>
+        )}
+        {/* Guarded like phone and website above. Unguarded, a seeded listing
+            with no email rendered an empty link to mailto:null. */}
+        {rater.email && (
+          <div className="bg-surface px-4 py-3.5">
+            <dt className="t-label">Email</dt>
+            <dd className="mt-1 break-all text-sm">
+              <a href={`mailto:${rater.email}`} className="text-red-text underline decoration-red-rule underline-offset-2 hover:decoration-red">
+                {rater.email}
+              </a>
+            </dd>
+          </div>
+        )}
+        {website && (
+          <div className="bg-surface px-4 py-3.5">
+            <dt className="t-label">Website</dt>
+            <dd className="mt-1 break-all text-sm">
+              <a href={website} target="_blank" rel="noopener noreferrer" className="text-red-text underline decoration-red-rule underline-offset-2 hover:decoration-red">
+                {website.replace(/^https?:\/\//, '')}
+              </a>
+            </dd>
+          </div>
+        )}
+      </dl>
 
-        {/* Services */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Services Offered</h2>
-          <ul className="space-y-2">
-            {displayServices(rater.services).map(s => (
-              <li key={s} className="flex items-center gap-2 text-gray-700">
-                <span className="text-green-500 font-bold">✓</span>
-                {CATEGORY_LABELS[s] ?? s}
-              </li>
-            ))}
-          </ul>
-        </div>
+      {/* ── Coverage ── */}
+      {(counties.length > 0 || cities.length > 0) && (
+        <section className="mt-12">
+          <h2 className="text-lg font-bold">Service area</h2>
 
-        {/* Coverage */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Service Area</h2>
           {counties.length > 0 && (
-            <div className="mb-4">
-              <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Counties</p>
+            <div className="mt-5">
+              <p className="t-label mb-2.5">Counties</p>
               <div className="flex flex-wrap gap-2">
                 {counties.map(c => (
                   <Link
                     key={c}
                     href={`/directory/county/${c}`}
-                    className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full hover:bg-blue-100 hover:text-blue-800 transition-colors"
+                    className="rounded border border-rule bg-surface px-3 py-1.5 text-sm text-ink transition-colors hover:border-ink"
                   >
                     {formatCountyName(c)}
                   </Link>
@@ -150,9 +182,10 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
               </div>
             </div>
           )}
+
           {cities.length > 0 && (
-            <div>
-              <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Cities</p>
+            <div className="mt-6">
+              <p className="t-label mb-2.5">Cities</p>
               {/* Stored as slugs. Printing the array raw rendered
                   "irvine, rancho-cucamonga" at visitors, right under a Counties
                   block that was correctly formatted. */}
@@ -161,7 +194,7 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
                   <Link
                     key={c}
                     href={`/directory/${c}`}
-                    className="bg-gray-100 text-gray-700 text-sm px-3 py-1 rounded-full hover:bg-blue-100 hover:text-blue-800 transition-colors"
+                    className="rounded border border-rule bg-surface px-3 py-1.5 text-sm text-ink transition-colors hover:border-ink"
                   >
                     {cityName(c)}
                   </Link>
@@ -169,70 +202,20 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
               </div>
             </div>
           )}
-        </div>
+        </section>
+      )}
 
-        {/* Credentials */}
-        {(rater.license_number || rater.contact_name) && (
-          <div className="bg-white rounded-2xl border border-gray-200 p-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Credentials</h2>
-            <dl className="space-y-3">
-              {rater.contact_name && (
-                <div>
-                  <dt className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Contact</dt>
-                  <dd className="text-gray-700 mt-0.5">{rater.contact_name}</dd>
-                </div>
-              )}
-              {rater.license_number && (
-                <div>
-                  <dt className="text-sm font-semibold text-gray-500 uppercase tracking-wide">License / Certification</dt>
-                  <dd className="text-gray-700 mt-0.5 font-mono">{rater.license_number}</dd>
-                </div>
-              )}
-            </dl>
-          </div>
-        )}
-
-        {/* Contact info */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Contact</h2>
-          <dl className="space-y-3">
-            {rater.phone && (
-              <div>
-                <dt className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Phone</dt>
-                <dd className="mt-0.5">
-                  <a href={`tel:${rater.phone}`} className="text-blue-700 hover:underline">{rater.phone}</a>
-                </dd>
-              </div>
-            )}
-            {website && (
-              <div>
-                <dt className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Website</dt>
-                <dd className="mt-0.5">
-                  <a href={website} target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline break-all">{website}</a>
-                </dd>
-              </div>
-            )}
-            {/* Guarded like phone and website above. Unguarded, a seeded listing
-                with no email rendered an empty link to mailto:null. */}
-            {rater.email && (
-              <div>
-                <dt className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Email</dt>
-                <dd className="mt-0.5">
-                  <a href={`mailto:${rater.email}`} className="text-blue-700 hover:underline">{rater.email}</a>
-                </dd>
-              </div>
-            )}
-          </dl>
-        </div>
-      </div>
-
-      {/* Back to directory */}
-      <div className="flex items-center justify-between">
-        <Link href="/directory" className="text-blue-700 font-semibold hover:underline">
-          ← Back to Directory
+      <div className="mt-14 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-rule pt-5">
+        <Link
+          href="/directory"
+          className="text-sm font-semibold text-red-text underline decoration-red-rule underline-offset-4 hover:decoration-red"
+        >
+          ← Back to directory
         </Link>
-        <p className="text-xs text-gray-400">
-          Listed on Title 24 Directory · <Link href="/get-listed" className="hover:text-blue-700">Get your business listed free →</Link>
+        <p className="text-xs text-muted">
+          <Link href="/get-listed" className="underline underline-offset-2 hover:text-ink">
+            Get your business listed free
+          </Link>
         </p>
       </div>
     </div>

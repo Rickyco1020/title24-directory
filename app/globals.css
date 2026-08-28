@@ -1,1 +1,282 @@
 @import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────
+   Title24 Directory — "Redline" design system.
+
+   The reference object is a plan-check correction set: base drawing
+   in graphite on paper, corrections in red. Red is reserved for live
+   action and active state. It never decorates.
+
+   Every colour is OKLCH. Body text sits at or above 4.5:1 on its own
+   surface; the values below are measured, not eyeballed.
+   ───────────────────────────────────────────────────────────── */
+
+@theme {
+  /* Surfaces */
+  --color-paper: oklch(0.984 0.002 250);
+  --color-surface: oklch(1 0 0);
+  --color-sunk: oklch(0.968 0.002 250);
+
+  /* Ink ramp */
+  --color-ink: oklch(0.185 0.008 250);        /* 17.8:1 on paper */
+  --color-body: oklch(0.400 0.008 250);       /*  8.8:1 on paper */
+  --color-muted: oklch(0.530 0.008 250);      /*  5.3:1 on white, 4.9:1 on sunk */
+
+  /* Rules */
+  --color-rule: oklch(0.882 0.004 250);
+  --color-rule-soft: oklch(0.936 0.003 250);
+
+  /* Redline */
+  --color-red: oklch(0.505 0.198 28);         /* white on this = 6.5:1 */
+  --color-red-strong: oklch(0.450 0.195 28);
+  --color-red-text: oklch(0.455 0.185 28);    /* 7.0:1 on red-wash */
+  --color-red-wash: oklch(0.955 0.022 28);
+  --color-red-rule: oklch(0.855 0.055 28);
+
+  /* Status */
+  --color-flag: oklch(0.470 0.115 145);
+  --color-flag-wash: oklch(0.960 0.028 145);
+
+  /* Type */
+  --font-sans: var(--font-chivo), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-martian), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Motion */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Semantic z-scale. Never use a bare number anywhere in the app. */
+:root {
+  --z-sheet: 1;
+  --z-sticky: 20;
+  --z-dropdown: 30;
+  --z-overlay: 40;
+  --z-modal: 50;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3 {
+    color: var(--color-ink);
+    text-wrap: balance;
+    letter-spacing: -0.028em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* One visible focus treatment for the whole site. */
+  :focus-visible {
+    outline: 2px solid var(--color-red);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--color-red-wash);
+    color: var(--color-red-text);
+  }
+}
+
+@layer components {
+  /* ── Title-block label. Mono earns its place on IDs and field
+        labels only; never on body copy. ── */
+  .t-label {
+    font-family: var(--font-mono);
+    font-size: 0.625rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    line-height: 1.4;
+  }
+
+  /* ── The drafting grid. Sits behind hero content, masked so it
+        fades out before it reaches the text column. ── */
+  .sheet-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: var(--z-sheet);
+    opacity: 0.7;
+    background-image:
+      linear-gradient(var(--color-rule) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-rule) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(120% 100% at 78% 35%, black 0%, transparent 72%);
+  }
+
+  /* ── The zone map sitting on the sheet. Sized to fit the hero
+        entirely rather than bleeding: a clipped California reads as a
+        grey smear, not as a map. Faded out before the text column so
+        headline contrast never depends on where the coastline lands. ── */
+  .sheet-map {
+    position: absolute;
+    z-index: var(--z-sheet);
+    pointer-events: none;
+    top: 0;
+    bottom: 0;
+    right: 3.5%;
+    width: 46%;
+    padding: 1.1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    mask-image: linear-gradient(to left, black 58%, transparent 100%);
+  }
+  .sheet-map > svg {
+    height: 100%;
+    max-height: 100%;
+    width: auto;
+    overflow: visible;
+  }
+
+  /* Below the tablet breakpoint the map drops to the lower corner and
+     recedes; at hero width it would otherwise run through the copy. */
+  @media (max-width: 767px) {
+    .sheet-map {
+      top: auto;
+      bottom: -6%;
+      right: -14%;
+      width: 76%;
+      height: 64%;
+      opacity: 0.28;
+      align-items: flex-end;
+      mask-image: linear-gradient(to top, black 40%, transparent 92%);
+    }
+  }
+
+  .sheet-legend {
+    position: absolute;
+    z-index: 2;
+    right: 1.5rem;
+    bottom: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: color-mix(in oklch, var(--color-surface) 88%, transparent);
+    border: 1px solid var(--color-rule);
+    border-radius: 3px;
+    padding: 4px 8px;
+  }
+  @media (max-width: 767px) {
+    .sheet-legend { display: none; }
+  }
+
+  /* ── Title block: labelled cells, the way a drawing carries its
+        metadata. Replaces the free-floating stat bar. ── */
+  .title-block {
+    display: inline-flex;
+    flex-wrap: wrap;
+    border: 1px solid var(--color-ink);
+    background: var(--color-surface);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .title-block > div {
+    padding: 0.52rem 1rem;
+    border-right: 1px solid var(--color-rule);
+  }
+  .title-block > div:last-child { border-right: 0; }
+
+  /* ── Ruled cell grid.
+        Built from per-cell borders rather than the `gap-px` + coloured-
+        background trick: that trick paints the container colour through
+        any cell the last row doesn't fill, so a five-item grid in four
+        columns rendered three grey blocks. Borders don't care how many
+        items there are. ── */
+  .cell-grid {
+    display: grid;
+    border-top: 1px solid var(--color-rule);
+    border-left: 1px solid var(--color-rule);
+  }
+  .cell-grid > * {
+    background: var(--color-surface);
+    border-right: 1px solid var(--color-rule);
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  /* ── Buttons ── */
+  .btn-red {
+    background: var(--color-red);
+    color: oklch(1 0 0);
+    font-weight: 700;
+    border-radius: 4px;
+    transition: background-color 160ms var(--ease-out-quart);
+  }
+  .btn-red:hover { background: var(--color-red-strong); }
+
+  .btn-ink {
+    background: var(--color-ink);
+    color: oklch(1 0 0);
+    font-weight: 600;
+    border-radius: 4px;
+    transition: opacity 160ms var(--ease-out-quart);
+  }
+  .btn-ink:hover { opacity: 0.86; }
+
+  .btn-quiet {
+    background: var(--color-surface);
+    color: var(--color-ink);
+    border: 1px solid var(--color-rule);
+    font-weight: 600;
+    border-radius: 4px;
+    transition: border-color 160ms var(--ease-out-quart);
+  }
+  .btn-quiet:hover { border-color: var(--color-ink); }
+
+  /* ── Service tag ── */
+  .tag {
+    display: inline-block;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--color-red-wash);
+    color: var(--color-red-text);
+    border-radius: 3px;
+    padding: 3px 6px;
+  }
+
+  /* ── Underlined phrase in a headline. The one place red touches
+        display type. ── */
+  .marked {
+    color: var(--color-red-text);
+    position: relative;
+  }
+  .marked::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.07em;
+    height: 2px;
+    background: var(--color-red);
+    opacity: 0.5;
+  }
+}
+
+/* Reveal animations enhance an already-visible default: content is
+   never gated behind a class-triggered transition. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

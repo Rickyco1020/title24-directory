@@ -1,9 +1,11 @@
 import { notFound } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { CITIES } from '@/lib/california-data'
+import { zonesForCounty, zoneCallout } from '@/lib/climate-zones'
 import { absoluteUrl } from '@/lib/site'
 import RaterCard from '@/components/RaterCard'
 import Breadcrumb from '@/components/Breadcrumb'
+import ZoneSheet from '@/components/ZoneSheet'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -61,6 +63,11 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   const listsCity = all.filter(r => (r.cities_served ?? []).includes(city.slug))
   const countyOnly = all.filter(r => !(r.cities_served ?? []).includes(city.slug))
 
+  // A city inherits its county's zones. Empty until lib/climate-zones is
+  // filled, in which case the hero draws the plain base sheet.
+  const zones = zonesForCounty(city.county_slug)
+  const callout = zoneCallout(city.county_slug)
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -73,75 +80,120 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <Breadcrumb items={[
-        { label: 'Home', href: '/' },
-        { label: 'Directory', href: '/directory' },
-        { label: city.county, href: `/directory/county/${city.county_slug}` },
-        { label: city.name },
-      ]} />
 
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">HERS Raters in {city.name}, CA</h1>
-      <p className="text-gray-500 mb-8">Find certified Title 24 compliance professionals serving {city.name}, {city.county} County</p>
+      <ZoneSheet activeZones={zones}>
+        <Breadcrumb items={[
+          { label: 'Home', href: '/' },
+          { label: 'Directory', href: '/directory' },
+          { label: city.county, href: `/directory/county/${city.county_slug}` },
+          { label: city.name },
+        ]} />
 
-      {all.length > 0 ? (
-        <div className="mb-12">
-          {listsCity.length > 0 && (
-            <>
-              <h2 className="text-xl font-bold text-gray-900 mb-1">
-                Raters listing {city.name} specifically
-              </h2>
-              <p className="text-gray-500 text-sm mb-4">
-                {listsCity.length} rater{listsCity.length !== 1 ? 's' : ''} name {city.name} in their service area.
-              </p>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
-                {listsCity.map(r => <RaterCard key={r.id} rater={r} />)}
-              </div>
-            </>
+        <h1 className="max-w-[16ch] text-[clamp(1.7rem,3.8vw,2.6rem)] font-bold leading-[1.05]">
+          Title 24 raters in <span className="marked">{city.name}</span>.
+        </h1>
+        <p className="mt-4 max-w-[50ch] text-[0.98rem] leading-relaxed">
+          Certified compliance professionals serving {city.name} and the wider {city.county} County
+          area.
+        </p>
+
+        <dl className="title-block mt-7">
+          <div>
+            <dt className="t-label">Raters</dt>
+            <dd className="mt-0.5 font-bold text-ink">{all.length}</dd>
+          </div>
+          <div>
+            <dt className="t-label">County</dt>
+            <dd className="mt-0.5 font-bold text-ink">{city.county}</dd>
+          </div>
+          {callout && (
+            <div>
+              <dt className="t-label">Climate zone</dt>
+              <dd className="mt-0.5 font-bold text-ink">{callout.replace(/^Zones? /, '')}</dd>
+            </div>
           )}
+        </dl>
+      </ZoneSheet>
 
-          {countyOnly.length > 0 && (
-            <>
-              <h2 className="text-xl font-bold text-gray-900 mb-1">
-                {listsCity.length > 0 ? `Also serving ${city.name}` : `Serving ${city.name}`}
-              </h2>
-              <p className="text-gray-500 text-sm mb-4">
-                {countyOnly.length} rater{countyOnly.length !== 1 ? 's' : ''} cover{countyOnly.length === 1 ? 's' : ''} all of {city.county} County.
-              </p>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {countyOnly.map(r => <RaterCard key={r.id} rater={r} />)}
-              </div>
-            </>
-          )}
-        </div>
-      ) : (
-        <div className="bg-blue-50 rounded-2xl p-10 text-center mb-12">
-          <p className="text-xl font-bold text-gray-800 mb-2">No raters listed yet in {city.name}</p>
-          <p className="text-gray-500 mb-6">Be the first Title 24 rater listed in {city.name} and start getting local leads.</p>
-          <Link href="/get-listed" className="bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-800 transition-colors inline-block">
-            Get Listed Free
+      <div className="mx-auto max-w-7xl px-4 pb-20 pt-12 sm:px-6 lg:px-8">
+        {all.length > 0 ? (
+          <>
+            {listsCity.length > 0 && (
+              <section className="mb-12">
+                <h2 className="text-lg font-bold">Raters listing {city.name} specifically</h2>
+                <p className="mt-1.5 mb-5 text-sm">
+                  {listsCity.length} rater{listsCity.length !== 1 ? 's' : ''} name {city.name} in
+                  their service area.
+                </p>
+                <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                  {listsCity.map(r => <RaterCard key={r.id} rater={r} />)}
+                </div>
+              </section>
+            )}
+
+            {countyOnly.length > 0 && (
+              <section>
+                <h2 className="text-lg font-bold">
+                  {listsCity.length > 0 ? `Also serving ${city.name}` : `Serving ${city.name}`}
+                </h2>
+                <p className="mt-1.5 mb-5 text-sm">
+                  {countyOnly.length} rater{countyOnly.length !== 1 ? 's' : ''} cover
+                  {countyOnly.length === 1 ? 's' : ''} all of {city.county} County.
+                </p>
+                <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                  {countyOnly.map(r => <RaterCard key={r.id} rater={r} />)}
+                </div>
+              </section>
+            )}
+          </>
+        ) : (
+          <div className="border-t border-ink py-14 text-center">
+            <p className="text-xl font-bold text-ink">No raters listed yet in {city.name}</p>
+            <p className="mx-auto mt-2 mb-7 max-w-[50ch] text-[0.95rem]">
+              Be the first Title 24 rater listed in {city.name} and start picking up local leads.
+            </p>
+            <Link href="/get-listed" className="btn-red px-5 py-2.5 text-sm">
+              Get listed free
+            </Link>
+          </div>
+        )}
+
+        {/* ── Local SEO body. Set as prose at a readable measure rather than
+               a grey rounded panel bolted to the bottom of the page. ── */}
+        <section className="mt-16 border-t border-ink pt-8">
+          <h2 className="text-lg font-bold">Title 24 compliance in {city.name}, California</h2>
+          <div className="mt-4 max-w-[70ch] space-y-4 leading-relaxed">
+            <p>
+              All new residential and commercial construction in {city.name} must comply with Title
+              24, the California Building Energy Efficiency Standards. That covers HERS verification
+              for new homes and major renovations, ECC verification for applicable projects, and
+              acceptance testing for mechanical systems.
+            </p>
+            <p>
+              Title 24 raters in {city.name} are certified professionals who perform field
+              inspections to verify that a building&rsquo;s energy systems, including HVAC,
+              insulation, windows and lighting, meet California&rsquo;s requirements. Without a
+              certified rater&rsquo;s sign-off, a building permit cannot be finalised.
+            </p>
+            <p>
+              Whether you&rsquo;re a contractor, builder or homeowner, lining up a qualified local
+              rater early saves time and avoids the kind of delay that only shows up the week your
+              inspection is scheduled.
+            </p>
+          </div>
+        </section>
+
+        <p className="mt-12 border-t border-rule pt-5 text-sm">
+          <Link
+            href="/get-listed"
+            className="font-semibold text-red-text underline decoration-red-rule underline-offset-4 hover:decoration-red"
+          >
+            Are you a Title 24 rater serving {city.name}? Get listed free →
           </Link>
-        </div>
-      )}
-
-      <div className="bg-gray-50 rounded-2xl p-8 mb-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Title 24 Compliance in {city.name}, CA</h2>
-        <p className="text-gray-600 leading-relaxed mb-4">
-          All new residential and commercial construction in {city.name}, California must comply with Title 24, the California Building Energy Efficiency Standards. This includes HERS (Home Energy Rating System) verification for new homes and major renovations, ECC (Energy Code Compliance) verification for applicable projects, and acceptance testing for mechanical systems.
-        </p>
-        <p className="text-gray-600 leading-relaxed mb-4">
-          Title 24 raters in {city.name} are certified professionals who perform field inspections to verify that a building&apos;s energy systems — including HVAC, insulation, windows, and lighting — meet California&apos;s requirements. Without a certified rater&apos;s sign-off, a building permit cannot be finalized.
-        </p>
-        <p className="text-gray-600 leading-relaxed">
-          Whether you&apos;re a contractor, builder, or homeowner in {city.name}, finding a qualified local rater early in your project can save time and avoid costly delays. Use our directory to find HERS raters and ECC raters serving {city.name} and the broader {city.county} County area.
         </p>
       </div>
-
-      <div className="text-center">
-        <p className="text-gray-500 mb-4">Are you a Title 24 rater serving {city.name}?</p>
-        <Link href="/get-listed" className="text-blue-700 font-semibold hover:underline">Get your business listed free</Link>
-      </div>
-    </div>
+    </>
   )
 }
