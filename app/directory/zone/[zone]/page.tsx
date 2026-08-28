@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { cityName, countyName } from '@/lib/california-data'
-import { citiesForZone, countiesForZone } from '@/lib/climate-zones'
+import { countyName } from '@/lib/california-data'
+import { countiesForZone } from '@/lib/climate-zones'
 import { ratersByCounty, ratersInZone } from '@/lib/rater-counts'
 import { CZ_NUMBERS } from '@/components/CaliforniaClimateZones'
 import Breadcrumb from '@/components/Breadcrumb'
@@ -43,7 +43,6 @@ export default async function ZonePage({ params }: { params: Promise<{ zone: str
   if (!CZ_NUMBERS.includes(zone)) notFound()
 
   const { full, partial } = countiesForZone(zone)
-  const cities = citiesForZone(zone)
   const [countsByCounty, raterCount] = await Promise.all([
     ratersByCounty(),
     ratersInZone([...full, ...partial]),
@@ -103,8 +102,7 @@ export default async function ZonePage({ params }: { params: Promise<{ zone: str
         </h1>
         <p className="mt-4 max-w-[50ch] text-[0.98rem] leading-relaxed">
           Pick your county below to see who covers it. CEC building climate zone {zone} covers{' '}
-          {countyCount} California {countyCount === 1 ? 'county' : 'counties'}
-          {cities.length > 0 ? ` and ${cities.length} listed cities` : ''}.
+          {countyCount} California {countyCount === 1 ? 'county' : 'counties'}.
         </p>
 
         <dl className="title-block mt-7">
@@ -138,11 +136,10 @@ export default async function ZonePage({ params }: { params: Promise<{ zone: str
 
         {partial.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-lg font-bold">Counties with towns in climate zone {zone}</h2>
-            <p className="mt-2 max-w-[62ch] text-sm">
-              The CEC publishes climate zones by ZIP code, and these counties aren&rsquo;t in that
-              source — their towns are. So their towns are placed in zone {zone} and the county
-              itself is not claimed either way.
+            <h2 className="text-lg font-bold">Also in climate zone {zone}</h2>
+            <p className="mt-2 max-w-[68ch] text-sm">
+              Partly — the CEC publishes zones by ZIP code and these counties aren&rsquo;t in that
+              source, so the zone is confirmed for their towns rather than county-wide.
             </p>
             <CellGrid>{partial.map(countyCell)}</CellGrid>
           </section>
@@ -152,24 +149,6 @@ export default async function ZonePage({ params }: { params: Promise<{ zone: str
           <p className="text-[0.95rem]">
             No California county in the directory maps to this zone yet.
           </p>
-        )}
-
-        {cities.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-lg font-bold">Cities in climate zone {zone}</h2>
-            <CellGrid>
-              {cities.map(slug => (
-                <li key={slug}>
-                  <Link
-                    href={`/directory/${slug}`}
-                    className="block bg-surface px-4 py-2.5 text-sm text-ink transition-colors hover:bg-accent-wash hover:text-accent"
-                  >
-                    {cityName(slug)}
-                  </Link>
-                </li>
-              ))}
-            </CellGrid>
-          </section>
         )}
 
         {/* Sixteen zones, every one a click from every other. Also how a
