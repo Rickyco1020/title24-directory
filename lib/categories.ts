@@ -7,27 +7,27 @@
 // as a read-only alias so legacy rows, old links (?type=ecc), and any listing
 // submitted before the merge still resolve correctly.
 
+// `code` is the short form used in title-block cells and dense tables, where
+// the full label would wrap. It is not an abbreviation we invented — these are
+// what the certificates themselves are called.
 export const CATEGORIES = [
   {
     value: 'hers',
     label: 'HERS / ECC Rater',
-    color: 'blue',
-    icon: '🏠',
-    description: 'Field verification under the HERS and ECC programs — the same role, renamed by the 2025 energy code',
+    code: 'CF3R',
+    description: 'Field verification under the HERS and ECC programs, the same role renamed by the 2025 energy code',
   },
   {
     value: 'commissioning',
     label: 'Commissioning Agent',
-    color: 'purple',
-    icon: '🔧',
-    description: 'HVAC and mechanical commissioning',
+    code: 'NRCX',
+    description: 'HVAC and mechanical commissioning for non-residential buildings',
   },
   {
     value: 'acceptance_testing',
     label: 'Acceptance Tester',
-    color: 'orange',
-    icon: '✅',
-    description: 'Non-residential acceptance testing',
+    code: 'NRCA',
+    description: 'Non-residential acceptance testing of mechanical, lighting and envelope systems',
   },
 ] as const
 
@@ -38,12 +38,10 @@ export const CATEGORY_ALIASES: Record<string, string> = {
   ecc: 'hers',
 }
 
-export const BADGE_COLORS: Record<string, string> = {
-  hers: 'bg-blue-100 text-blue-800',
-  ecc: 'bg-blue-100 text-blue-800',
-  commissioning: 'bg-purple-100 text-purple-800',
-  acceptance_testing: 'bg-orange-100 text-orange-800',
-}
+// Services are no longer colour-coded. Three arbitrary hues (blue, purple,
+// orange) told a visitor nothing the label didn't already say, and they were
+// the loudest thing on a results page. One tag treatment, the label carries
+// the meaning, and colour stays reserved for action and active state.
 
 export const CATEGORY_LABELS: Record<string, string> = {
   hers: 'HERS / ECC Rater',

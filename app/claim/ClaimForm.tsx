@@ -75,13 +75,13 @@ export default function ClaimForm({
           <label htmlFor="contact_name" className="block text-sm font-semibold text-gray-900 mb-1">Your name *</label>
           <input id="contact_name" name="contact_name" required
             className="w-full border border-gray-300 rounded-xl px-4 py-2.5" />
-          {err('contact_name') && <p className="text-sm text-red-600 mt-1">{err('contact_name')}</p>}
+          {err('contact_name') && <p className="text-sm text-accent-600 mt-1">{err('contact_name')}</p>}
         </div>
         <div>
           <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-1">Email *</label>
           <input id="email" name="email" type="email" required
             className="w-full border border-gray-300 rounded-xl px-4 py-2.5" />
-          {err('email') && <p className="text-sm text-red-600 mt-1">{err('email')}</p>}
+          {err('email') && <p className="text-sm text-accent-600 mt-1">{err('email')}</p>}
         </div>
       </div>
 
@@ -97,7 +97,7 @@ export default function ClaimForm({
           placeholder="Corrections, or anything we should know." />
       </div>
 
-      {state.error && <p className="text-sm text-red-600">{state.error}</p>}
+      {state.error && <p className="text-sm text-accent-600">{state.error}</p>}
 
       <button type="submit" disabled={pending}
         className="bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-800 disabled:opacity-60">

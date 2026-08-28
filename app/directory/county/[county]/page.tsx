@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { CA_COUNTIES, CITIES } from '@/lib/california-data'
+import { zonesForCounty, zoneCallout, zoneLabel } from '@/lib/climate-zones'
 import RaterCard from '@/components/RaterCard'
 import Breadcrumb from '@/components/Breadcrumb'
+import ZoneSheet from '@/components/ZoneSheet'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { absoluteUrl } from '@/lib/site'
@@ -38,6 +40,13 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
 
   const citiesInCounty = CITIES.filter(c => c.county_slug === countySlug)
 
+  // Every zone the county touches, from the CEC ZIP mapping. Empty for the
+  // seven counties the ZIP→place source doesn't cover, in which case the hero
+  // draws the plain base sheet and the page makes no zone claim.
+  const zones = zonesForCounty(countySlug)
+  const callout = zoneCallout(zones)
+  const label = zoneLabel(zones)
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -48,47 +57,89 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
     ],
   }
 
+  const count = raters?.length ?? 0
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <Breadcrumb items={[
-        { label: 'Home', href: '/' },
-        { label: 'Directory', href: '/directory' },
-        { label: `${county.name} County` },
-      ]} />
+      <ZoneSheet activeZones={zones}>
+        <Breadcrumb items={[
+          { label: 'Home', href: '/' },
+          { label: 'Directory', href: '/directory' },
+          { label: `${county.name} County` },
+        ]} />
 
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">HERS Raters in {county.name} County, CA</h1>
-      <p className="text-gray-500 mb-8">Find certified Title 24 compliance professionals serving {county.name} County</p>
+        <h1 className="max-w-[16ch] text-[clamp(1.7rem,3.8vw,2.6rem)] font-bold leading-[1.05]">
+          Title 24 raters serving <span className="marked">{county.name} County</span>.
+        </h1>
+        <p className="mt-4 max-w-[50ch] text-[0.98rem] leading-relaxed">
+          Certified HERS and ECC raters, commissioning agents, and acceptance testers covering{' '}
+          {county.name} County, California{label ? `, which spans CEC ${label}` : ''}.
+        </p>
 
-      {raters && raters.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
-          {raters.map((rater: any) => <RaterCard key={rater.id} rater={rater} />)}
-        </div>
-      ) : (
-        <div className="bg-blue-50 rounded-2xl p-10 text-center mb-12">
-          <p className="text-xl font-bold text-gray-800 mb-2">No raters listed yet in {county.name} County</p>
-          <p className="text-gray-500 mb-6">Be the first Title 24 rater listed here.</p>
-          <Link href="/get-listed" className="bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-800 transition-colors inline-block">Get Listed Free</Link>
-        </div>
-      )}
-
-      {citiesInCounty.length > 0 && (
-        <div className="mb-10">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Cities in {county.name} County</h2>
-          <div className="flex flex-wrap gap-2">
-            {citiesInCounty.map(city => (
-              <Link key={city.slug} href={`/directory/${city.slug}`} className="bg-white border border-gray-200 text-gray-700 text-sm px-3 py-1 rounded-lg hover:border-blue-400 hover:text-blue-700 transition-colors">
-                {city.name}
-              </Link>
-            ))}
+        <dl className="title-block mt-7">
+          <div>
+            <dt className="t-label">Raters</dt>
+            <dd className="mt-0.5 font-bold text-ink">{count}</dd>
           </div>
-        </div>
-      )}
+          {callout && (
+            <div>
+              <dt className="t-label">{zones.length > 1 ? 'Climate zones' : 'Climate zone'}</dt>
+              <dd className="mt-0.5 font-bold text-ink">{callout}</dd>
+            </div>
+          )}
+          <div>
+            <dt className="t-label">Cities</dt>
+            <dd className="mt-0.5 font-bold text-ink">{citiesInCounty.length}</dd>
+          </div>
+        </dl>
+      </ZoneSheet>
 
-      <div className="text-center">
-        <Link href="/get-listed" className="text-blue-700 font-semibold hover:underline">Are you a rater serving {county.name} County? Get listed free</Link>
+      <div className="mx-auto max-w-7xl px-4 pb-20 pt-12 sm:px-6 lg:px-8">
+        {count > 0 ? (
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            {raters!.map((rater: any) => <RaterCard key={rater.id} rater={rater} />)}
+          </div>
+        ) : (
+          <div className="border-t border-ink py-14 text-center">
+            <p className="text-xl font-bold text-ink">No raters listed yet in {county.name} County</p>
+            <p className="mx-auto mt-2 mb-7 max-w-[50ch] text-[0.95rem]">
+              Be the first Title 24 rater listed here and pick up the local leads.
+            </p>
+            <Link href="/get-listed" className="btn-accent px-5 py-2.5 text-sm">
+              Get listed free
+            </Link>
+          </div>
+        )}
+
+        {citiesInCounty.length > 0 && (
+          <section className="mt-14">
+            <h2 className="text-lg font-bold">Cities in {county.name} County</h2>
+            <ul className="cell-grid mt-5 sm:grid-cols-2 lg:grid-cols-4">
+              {citiesInCounty.map(city => (
+                <li key={city.slug}>
+                  <Link
+                    href={`/directory/${city.slug}`}
+                    className="block bg-surface px-4 py-2.5 text-sm text-ink transition-colors hover:bg-accent-wash hover:text-accent"
+                  >
+                    {city.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <p className="mt-14 border-t border-rule pt-5 text-sm">
+          <Link
+            href="/get-listed"
+            className="font-semibold text-accent underline decoration-accent-rule underline-offset-4 hover:decoration-accent"
+          >
+            Are you a rater serving {county.name} County? Get listed free →
+          </Link>
+        </p>
       </div>
-    </div>
+    </>
   )
 }

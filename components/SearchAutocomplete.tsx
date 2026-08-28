@@ -70,7 +70,7 @@ export default function SearchAutocomplete({ defaultValue = '' }: { defaultValue
 
   return (
     <div ref={wrapRef} className="relative">
-      <label htmlFor="q" className="block text-sm font-medium text-gray-700 mb-1">
+      <label htmlFor="q" className="t-label mb-1.5 block">
         Search
       </label>
       <input
@@ -99,18 +99,18 @@ export default function SearchAutocomplete({ defaultValue = '' }: { defaultValue
         // which is what closes the list for someone tabbing past the field.
         onBlur={() => setOpen(false)}
         onKeyDown={onKeyDown}
-        placeholder="County, city, ZIP, or company name..."
-        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+        placeholder="County, city, ZIP, or company name"
+        className="w-full rounded border border-rule bg-surface px-3 py-2 text-sm text-ink transition-colors placeholder:text-muted focus:border-ink focus:outline-none"
       />
 
       {open && items.length > 0 && (
         <ul
           id={listId}
           role="listbox"
-          className="absolute z-20 left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden max-h-80 overflow-y-auto"
+          className="absolute left-0 right-0 z-[30] mt-1 max-h-80 overflow-y-auto overflow-hidden rounded border border-ink bg-surface shadow-[0_10px_28px_oklch(0_0_0/0.10)]"
         >
           {!value.trim() && (
-            <li className="px-3 pt-2 pb-1 text-[11px] uppercase tracking-wide text-gray-400">
+            <li className="t-label border-b border-rule-soft px-3 pb-1.5 pt-2.5">
               Most searched
             </li>
           )}
@@ -126,11 +126,11 @@ export default function SearchAutocomplete({ defaultValue = '' }: { defaultValue
                 choose(s)
               }}
               onMouseEnter={() => setActive(i)}
-              className={`px-3 py-2 cursor-pointer ${i === active ? 'bg-blue-50' : 'bg-white'}`}
+              className={`cursor-pointer px-3 py-2 ${i === active ? 'bg-accent-wash' : 'bg-surface'}`}
             >
-              <span className="block text-sm text-gray-900 truncate">{s.label}</span>
+              <span className={`block truncate text-sm ${i === active ? 'text-accent' : 'text-ink'}`}>{s.label}</span>
               {s.sublabel && (
-                <span className="block text-xs text-gray-500 truncate">{s.sublabel}</span>
+                <span className="block truncate text-xs text-muted">{s.sublabel}</span>
               )}
             </li>
           ))}

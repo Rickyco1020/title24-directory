@@ -1,147 +1,241 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { CATEGORIES } from '@/lib/categories'
-import CaliforniaClimateZones from '@/components/CaliforniaClimateZones'
 import type { Metadata } from 'next'
+import { CATEGORIES } from '@/lib/categories'
+import { CA_COUNTIES, CITIES } from '@/lib/california-data'
+import { supabase } from '@/lib/supabase'
+import ZoneSheet from '@/components/ZoneSheet'
 
 export const metadata: Metadata = {
   title: 'Title 24 Directory | Find HERS & ECC Raters in California',
-  description: 'Find certified HERS raters, ECC raters, commissioning agents, and acceptance testers across California. Free directory, instant results.',
+  description:
+    'Find certified HERS raters, ECC raters, commissioning agents, and acceptance testers across California. Free directory, instant results.',
+}
+
+// Real numbers or none. The old hero advertised "4 service types" and
+// "100% free" as if they were achievements; the listing count is the only
+// figure here a visitor actually cares about, so it comes from the database.
+export const revalidate = 3600
+
+const FEATURED_COUNTIES = [
+  'los-angeles', 'orange', 'san-diego', 'riverside', 'san-bernardino',
+  'santa-clara', 'alameda', 'sacramento', 'fresno', 'kern',
+  'ventura', 'contra-costa',
+]
+
+const FEATURED_ARTICLES = [
+  {
+    slug: 'what-is-a-hers-rater',
+    title: 'What is a HERS Rater, now called an ECC Rater?',
+    excerpt:
+      'What the role does, how the 2025 energy code renamed it, and when your permit needs one.',
+    meta: 'HERS / ECC · 5 min',
+  },
+  {
+    slug: 'cf2r-vs-cf3r',
+    title: 'CF2R vs CF3R: which certificate is which',
+    excerpt:
+      'Installer certificates versus verifier certificates, and who signs each one.',
+    meta: 'Forms · 4 min',
+  },
+  {
+    slug: 'title-24-compliance-guide',
+    title: 'California Title 24 compliance: a builder’s guide',
+    excerpt:
+      'The whole path from CF1R through field verification, in the order it actually happens.',
+    meta: 'Compliance · 6 min',
+  },
+]
+
+async function listingCount(): Promise<number | null> {
+  const { count, error } = await supabase
+    .from('raters')
+    .select('id', { count: 'exact', head: true })
+    .in('status', ['approved', 'featured'])
+  // A failed count must not render as "0 listings" — that reads as an empty
+  // directory when it is actually our outage. Fall back to hiding the cell.
+  if (error) return null
+  return count ?? null
 }
 
 function SearchForm() {
   async function handleSearch(formData: FormData) {
     'use server'
-    const q = formData.get('q') as string
-    redirect(`/directory?q=${encodeURIComponent(q)}`)
+    const q = String(formData.get('q') ?? '').trim()
+    redirect(q ? `/directory?q=${encodeURIComponent(q)}` : '/directory')
   }
 
   return (
-    <form action={handleSearch} className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto">
+    <form action={handleSearch} className="mt-7 flex max-w-lg overflow-hidden rounded border-[1.5px] border-ink bg-surface">
+      <label htmlFor="home-q" className="sr-only">
+        City, county, or ZIP
+      </label>
       <input
+        id="home-q"
         type="text"
         name="q"
-        placeholder="Enter city, county, or zip code..."
-        className="flex-1 px-5 py-4 rounded-xl border-2 border-white/20 bg-white/10 text-white placeholder-blue-200 text-lg focus:outline-none focus:border-white backdrop-blur-sm"
+        placeholder="City, county, or ZIP"
+        autoComplete="off"
+        className="min-w-0 flex-1 bg-transparent px-4 py-3 text-[0.95rem] text-ink placeholder:text-muted focus:outline-none"
       />
-      <button
-        type="submit"
-        className="bg-yellow-400 text-gray-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-yellow-300 transition-colors whitespace-nowrap shadow-lg"
-      >
-        Find Raters
+      <button type="submit" className="btn-cta shrink-0 rounded-none px-6 py-3 text-sm">
+        Search
       </button>
     </form>
   )
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const count = await listingCount()
+  const counties = FEATURED_COUNTIES.map(slug => CA_COUNTIES.find(c => c.slug === slug)).filter(
+    (c): c is { name: string; slug: string } => Boolean(c),
+  )
+
   return (
-    <div>
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-700 to-blue-900 text-white py-24 px-4">
-        {/* Decorative: California's 16 CEC building climate zones */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 flex items-center justify-center sm:justify-end py-4 sm:pr-4 lg:pr-10 xl:pr-24 select-none">
-          <CaliforniaClimateZones className="h-[80%] max-w-[72%] sm:h-full sm:max-w-none w-auto text-white opacity-25 sm:opacity-70 sm:[mask-image:linear-gradient(to_left,black_60%,transparent_100%)]" />
-        </div>
+    <>
+      <ZoneSheet>
+        <h1 className="max-w-[15ch] text-[clamp(1.9rem,4.6vw,3rem)] font-bold leading-[1.04]">
+          Every certified rater in California, <span className="marked">before your inspection date</span>.
+        </h1>
+        <p className="mt-4 max-w-[48ch] text-[0.98rem] leading-relaxed">
+          HERS and ECC field verification, mechanical commissioning, and non-residential acceptance
+          testing. Searchable by city, county, or ZIP.
+        </p>
 
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold mb-4">Find a Title 24 Rater Near You</h1>
-          <p className="text-xl text-blue-100 mb-10">California&apos;s most complete directory of HERS raters, ECC raters, commissioning agents, and acceptance testers.</p>
-          <SearchForm />
-        </div>
-      </section>
+        <SearchForm />
 
-      <section className="border-b border-gray-200 bg-white">
-        <div className="max-w-5xl mx-auto px-4 py-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <dl className="title-block mt-7">
+          {count !== null && (
+            <div>
+              <dt className="t-label">Listings</dt>
+              <dd className="mt-0.5 font-bold text-ink">{count}</dd>
+            </div>
+          )}
           <div>
-            <p className="text-2xl font-bold text-blue-700">200+</p>
-            <p className="text-sm text-gray-500">Cities covered</p>
+            <dt className="t-label">Cities indexed</dt>
+            <dd className="mt-0.5 font-bold text-ink">{CITIES.length}</dd>
           </div>
           <div>
-            <p className="text-2xl font-bold text-blue-700">58</p>
-            <p className="text-sm text-gray-500">Counties</p>
+            <dt className="t-label">Code cycle</dt>
+            <dd className="mt-0.5 font-bold text-ink">2025</dd>
           </div>
-          <div>
-            <p className="text-2xl font-bold text-blue-700">4</p>
-            <p className="text-sm text-gray-500">Service types</p>
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-blue-700">100%</p>
-            <p className="text-sm text-gray-500">Free to use</p>
-          </div>
-        </div>
-      </section>
+        </dl>
+      </ZoneSheet>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-3">Find the Right Professional</h2>
-        <p className="text-center text-gray-500 mb-10 max-w-2xl mx-auto">Browse by service type to find the exact certification you need for your project.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* ── Services. A ruled index, not three identical cards: the three
+             services are not peers you compare, they are three places to
+             go, and a list says that faster. ── */}
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
+        <h2 className="text-[clamp(1.4rem,2.6vw,1.85rem)] font-bold">What are you looking for?</h2>
+        <p className="mt-2 max-w-[56ch] text-[0.95rem]">
+          Three certifications, three different scopes of work. Pick the one your permit calls for.
+        </p>
+
+        <ul className="mt-8 border-t border-ink">
           {CATEGORIES.map(cat => (
+            <li key={cat.value} className="border-b border-rule">
+              <Link
+                href={`/directory?type=${cat.value}`}
+                className="group flex flex-wrap items-baseline gap-x-6 gap-y-1.5 py-5 transition-colors hover:bg-sunk sm:flex-nowrap"
+              >
+                <span className="t-label w-16 shrink-0 pt-1">{cat.code}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-lg font-bold text-ink transition-colors group-hover:text-accent">
+                    {cat.label}
+                  </span>
+                  <span className="mt-1 block max-w-[62ch] text-sm">{cat.description}</span>
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="shrink-0 text-sm font-semibold text-accent transition-transform duration-150 group-hover:translate-x-0.5"
+                >
+                  Browse →
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* ── Browse by county. Replaces the old "How It Works" panel, which
+             explained a search box to people who use search boxes. This is
+             the thing they'd have used it for. ── */}
+      <section className="border-y border-rule bg-sunk">
+        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+            <h2 className="text-[clamp(1.4rem,2.6vw,1.85rem)] font-bold">Browse by county</h2>
             <Link
-              key={cat.value}
-              href={`/directory?type=${cat.value}`}
-              className="block p-6 bg-white rounded-2xl border border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all group"
+              href="/directory"
+              className="text-sm font-semibold text-accent underline decoration-accent-rule underline-offset-4 hover:decoration-accent"
             >
-              <div className="text-3xl mb-3">{cat.icon}</div>
-              <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-700 transition-colors">{cat.label}</h3>
-              <p className="text-gray-500 text-sm mb-3">{cat.description}</p>
-              <span className="text-blue-700 text-sm font-semibold group-hover:underline">Browse →</span>
+              All 58 counties →
             </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-gray-50 py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12">How It Works</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { step: '1', title: 'Search', desc: 'Enter your city, county, or zip code to find raters in your area.' },
-              { step: '2', title: 'Browse', desc: 'Compare raters by service type, location, and contact details.' },
-              { step: '3', title: 'Contact', desc: 'Reach out directly to schedule your Title 24 compliance inspection.' },
-            ].map(item => (
-              <div key={item.step} className="flex flex-col items-center">
-                <div className="w-14 h-14 bg-blue-700 text-white rounded-full flex items-center justify-center text-2xl font-bold mb-4">{item.step}</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-gray-500">{item.desc}</p>
-              </div>
-            ))}
           </div>
+
+          <ul className="cell-grid mt-7 sm:grid-cols-2 lg:grid-cols-4">
+            {counties.map(county => (
+              <li key={county.slug}>
+                <Link
+                  href={`/directory/county/${county.slug}`}
+                  className="block bg-surface px-4 py-3 text-sm font-medium text-ink transition-colors hover:bg-accent-wash hover:text-accent"
+                >
+                  {county.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">Title 24 Resources</h2>
-          <Link href="/resources" className="text-blue-700 font-semibold hover:underline">View all →</Link>
+      {/* ── Resources ── */}
+      <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+          <h2 className="text-[clamp(1.4rem,2.6vw,1.85rem)] font-bold">Title 24, explained</h2>
+          <Link
+            href="/resources"
+            className="text-sm font-semibold text-accent underline decoration-accent-rule underline-offset-4 hover:decoration-accent"
+          >
+            All resources →
+          </Link>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { slug: 'what-is-a-hers-rater', title: 'What Is a HERS Rater (Now Called an ECC Rater)?', excerpt: 'Learn what a HERS Rater does, how the role is becoming ECC Rater under the 2025 energy code, and when you need one.', tag: 'HERS / ECC', readTime: '5 min read' },
-            { slug: 'cf2r-vs-cf3r', title: 'CF2R vs CF3R: What\'s the Difference?', excerpt: 'Understanding the difference between installer certificates and verifier certificates in California Title 24.', tag: 'Forms', readTime: '4 min read' },
-            { slug: 'title-24-compliance-guide', title: 'California Title 24 Compliance Guide', excerpt: 'A complete guide to Title 24 energy code compliance for builders and contractors. Stay on schedule.', tag: 'Compliance', readTime: '6 min read' },
-          ].map(article => (
-            <Link key={article.slug} href={`/resources/${article.slug}`} className="group block bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg hover:border-blue-300 transition-all">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">{article.tag}</span>
-                <span className="text-xs text-gray-400">{article.readTime}</span>
-              </div>
-              <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-blue-700 transition-colors">{article.title}</h3>
-              <p className="text-gray-500 text-sm mb-4">{article.excerpt}</p>
-              <span className="text-blue-700 text-sm font-semibold group-hover:underline">Read article →</span>
-            </Link>
+
+        <ul className="mt-7 border-t border-ink">
+          {FEATURED_ARTICLES.map(article => (
+            <li key={article.slug} className="border-b border-rule">
+              <Link
+                href={`/resources/${article.slug}`}
+                className="group flex flex-wrap items-baseline gap-x-6 gap-y-1.5 py-5 transition-colors hover:bg-sunk sm:flex-nowrap"
+              >
+                <span className="t-label w-[9.5rem] shrink-0 pt-1">{article.meta}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-lg font-bold text-ink transition-colors group-hover:text-accent">
+                    {article.title}
+                  </span>
+                  <span className="mt-1 block max-w-[62ch] text-sm">{article.excerpt}</span>
+                </span>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
-      <section className="bg-blue-700 py-16 px-4">
-        <div className="max-w-3xl mx-auto text-center text-white">
-          <h2 className="text-3xl font-bold mb-4">Are You a Title 24 Rater?</h2>
-          <p className="text-blue-100 text-lg mb-8">Get your business listed in California&apos;s most complete Title 24 directory — completely free.</p>
-          <Link href="/get-listed" className="bg-yellow-400 text-gray-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-yellow-300 transition-colors inline-block shadow-lg">
-            Get Listed Free →
+      {/* ── Supply-side CTA ── */}
+      <section className="bg-accent">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-10 gap-y-6 px-4 py-12 sm:px-6 lg:px-8">
+          <div>
+            <h2 className="max-w-[20ch] text-[clamp(1.35rem,2.4vw,1.7rem)] font-bold text-white">
+              Are you a certified rater?
+            </h2>
+            <p className="mt-2 max-w-[52ch] text-[0.95rem] text-accent-wash">
+              Get listed in the directory GCs search when they need someone before an inspection.
+              Free, and it stays free.
+            </p>
+          </div>
+          <Link href="/get-listed" className="btn-cta px-6 py-3.5 text-[0.95rem]">
+            Get listed free →
           </Link>
         </div>
       </section>
-    </div>
+    </>
   )
 }
