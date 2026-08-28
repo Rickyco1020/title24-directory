@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     default: 'Title 24 Directory | Find HERS & ECC Raters in California',
   },
   description:
-    'Find certified HERS raters, ECC raters, commissioning agents, and acceptance testers across California. The most complete Title 24 compliance directory.',
+    'Find certified HERS raters, ECC raters, commissioning agents, and acceptance testers near you — searchable by California city, county, or CEC climate zone.',
   metadataBase: new URL(SITE_URL),
   verification: {
     google: '-KyQtMRifeytgspRHN_ukGNKioN5_oQ9cdnxaUMrn2U',
@@ -121,8 +121,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   Title<span className="text-accent-rule">24</span> Directory
                 </p>
                 <p className="mt-3 max-w-[34ch] text-sm leading-relaxed text-paper/65">
-                  Every certified HERS and ECC rater, commissioning agent, and acceptance tester in
-                  California. Free to search, no account.
+                  Certified HERS and ECC raters, commissioning agents, and acceptance testers
+                  across California. Free to search, no account.
                 </p>
               </div>
 

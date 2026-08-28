@@ -33,7 +33,7 @@
 // plain base sheet and say nothing. Silence beats a wrong number on a
 // compliance directory. All 472 city pages now resolve.
 
-import { CITIES, countyName } from './california-data'
+import { CITIES, cityName, countyName } from './california-data'
 
 export const CITY_ZONES: Record<string, readonly string[]> = {
   'adelanto': ['14'],
@@ -609,4 +609,27 @@ const ZONE_TO_COUNTIES: ReadonlyMap<string, ZoneCounties> = (() => {
 /** Counties inside a CEC zone. Both lists empty for a zone number we don't know. */
 export function countiesForZone(zone: string): ZoneCounties {
   return ZONE_TO_COUNTIES.get(zone) ?? { full: [], partial: [] }
+}
+
+const ZONE_TO_CITIES: ReadonlyMap<string, readonly string[]> = (() => {
+  const out = new Map<string, string[]>()
+  for (const [city, zones] of Object.entries(CITY_ZONES)) {
+    for (const zone of zones) {
+      let list = out.get(zone)
+      if (!list) out.set(zone, (list = []))
+      list.push(city)
+    }
+  }
+  const byName = (a: string, b: string) => cityName(a).localeCompare(cityName(b))
+  for (const list of out.values()) list.sort(byName)
+  return out
+})()
+
+/**
+ * Cities the CEC's own ZIP mapping places in this zone. A city with no entry of
+ * its own is left out rather than inherited from its county — a county can span
+ * several zones, so the inherited answer would be a guess.
+ */
+export function citiesForZone(zone: string): readonly string[] {
+  return ZONE_TO_CITIES.get(zone) ?? []
 }

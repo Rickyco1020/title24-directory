@@ -7,7 +7,8 @@ import { countiesForZone } from '@/lib/climate-zones'
 import { supabase } from '@/lib/supabase'
 import ZoneSheet from '@/components/ZoneSheet'
 import { CZ_NUMBERS } from '@/components/CaliforniaClimateZones'
-import ZoneMapPicker, { type ZoneCounty, type ZonePanel } from '@/components/ZoneMapPicker'
+import ZoneMapNav, { type TopCounty } from '@/components/ZoneMapNav'
+import { ratersByCounty } from '@/lib/rater-counts'
 
 export const metadata: Metadata = {
   title: 'Title 24 Directory | Find HERS & ECC Raters in California',
@@ -55,29 +56,6 @@ async function listingCount(): Promise<number | null> {
   return count ?? null
 }
 
-/**
- * Listings per county, tallied in one pass over `counties_served` — the same
- * column the county page filters on, so a number here always matches the page
- * it links to. Null on failure: the panels then link without counts rather
- * than telling every county it has none.
- */
-async function ratersByCounty(): Promise<Map<string, number> | null> {
-  const { data, error } = await supabase
-    .from('raters')
-    .select('counties_served')
-    .in('status', ['approved', 'featured'])
-  if (error || !data) return null
-
-  const rows = data as { counties_served: string[] | null }[]
-  const counts = new Map<string, number>()
-  for (const row of rows) {
-    for (const slug of row.counties_served ?? []) {
-      counts.set(slug, (counts.get(slug) ?? 0) + 1)
-    }
-  }
-  return counts
-}
-
 function SearchForm() {
   async function handleSearch(formData: FormData) {
     'use server'
@@ -108,28 +86,21 @@ function SearchForm() {
 export default async function HomePage() {
   const [count, ratersPerCounty] = await Promise.all([listingCount(), ratersByCounty()])
 
-  const decorate = (slugs: readonly string[]): ZoneCounty[] =>
-    slugs
-      .map(slug => ({
-        slug,
-        name: countyName(slug),
-        raters: ratersPerCounty ? (ratersPerCounty.get(slug) ?? 0) : null,
-      }))
-      // Busiest county first — on a directory the useful answer outranks the
-      // alphabet. Falls back to name order when the count query failed.
-      .sort((a, b) => (b.raters ?? 0) - (a.raters ?? 0) || a.name.localeCompare(b.name))
+  const countiesPerZone = Object.fromEntries(
+    CZ_NUMBERS.map(zone => {
+      const { full, partial } = countiesForZone(zone)
+      return [zone, full.length + partial.length]
+    }),
+  )
 
-  const zonePanels: ZonePanel[] = CZ_NUMBERS.map(zone => {
-    const { full, partial } = countiesForZone(zone)
-    return { zone, counties: decorate(full), partial: decorate(partial) }
-  })
-
-  // What the panel shows before a zone is picked. This is the one thing worth
-  // keeping from the old hand-picked county grid: the shortcut for someone who
-  // just wants the busy county they already know the name of.
-  const topCounties = ratersPerCounty
-    ? decorate([...ratersPerCounty.keys()])
-        .filter(c => (c.raters ?? 0) > 0)
+  // The one thing worth keeping from the old hand-picked county grid: the
+  // shortcut for someone who already knows the county's name. Busiest first —
+  // on a directory the useful answer outranks the alphabet.
+  const topCounties: TopCounty[] = ratersPerCounty
+    ? [...ratersPerCounty.entries()]
+        .filter(([, n]) => n > 0)
+        .map(([slug, raters]) => ({ slug, name: countyName(slug), raters }))
+        .sort((a, b) => b.raters - a.raters || a.name.localeCompare(b.name))
         .slice(0, 8)
     : []
 
@@ -216,7 +187,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <ZoneMapPicker panels={zonePanels} topCounties={topCounties} />
+          <ZoneMapNav countiesPerZone={countiesPerZone} topCounties={topCounties} />
         </div>
       </section>
 

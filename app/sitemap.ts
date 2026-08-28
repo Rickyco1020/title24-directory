@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { CITIES, CA_COUNTIES } from '@/lib/california-data'
+import { CZ_NUMBERS } from '@/components/CaliforniaClimateZones'
 import { SITE_URL } from '@/lib/site'
 import { supabase } from '@/lib/supabase'
 
@@ -34,6 +35,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const countyPages = CA_COUNTIES.map(county => ({
     url: `${BASE_URL}/directory/county/${county.slug}`,
+    lastModified: GENERATED_AT,
+    changeFrequency: 'daily' as const,
+    priority: 0.8,
+  }))
+
+  // Sixteen climate-zone pages. They sit above the counties in priority: a
+  // zone page is the entry point the homepage map points at, and it links on
+  // to every county and city inside it.
+  const zonePages = CZ_NUMBERS.map(zone => ({
+    url: `${BASE_URL}/directory/zone/${zone}`,
     lastModified: GENERATED_AT,
     changeFrequency: 'daily' as const,
     priority: 0.8,
@@ -77,5 +88,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     raterPages = []
   }
 
-  return [...corePages, ...countyPages, ...cityPages, ...articlePages, ...raterPages]
+  return [...corePages, ...zonePages, ...countyPages, ...cityPages, ...articlePages, ...raterPages]
 }
