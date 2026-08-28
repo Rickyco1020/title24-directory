@@ -76,7 +76,7 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
       <header className="border-t border-ink pt-6">
         {rater.status === 'featured' && <p className="t-label mb-2 text-ink">Featured listing</p>}
 
-        <div className="flex flex-wrap items-start justify-between gap-x-8 gap-y-5">
+        <div className="flex flex-col gap-y-5 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between sm:gap-x-8">
           <div className="min-w-0 flex-1">
             <h1 className="text-[clamp(1.7rem,3.4vw,2.4rem)] font-bold leading-[1.06]">
               {rater.business_name}
@@ -163,6 +163,17 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
           </div>
         )}
       </dl>
+
+      {/* Same escape hatch the directory cards carry — a seeded business landing
+          on its own profile needs a path to claim or remove it. */}
+      {rater.source === 'seeded' && (
+        <p className="mt-4 text-xs text-muted">
+          Compiled from public business information.{' '}
+          <Link href={`/claim?listing=${rater.id}`} className="underline underline-offset-2 hover:text-ink">
+            Claim or remove this listing
+          </Link>
+        </p>
+      )}
 
       {/* ── Coverage ── */}
       {(counties.length > 0 || cities.length > 0) && (
