@@ -1,11 +1,12 @@
 import { notFound } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { CITIES } from '@/lib/california-data'
-import { zonesForCity, zoneCallout, zoneLabel } from '@/lib/climate-zones'
+import { zonesForCity, zoneCallout } from '@/lib/climate-zones'
 import { absoluteUrl } from '@/lib/site'
 import RaterCard from '@/components/RaterCard'
 import Breadcrumb from '@/components/Breadcrumb'
 import ZoneSheet from '@/components/ZoneSheet'
+import ZoneLinks from '@/components/ZoneLinks'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -68,7 +69,6 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   // which case the hero draws the plain base sheet and claims nothing.
   const zones = zonesForCity(city.slug, city.county_slug)
   const callout = zoneCallout(zones)
-  const label = zoneLabel(zones)
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -85,7 +85,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <ZoneSheet activeZones={zones}>
+      <ZoneSheet activeZones={zones} linkZones>
         <Breadcrumb items={[
           { label: 'Home', href: '/' },
           { label: 'Directory', href: '/directory' },
@@ -98,7 +98,13 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
         </h1>
         <p className="mt-4 max-w-[50ch] text-[0.98rem] leading-relaxed">
           Certified compliance professionals serving {city.name} and the wider {city.county} County
-          area{label ? `, in CEC ${label}` : ''}.
+          area
+          {zones.length > 0 && (
+            <>
+              , in CEC <ZoneLinks zones={zones} />
+            </>
+          )}
+          .
         </p>
 
         <dl className="title-block mt-7">

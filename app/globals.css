@@ -169,6 +169,43 @@
     }
   }
 
+  /* ── The clickable version of the sheet map. The wrapper stays
+        pointer-events: none so the hero's own headline and search box are
+        never blocked; only the zone anchors take the pointer back. Hover
+        recolours through currentColor, so one rule lights a whole zone.
+
+        Off below the tablet breakpoint on purpose: down there the map is a
+        28%-opacity decoration tucked behind the copy, and a tap target you
+        cannot really see is worse than no tap target at all. ── */
+  .sheet-map--links a {
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .sheet-map--links a:hover {
+    color: var(--color-accent);
+  }
+  .sheet-map--links a:hover path {
+    fill-opacity: 0.34;
+    stroke-opacity: 0.9;
+    stroke-width: 2;
+  }
+  @media (max-width: 767px) {
+    .sheet-map--links a {
+      pointer-events: none;
+    }
+  }
+
+  /* The hero copy sits in a full-width column above the map. Left alone it is
+     one big hit target covering the map's whole half of the sheet, so the
+     column stops taking pointer events and its children — headline, prose,
+     title block, all narrower than the column — take them back. */
+  .sheet-content--pass {
+    pointer-events: none;
+  }
+  .sheet-content--pass > * {
+    pointer-events: auto;
+  }
+
   .sheet-legend {
     position: absolute;
     z-index: 2;

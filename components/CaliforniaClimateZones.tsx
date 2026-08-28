@@ -45,9 +45,21 @@ type Props = {
    * sits over a base drawing. Pass nothing for the plain base sheet.
    */
   activeZones?: readonly string[]
+  /**
+   * Wrap every zone in a link to its page. Plain SVG anchors, not a router
+   * click handler: the map then works with no JavaScript at all and this stays
+   * a server component. They carry tabIndex={-1} because the SVG is aria-hidden
+   * — focusable content inside hidden content is a trap, and the prose above
+   * the map carries the same links where a keyboard can reach them.
+   */
+  linkZones?: boolean
 }
 
-export default function CaliforniaClimateZones({ className = '', activeZones }: Props) {
+export default function CaliforniaClimateZones({
+  className = '',
+  activeZones,
+  linkZones = false,
+}: Props) {
   // Filtering from ZONES rather than mapping over activeZones keeps draw order
   // stable and silently ignores a zone number that isn't on the map.
   const marked = activeZones?.length
@@ -73,14 +85,24 @@ export default function CaliforniaClimateZones({ className = '', activeZones }: 
         vectorEffect="non-scaling-stroke"
         opacity={0.88}
       >
-        {ZONES.map(zone => (
-          <path key={zone.z} d={zone.d} fill="currentColor" fillOpacity={zone.o} strokeOpacity={0.28} />
-        ))}
+        {ZONES.map(zone => {
+          const shape = (
+            <path d={zone.d} fill="currentColor" fillOpacity={zone.o} strokeOpacity={0.28} />
+          )
+          return linkZones ? (
+            <a key={zone.z} href={`/directory/zone/${zone.z}`} tabIndex={-1}>
+              <title>Climate zone {zone.z}</title>
+              {shape}
+            </a>
+          ) : (
+            <g key={zone.z}>{shape}</g>
+          )
+        })}
       </g>
 
       {marked.length > 0 && (
         <g
-          className="text-accent"
+          className="pointer-events-none text-accent"
           stroke="currentColor"
           strokeWidth={2.2}
           strokeLinejoin="round"

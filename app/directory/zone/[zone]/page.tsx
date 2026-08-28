@@ -88,7 +88,7 @@ export default async function ZonePage({ params }: { params: Promise<{ zone: str
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <ZoneSheet activeZones={[zone]}>
+      <ZoneSheet activeZones={[zone]} linkZones>
         <Breadcrumb
           items={[
             { label: 'Home', href: '/' },

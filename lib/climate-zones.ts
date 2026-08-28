@@ -546,13 +546,6 @@ export function zonesForCity(citySlug: string, countySlug?: string): readonly st
   return countySlug ? zonesForCounty(countySlug) : []
 }
 
-/** "climate zone 12" / "climate zones 6, 8 and 9", or null when unknown. */
-export function zoneLabel(zones: readonly string[]): string | null {
-  if (!zones.length) return null
-  if (zones.length === 1) return `climate zone ${zones[0]}`
-  return `climate zones ${zones.slice(0, -1).join(', ')} and ${zones[zones.length - 1]}`
-}
-
 /** Title-block value: "12" / "6 · 8 · 9". Null when unknown. */
 export function zoneCallout(zones: readonly string[]): string | null {
   return zones.length ? zones.join(' · ') : null

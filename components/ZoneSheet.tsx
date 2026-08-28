@@ -12,6 +12,8 @@ type Props = {
    * same coastline in the hero reads as the broken one.
    */
   showMap?: boolean
+  /** Make the watermark map clickable — every zone links to its own page. */
+  linkZones?: boolean
   children: React.ReactNode
 }
 
@@ -23,7 +25,12 @@ type Props = {
  * apart. Zone numbers are never invented here — callers pass what
  * lib/climate-zones knows, which is nothing until that table is filled.
  */
-export default function ZoneSheet({ activeZones, showMap = true, children }: Props) {
+export default function ZoneSheet({
+  activeZones,
+  showMap = true,
+  linkZones = false,
+  children,
+}: Props) {
   const marked = Boolean(activeZones?.length)
 
   return (
@@ -31,12 +38,19 @@ export default function ZoneSheet({ activeZones, showMap = true, children }: Pro
       <div className="sheet-grid" aria-hidden="true" />
 
       {showMap && (
-        <div className="sheet-map" aria-hidden="true">
-          <CaliforniaClimateZones activeZones={activeZones} />
+        <div
+          className={`sheet-map${linkZones ? ' sheet-map--links' : ''}`}
+          aria-hidden="true"
+        >
+          <CaliforniaClimateZones activeZones={activeZones} linkZones={linkZones} />
         </div>
       )}
 
-      <div className="relative z-[2] mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
+      <div
+        className={`relative z-[2] mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8${
+          linkZones ? ' sheet-content--pass' : ''
+        }`}
+      >
         {children}
       </div>
 

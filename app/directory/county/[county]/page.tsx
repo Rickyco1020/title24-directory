@@ -1,10 +1,11 @@
 import { notFound } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { CA_COUNTIES, CITIES } from '@/lib/california-data'
-import { zonesForCounty, zoneCallout, zoneLabel } from '@/lib/climate-zones'
+import { zonesForCounty, zoneCallout } from '@/lib/climate-zones'
 import RaterCard from '@/components/RaterCard'
 import Breadcrumb from '@/components/Breadcrumb'
 import ZoneSheet from '@/components/ZoneSheet'
+import ZoneLinks from '@/components/ZoneLinks'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { absoluteUrl } from '@/lib/site'
@@ -45,7 +46,6 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
   // draws the plain base sheet and the page makes no zone claim.
   const zones = zonesForCounty(countySlug)
   const callout = zoneCallout(zones)
-  const label = zoneLabel(zones)
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -63,7 +63,7 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <ZoneSheet activeZones={zones}>
+      <ZoneSheet activeZones={zones} linkZones>
         <Breadcrumb items={[
           { label: 'Home', href: '/' },
           { label: 'Directory', href: '/directory' },
@@ -75,7 +75,13 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
         </h1>
         <p className="mt-4 max-w-[50ch] text-[0.98rem] leading-relaxed">
           Certified HERS and ECC raters, commissioning agents, and acceptance testers covering{' '}
-          {county.name} County, California{label ? `, which spans CEC ${label}` : ''}.
+          {county.name} County, California
+          {zones.length > 0 && (
+            <>
+              , which spans CEC <ZoneLinks zones={zones} />
+            </>
+          )}
+          .
         </p>
 
         <dl className="title-block mt-7">
