@@ -163,9 +163,17 @@ export default function ZoneMapPicker({
               </h3>
 
               {panel.counties.length > 0 && (
-                <ul className="mt-3 border-t border-rule">
+                // Zone 16 covers 21 counties. A single column of them runs
+                // twice the height of the map beside it, so long lists break
+                // into two — short ones stay single, where two columns would
+                // just look like a layout accident.
+                <ul
+                  className={`mt-3 border-t border-rule ${
+                    panel.counties.length > 8 ? 'sm:columns-2 sm:gap-x-10' : ''
+                  }`}
+                >
                   {panel.counties.map(county => (
-                    <li key={county.slug} className="border-b border-rule">
+                    <li key={county.slug} className="break-inside-avoid border-b border-rule">
                       <Link
                         href={`/directory/county/${county.slug}`}
                         className="group flex items-baseline justify-between gap-4 py-2.5 text-sm font-medium text-ink transition-colors hover:text-accent"
