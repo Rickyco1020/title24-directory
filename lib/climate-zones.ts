@@ -16,12 +16,22 @@
 // San Francisco 3, Fresno 13, Truckee 16, El Centro 15, Palm Springs 15,
 // Redding 11, Bakersfield 13, San Diego 7. All matched.
 //
-// COVERAGE IS DELIBERATELY INCOMPLETE. 417 of 472 cities and 51 of 58
-// counties resolve. The ZIP→place layer carries no rows for the far north and
-// eastern Sierra, so Del Norte, Humboldt, Inyo, Lassen, Modoc, Mono and
-// Siskiyou are absent here. Their pages render the plain base sheet and make
-// no zone claim, which is the correct behaviour: silence beats a wrong number
-// on a compliance directory. Add them when a source that covers them turns up.
+// The ZIP→place layer has no rows for the far north or eastern Sierra, so the
+// 21 cities in Del Norte, Humboldt, Inyo, Lassen, Modoc, Mono and Siskiyou were
+// resolved a second way: a point query against the CEC's own zone service at
+// each town's coordinates, which is the same authority answering the same
+// question about a point instead of a ZIP. Coordinates were validated by
+// confirming each falls inside the right county on the state's published county
+// boundaries. Humboldt and Del Norte towns return zone 1; the Siskiyou, Inyo,
+// Mono, Lassen and Modoc towns return 16.
+//
+// COUNTY COVERAGE IS STILL 51 OF 58, ON PURPOSE. Those seven counties have
+// city-level zones but no COUNTY_ZONES entry, because the point method samples
+// incorporated towns rather than the whole county, and a county can touch zones
+// none of its towns sit in. Claiming Humboldt is "zone 1" on the strength of
+// seven coastal towns would be an overclaim, so those county pages render the
+// plain base sheet and say nothing. Silence beats a wrong number on a
+// compliance directory. All 472 city pages now resolve.
 
 export const CITY_ZONES: Record<string, readonly string[]> = {
   'adelanto': ['14'],
@@ -30,6 +40,7 @@ export const CITY_ZONES: Record<string, readonly string[]> = {
   'albany': ['3'],
   'alhambra': ['9'],
   'aliso-viejo': ['6'],
+  'alturas': ['16'],
   'american-canyon': ['2'],
   'anaheim': ['8'],
   'anderson': ['11'],
@@ -37,6 +48,7 @@ export const CITY_ZONES: Record<string, readonly string[]> = {
   'antioch': ['12'],
   'apple-valley': ['14'],
   'arcadia': ['9'],
+  'arcata': ['1'],
   'arroyo-grande': ['5'],
   'artesia': ['8'],
   'arvin': ['13'],
@@ -59,6 +71,8 @@ export const CITY_ZONES: Record<string, readonly string[]> = {
   'beverly-hills': ['9'],
   'big-bear-lake': ['16'],
   'biggs': ['11'],
+  'bishop': ['16'],
+  'blue-lake': ['1'],
   'blythe': ['15'],
   'brawley': ['15'],
   'brea': ['8'],
@@ -109,6 +123,7 @@ export const CITY_ZONES: Record<string, readonly string[]> = {
   'costa-mesa': ['6'],
   'cotati': ['2'],
   'covina': ['9'],
+  'crescent-city': ['1'],
   'culver-city': ['8'],
   'cupertino': ['4'],
   'cypress': ['8'],
@@ -122,10 +137,12 @@ export const CITY_ZONES: Record<string, readonly string[]> = {
   'diamond-bar': ['9'],
   'dinuba': ['13'],
   'dixon': ['12'],
+  'dorris': ['16'],
   'dos-palos': ['12'],
   'downey': ['8'],
   'duarte': ['9'],
   'dublin': ['12'],
+  'dunsmuir': ['16'],
   'el-cajon': ['10'],
   'el-centro': ['15'],
   'el-cerrito': ['3'],
@@ -137,14 +154,19 @@ export const CITY_ZONES: Record<string, readonly string[]> = {
   'encinitas': ['7'],
   'escalon': ['12'],
   'escondido': ['10'],
+  'etna': ['16'],
+  'eureka': ['1'],
   'exeter': ['13'],
   'fairfax': ['2'],
   'fairfield': ['12'],
   'farmersville': ['13'],
+  'ferndale': ['1'],
   'fillmore': ['9'],
   'firebaugh': ['13'],
   'folsom': ['12'],
   'fontana': ['10'],
+  'fort-jones': ['16'],
+  'fortuna': ['1'],
   'fountain-valley': ['6'],
   'fowler': ['13'],
   'fremont': ['3'],
@@ -231,6 +253,7 @@ export const CITY_ZONES: Record<string, readonly string[]> = {
   'lynwood': ['8'],
   'madera': ['13'],
   'malibu': ['6'],
+  'mammoth-lakes': ['16'],
   'manhattan-beach': ['6'],
   'manteca': ['12'],
   'maricopa': ['13'],
@@ -249,6 +272,7 @@ export const CITY_ZONES: Record<string, readonly string[]> = {
   'mission-viejo': ['8'],
   'modesto': ['12'],
   'monrovia': ['9'],
+  'montague': ['16'],
   'montclair': ['10'],
   'montebello': ['9'],
   'monterey': ['3'],
@@ -258,6 +282,7 @@ export const CITY_ZONES: Record<string, readonly string[]> = {
   'moreno-valley': ['10'],
   'morgan-hill': ['4'],
   'morro-bay': ['5'],
+  'mount-shasta': ['16'],
   'mountain-view': ['4'],
   'murrieta': ['10'],
   'napa': ['2'],
@@ -324,6 +349,7 @@ export const CITY_ZONES: Record<string, readonly string[]> = {
   'rialto': ['10'],
   'richmond': ['3'],
   'ridgecrest': ['14'],
+  'rio-dell': ['1'],
   'rio-vista': ['12'],
   'ripon': ['12'],
   'riverbank': ['12'],
@@ -392,6 +418,7 @@ export const CITY_ZONES: Record<string, readonly string[]> = {
   'stockton': ['12'],
   'suisun-city': ['12'],
   'sunnyvale': ['4'],
+  'susanville': ['16'],
   'sutter-creek': ['12'],
   'taft': ['13'],
   'tehachapi': ['16'],
@@ -400,8 +427,10 @@ export const CITY_ZONES: Record<string, readonly string[]> = {
   'thousand-oaks': ['9'],
   'torrance': ['6', '8'],
   'tracy': ['12'],
+  'trinidad': ['1'],
   'truckee': ['16'],
   'tulare': ['13'],
+  'tulelake': ['16'],
   'turlock': ['12'],
   'tustin': ['8'],
   'twentynine-palms': ['14'],
@@ -420,6 +449,7 @@ export const CITY_ZONES: Record<string, readonly string[]> = {
   'wasco': ['13'],
   'waterford': ['12'],
   'watsonville': ['3'],
+  'weed': ['16'],
   'west-covina': ['9'],
   'west-hollywood': ['9'],
   'west-sacramento': ['12'],
@@ -438,6 +468,7 @@ export const CITY_ZONES: Record<string, readonly string[]> = {
   'woodland': ['12'],
   'yorba-linda': ['8'],
   'yountville': ['2'],
+  'yreka': ['16'],
   'yuba-city': ['11'],
   'yucaipa': ['10'],
   'yucca-valley': ['14'],
