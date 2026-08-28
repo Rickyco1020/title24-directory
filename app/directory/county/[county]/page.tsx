@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ county: s
   const county = CA_COUNTIES.find(c => c.slug === countySlug)
   if (!county) return {}
   return {
-    title: `HERS Raters in ${county.name} County, CA | Title 24 Directory`,
+    title: `HERS Raters in ${county.name} County, CA`,
     description: `Find certified HERS raters, ECC raters, and Title 24 acceptance testers in ${county.name} County, California.`,
     alternates: { canonical: absoluteUrl(`/directory/county/${county.slug}`) },
   }

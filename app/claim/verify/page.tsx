@@ -3,7 +3,7 @@ import { confirmRemoval } from '../actions'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Confirm a removal | Title 24 Directory',
+  title: 'Confirm a removal',
   robots: { index: false },
   // The token rides in the query string; don't leak it in a Referer header.
   referrer: 'no-referrer',

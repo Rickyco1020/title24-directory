@@ -4,7 +4,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Claim or Remove a Listing | Title 24 Directory',
+  title: 'Claim or Remove a Listing',
   description:
     'Claim your business listing, correct its details, or ask us to remove it from the California Title 24 rater directory.',
   robots: { index: false },

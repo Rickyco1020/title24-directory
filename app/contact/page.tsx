@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import ContactForm from './ContactForm'
 
 export const metadata: Metadata = {
-  title: 'Contact | Title 24 Directory',
+  title: 'Contact',
   description: 'Get in touch with Title 24 Directory. Questions about your listing, reporting incorrect information, or general Title 24 compliance questions.',
 }
 

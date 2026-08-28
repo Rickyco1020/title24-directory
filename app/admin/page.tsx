@@ -5,7 +5,7 @@ import { safeExternalUrl } from '@/lib/security'
 import type { Metadata } from 'next'
 import { cityName, countyName } from '@/lib/california-data'
 
-export const metadata: Metadata = { title: 'Admin | Title 24 Directory' }
+export const metadata: Metadata = { title: 'Admin' }
 export const dynamic = 'force-dynamic'
 
 

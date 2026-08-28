@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   const city = CITIES.find(c => c.slug === citySlug)
   if (!city) return {}
   return {
-    title: `HERS Raters in ${city.name}, CA | Title 24 Directory`,
+    title: `HERS Raters in ${city.name}, CA`,
     description: `Find certified HERS raters, ECC raters, and Title 24 acceptance testers in ${city.name}, California.`,
     alternates: { canonical: absoluteUrl(`/directory/${city.slug}`) },
   }

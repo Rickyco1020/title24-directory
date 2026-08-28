@@ -6,7 +6,7 @@ import type { Metadata } from 'next'
 const articles: Record<string, { title: string; seoTitle: string; description: string; tags: string[]; content: string }> = {
   'what-is-a-hers-rater': {
     title: 'What is a HERS Rater? (And When Do You Need One)',
-    seoTitle: 'What is a HERS Rater California | Title 24 Directory',
+    seoTitle: 'What is a HERS Rater California',
     description: 'Learn what a HERS rater is, why California requires them, and when you need one for your construction or renovation project.',
     tags: ['HERS'],
     content: `## What is a HERS Rater?
@@ -46,7 +46,7 @@ California's Title 24 compliance system is built on the principle that self-cert
   },
   'title-24-compliance-guide': {
     title: 'California Title 24 Compliance: A Builder\'s Guide',
-    seoTitle: 'California Title 24 Compliance Guide for Builders | Title 24 Directory',
+    seoTitle: 'California Title 24 Compliance Guide for Builders',
     description: 'A complete guide to California Title 24 energy code compliance for new construction and renovations. Learn what\'s required, who verifies it, and how to stay on schedule.',
     tags: ['Compliance'],
     content: `## California Title 24 Compliance: A Builder's Complete Guide
