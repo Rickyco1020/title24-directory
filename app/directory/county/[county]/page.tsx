@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { CA_COUNTIES, CITIES } from '@/lib/california-data'
-import { zonesForCounty, zoneCallout } from '@/lib/climate-zones'
+import { zonesForCounty, zoneCallout, zoneLabel } from '@/lib/climate-zones'
 import RaterCard from '@/components/RaterCard'
 import Breadcrumb from '@/components/Breadcrumb'
 import ZoneSheet from '@/components/ZoneSheet'
@@ -40,10 +40,12 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
 
   const citiesInCounty = CITIES.filter(c => c.county_slug === countySlug)
 
-  // Empty until lib/climate-zones is filled from the CEC reference. Until
-  // then the hero draws the plain base sheet and the page makes no zone claim.
+  // Every zone the county touches, from the CEC ZIP mapping. Empty for the
+  // seven counties the ZIP→place source doesn't cover, in which case the hero
+  // draws the plain base sheet and the page makes no zone claim.
   const zones = zonesForCounty(countySlug)
-  const callout = zoneCallout(countySlug)
+  const callout = zoneCallout(zones)
+  const label = zoneLabel(zones)
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -73,7 +75,7 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
         </h1>
         <p className="mt-4 max-w-[50ch] text-[0.98rem] leading-relaxed">
           Certified HERS and ECC raters, commissioning agents, and acceptance testers covering{' '}
-          {county.name} County, California.
+          {county.name} County, California{label ? `, which spans CEC ${label}` : ''}.
         </p>
 
         <dl className="title-block mt-7">
@@ -83,8 +85,8 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
           </div>
           {callout && (
             <div>
-              <dt className="t-label">Climate zone</dt>
-              <dd className="mt-0.5 font-bold text-ink">{callout.replace(/^Zones? /, '')}</dd>
+              <dt className="t-label">{zones.length > 1 ? 'Climate zones' : 'Climate zone'}</dt>
+              <dd className="mt-0.5 font-bold text-ink">{callout}</dd>
             </div>
           )}
           <div>

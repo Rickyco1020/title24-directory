@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { CITIES } from '@/lib/california-data'
-import { zonesForCounty, zoneCallout } from '@/lib/climate-zones'
+import { zonesForCity, zoneCallout, zoneLabel } from '@/lib/climate-zones'
 import { absoluteUrl } from '@/lib/site'
 import RaterCard from '@/components/RaterCard'
 import Breadcrumb from '@/components/Breadcrumb'
@@ -63,10 +63,12 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   const listsCity = all.filter(r => (r.cities_served ?? []).includes(city.slug))
   const countyOnly = all.filter(r => !(r.cities_served ?? []).includes(city.slug))
 
-  // A city inherits its county's zones. Empty until lib/climate-zones is
-  // filled, in which case the hero draws the plain base sheet.
-  const zones = zonesForCounty(city.county_slug)
-  const callout = zoneCallout(city.county_slug)
+  // The city's own CEC zone where the ZIP→place source has it, the county's
+  // set otherwise. Empty for the seven counties that source doesn't cover, in
+  // which case the hero draws the plain base sheet and claims nothing.
+  const zones = zonesForCity(city.slug, city.county_slug)
+  const callout = zoneCallout(zones)
+  const label = zoneLabel(zones)
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -96,7 +98,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
         </h1>
         <p className="mt-4 max-w-[50ch] text-[0.98rem] leading-relaxed">
           Certified compliance professionals serving {city.name} and the wider {city.county} County
-          area.
+          area{label ? `, in CEC ${label}` : ''}.
         </p>
 
         <dl className="title-block mt-7">
@@ -110,8 +112,8 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
           </div>
           {callout && (
             <div>
-              <dt className="t-label">Climate zone</dt>
-              <dd className="mt-0.5 font-bold text-ink">{callout.replace(/^Zones? /, '')}</dd>
+              <dt className="t-label">{zones.length > 1 ? 'Climate zones' : 'Climate zone'}</dt>
+              <dd className="mt-0.5 font-bold text-ink">{callout}</dd>
             </div>
           )}
         </dl>
