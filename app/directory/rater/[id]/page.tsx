@@ -89,7 +89,7 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
 
           <div className="flex shrink-0 flex-wrap gap-2.5">
             {rater.phone && (
-              <a href={`tel:${rater.phone}`} className="btn-red px-5 py-3 text-[0.95rem]">
+              <a href={`tel:${rater.phone}`} className="btn-accent px-5 py-3 text-[0.95rem]">
                 {rater.phone}
               </a>
             )}
@@ -131,7 +131,7 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
           <div className="bg-surface px-4 py-3.5">
             <dt className="t-label">Phone</dt>
             <dd className="mt-1 text-sm">
-              <a href={`tel:${rater.phone}`} className="text-red-text underline decoration-red-rule underline-offset-2 hover:decoration-red">
+              <a href={`tel:${rater.phone}`} className="text-accent underline decoration-accent-rule underline-offset-2 hover:decoration-accent">
                 {rater.phone}
               </a>
             </dd>
@@ -143,7 +143,7 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
           <div className="bg-surface px-4 py-3.5">
             <dt className="t-label">Email</dt>
             <dd className="mt-1 break-all text-sm">
-              <a href={`mailto:${rater.email}`} className="text-red-text underline decoration-red-rule underline-offset-2 hover:decoration-red">
+              <a href={`mailto:${rater.email}`} className="text-accent underline decoration-accent-rule underline-offset-2 hover:decoration-accent">
                 {rater.email}
               </a>
             </dd>
@@ -153,7 +153,7 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
           <div className="bg-surface px-4 py-3.5">
             <dt className="t-label">Website</dt>
             <dd className="mt-1 break-all text-sm">
-              <a href={website} target="_blank" rel="noopener noreferrer" className="text-red-text underline decoration-red-rule underline-offset-2 hover:decoration-red">
+              <a href={website} target="_blank" rel="noopener noreferrer" className="text-accent underline decoration-accent-rule underline-offset-2 hover:decoration-accent">
                 {website.replace(/^https?:\/\//, '')}
               </a>
             </dd>
@@ -208,7 +208,7 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
       <div className="mt-14 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-rule pt-5">
         <Link
           href="/directory"
-          className="text-sm font-semibold text-red-text underline decoration-red-rule underline-offset-4 hover:decoration-red"
+          className="text-sm font-semibold text-accent underline decoration-accent-rule underline-offset-4 hover:decoration-accent"
         >
           ← Back to directory
         </Link>

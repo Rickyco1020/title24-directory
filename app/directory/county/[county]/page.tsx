@@ -105,7 +105,7 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
             <p className="mx-auto mt-2 mb-7 max-w-[50ch] text-[0.95rem]">
               Be the first Title 24 rater listed here and pick up the local leads.
             </p>
-            <Link href="/get-listed" className="btn-red px-5 py-2.5 text-sm">
+            <Link href="/get-listed" className="btn-accent px-5 py-2.5 text-sm">
               Get listed free
             </Link>
           </div>
@@ -119,7 +119,7 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
                 <li key={city.slug}>
                   <Link
                     href={`/directory/${city.slug}`}
-                    className="block bg-surface px-4 py-2.5 text-sm text-ink transition-colors hover:bg-red-wash hover:text-red-text"
+                    className="block bg-surface px-4 py-2.5 text-sm text-ink transition-colors hover:bg-accent-wash hover:text-accent"
                   >
                     {city.name}
                   </Link>
@@ -132,7 +132,7 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
         <p className="mt-14 border-t border-rule pt-5 text-sm">
           <Link
             href="/get-listed"
-            className="font-semibold text-red-text underline decoration-red-rule underline-offset-4 hover:decoration-red"
+            className="font-semibold text-accent underline decoration-accent-rule underline-offset-4 hover:decoration-accent"
           >
             Are you a rater serving {county.name} County? Get listed free →
           </Link>

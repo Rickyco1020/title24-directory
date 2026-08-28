@@ -1,37 +1,49 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────
-   Title24 Directory — "Redline" design system.
+   Title24 Directory — "Plan Set" design system.
 
-   The reference object is a plan-check correction set: base drawing
-   in graphite on paper, corrections in red. Red is reserved for live
-   action and active state. It never decorates.
+   Structure comes from a drawing: base sheet in graphite on paper,
+   metadata in labelled title-block cells, accent reserved for live
+   action and active state. Accent never decorates.
 
-   Every colour is OKLCH. Body text sits at or above 4.5:1 on its own
-   surface; the values below are measured, not eyeballed.
+   Colour is the original brand pair — blue for action and state,
+   yellow for the one CTA that has to shout. Because every surface
+   reads these tokens, swapping the palette is this file and nothing
+   else.
+
+   Every colour is OKLCH (the values are Tailwind's own conversions of
+   the blue/yellow/gray scales this site already used). Body text sits
+   at or above 4.5:1 on its own surface; measured, not eyeballed.
    ───────────────────────────────────────────────────────────── */
 
 @theme {
-  /* Surfaces */
-  --color-paper: oklch(0.984 0.002 250);
+  /* Surfaces — gray-50 / white / gray-100 */
+  --color-paper: oklch(0.985 0.002 247.8);
   --color-surface: oklch(1 0 0);
-  --color-sunk: oklch(0.968 0.002 250);
+  --color-sunk: oklch(0.967 0.003 264.5);
 
-  /* Ink ramp */
-  --color-ink: oklch(0.185 0.008 250);        /* 17.8:1 on paper */
-  --color-body: oklch(0.400 0.008 250);       /*  8.8:1 on paper */
-  --color-muted: oklch(0.530 0.008 250);      /*  5.3:1 on white, 4.9:1 on sunk */
+  /* Ink ramp — gray-900 / gray-600 / just above gray-500 */
+  --color-ink: oklch(0.210 0.034 264.7);      /* 16.1:1 on paper */
+  --color-body: oklch(0.446 0.030 256.8);     /*  7.6:1 on paper */
+  --color-muted: oklch(0.530 0.027 264.4);    /*  5.3:1 on white, 4.9:1 on sunk */
 
-  /* Rules */
-  --color-rule: oklch(0.882 0.004 250);
-  --color-rule-soft: oklch(0.936 0.003 250);
+  /* Rules — gray-200 / gray-100 */
+  --color-rule: oklch(0.928 0.006 264.5);
+  --color-rule-soft: oklch(0.967 0.003 264.5);
 
-  /* Redline */
-  --color-red: oklch(0.505 0.198 28);         /* white on this = 6.5:1 */
-  --color-red-strong: oklch(0.450 0.195 28);
-  --color-red-text: oklch(0.455 0.185 28);    /* 7.0:1 on red-wash */
-  --color-red-wash: oklch(0.955 0.022 28);
-  --color-red-rule: oklch(0.855 0.055 28);
+  /* Accent — blue-700, the site's existing primary. Action and active
+     state only. */
+  --color-accent: oklch(0.488 0.217 264.4);   /* white on this = 7.0:1 */
+  --color-accent-strong: oklch(0.424 0.181 265.6);  /* blue-800, hover */
+  --color-accent-wash: oklch(0.932 0.032 255.6);    /* blue-100 */
+  --color-accent-rule: oklch(0.882 0.059 254.1);    /* blue-200 */
+  --color-accent-deep: oklch(0.379 0.146 265.5);    /* blue-900, tag text */
+
+  /* CTA — yellow-400. Exactly two on the site: the hero search and the
+     supply-side ask. A third would stop it meaning anything. */
+  --color-cta: oklch(0.852 0.176 91.8);
+  --color-cta-strong: oklch(0.905 0.182 98.1);      /* yellow-300, hover */
 
   /* Status */
   --color-flag: oklch(0.470 0.115 145);
@@ -79,14 +91,14 @@
 
   /* One visible focus treatment for the whole site. */
   :focus-visible {
-    outline: 2px solid var(--color-red);
+    outline: 2px solid var(--color-accent);
     outline-offset: 2px;
     border-radius: 2px;
   }
 
   ::selection {
-    background: var(--color-red-wash);
-    color: var(--color-red-text);
+    background: var(--color-accent-wash);
+    color: var(--color-accent-deep);
   }
 }
 
@@ -208,20 +220,30 @@
   }
 
   /* ── Buttons ── */
-  .btn-red {
-    background: var(--color-red);
+  .btn-accent {
+    background: var(--color-accent);
     color: oklch(1 0 0);
-    font-weight: 700;
-    border-radius: 4px;
+    font-weight: 600;
+    border-radius: 6px;
     transition: background-color 160ms var(--ease-out-quart);
   }
-  .btn-red:hover { background: var(--color-red-strong); }
+  .btn-accent:hover { background: var(--color-accent-strong); }
+
+  /* The loud one. Dark ink on yellow, never white. */
+  .btn-cta {
+    background: var(--color-cta);
+    color: var(--color-ink);
+    font-weight: 700;
+    border-radius: 6px;
+    transition: background-color 160ms var(--ease-out-quart);
+  }
+  .btn-cta:hover { background: var(--color-cta-strong); }
 
   .btn-ink {
     background: var(--color-ink);
     color: oklch(1 0 0);
     font-weight: 600;
-    border-radius: 4px;
+    border-radius: 6px;
     transition: opacity 160ms var(--ease-out-quart);
   }
   .btn-ink:hover { opacity: 0.86; }
@@ -231,10 +253,10 @@
     color: var(--color-ink);
     border: 1px solid var(--color-rule);
     font-weight: 600;
-    border-radius: 4px;
+    border-radius: 6px;
     transition: border-color 160ms var(--ease-out-quart);
   }
-  .btn-quiet:hover { border-color: var(--color-ink); }
+  .btn-quiet:hover { border-color: var(--color-accent); }
 
   /* ── Service tag ── */
   .tag {
@@ -244,8 +266,8 @@
     font-size: 0.65rem;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    background: var(--color-red-wash);
-    color: var(--color-red-text);
+    background: var(--color-accent-wash);
+    color: var(--color-accent-deep);
     border-radius: 3px;
     padding: 3px 6px;
   }
@@ -253,7 +275,7 @@
   /* ── Underlined phrase in a headline. The one place red touches
         display type. ── */
   .marked {
-    color: var(--color-red-text);
+    color: var(--color-accent);
     position: relative;
   }
   .marked::after {
@@ -263,8 +285,8 @@
     right: 0;
     bottom: 0.07em;
     height: 2px;
-    background: var(--color-red);
-    opacity: 0.5;
+    background: var(--color-accent);
+    opacity: 0.45;
   }
 }
 

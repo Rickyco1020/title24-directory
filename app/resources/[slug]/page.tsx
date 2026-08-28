@@ -333,7 +333,7 @@ export default async function ResourceArticlePage({ params }: { params: Promise<
           California by city, county, or ZIP.
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
-          <Link href="/directory" className="btn-red px-5 py-2.5 text-sm">
+          <Link href="/directory" className="btn-accent px-5 py-2.5 text-sm">
             Find a rater
           </Link>
           <Link href="/resources" className="btn-quiet px-5 py-2.5 text-sm">

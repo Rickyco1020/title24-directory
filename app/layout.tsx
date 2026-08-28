@@ -82,7 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <Link href="/" className="text-[1.05rem] font-bold tracking-[-0.025em] text-ink">
-                Title<span className="text-red">24</span> Directory
+                Title<span className="text-accent">24</span> Directory
               </Link>
 
               <nav className="hidden items-center gap-7 md:flex">
@@ -98,7 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 >
                   Resources
                 </Link>
-                <Link href="/get-listed" className="btn-red px-3.5 py-2 text-sm">
+                <Link href="/get-listed" className="btn-accent px-3.5 py-2 text-sm">
                   Get Listed
                 </Link>
               </nav>
@@ -118,7 +118,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <div className="grid gap-10 md:grid-cols-4">
               <div>
                 <p className="text-[1.05rem] font-bold tracking-[-0.025em] text-paper">
-                  Title<span className="text-red-rule">24</span> Directory
+                  Title<span className="text-accent-rule">24</span> Directory
                 </p>
                 <p className="mt-3 max-w-[34ch] text-sm leading-relaxed text-paper/65">
                   Every certified HERS and ECC rater, commissioning agent, and acceptance tester in

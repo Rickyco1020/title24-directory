@@ -126,9 +126,9 @@ export default function SearchAutocomplete({ defaultValue = '' }: { defaultValue
                 choose(s)
               }}
               onMouseEnter={() => setActive(i)}
-              className={`cursor-pointer px-3 py-2 ${i === active ? 'bg-red-wash' : 'bg-surface'}`}
+              className={`cursor-pointer px-3 py-2 ${i === active ? 'bg-accent-wash' : 'bg-surface'}`}
             >
-              <span className={`block truncate text-sm ${i === active ? 'text-red-text' : 'text-ink'}`}>{s.label}</span>
+              <span className={`block truncate text-sm ${i === active ? 'text-accent' : 'text-ink'}`}>{s.label}</span>
               {s.sublabel && (
                 <span className="block truncate text-xs text-muted">{s.sublabel}</span>
               )}

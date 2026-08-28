@@ -45,7 +45,7 @@ export default function ResourcesPage() {
                 ))}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block max-w-[58ch] text-[1.05rem] font-bold leading-snug text-ink transition-colors group-hover:text-red-text">
+                <span className="block max-w-[58ch] text-[1.05rem] font-bold leading-snug text-ink transition-colors group-hover:text-accent">
                   {article.title}
                 </span>
                 <span className="mt-1.5 block max-w-[68ch] text-sm leading-relaxed">
@@ -62,7 +62,7 @@ export default function ResourcesPage() {
         <p className="mt-2 max-w-[56ch] text-[0.95rem]">
           Every certified rater in California, searchable by city, county, or ZIP.
         </p>
-        <Link href="/directory" className="btn-red mt-5 inline-block px-5 py-2.5 text-sm">
+        <Link href="/directory" className="btn-accent mt-5 inline-block px-5 py-2.5 text-sm">
           Find a rater
         </Link>
       </aside>

@@ -34,7 +34,7 @@ export default function ZoneSheet({ activeZones, children }: Props) {
 
       <p className="sheet-legend t-label" aria-hidden="true">
         <span
-          className={`inline-block h-[9px] w-[9px] rounded-[2px] ${marked ? 'bg-red' : 'bg-ink/30'}`}
+          className={`inline-block h-[9px] w-[9px] rounded-[2px] ${marked ? 'bg-accent' : 'bg-ink/30'}`}
         />
         {marked ? 'Active zone' : 'CEC building climate zones 1–16'}
       </p>

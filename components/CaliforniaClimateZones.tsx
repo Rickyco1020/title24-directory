@@ -72,7 +72,7 @@ export default function CaliforniaClimateZones({ className = '', activeZones }: 
 
       {marked.length > 0 && (
         <g
-          className="text-red"
+          className="text-accent"
           stroke="currentColor"
           strokeWidth={2.2}
           strokeLinejoin="round"

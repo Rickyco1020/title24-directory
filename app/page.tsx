@@ -78,7 +78,7 @@ function SearchForm() {
         autoComplete="off"
         className="min-w-0 flex-1 bg-transparent px-4 py-3 text-[0.95rem] text-ink placeholder:text-muted focus:outline-none"
       />
-      <button type="submit" className="btn-red shrink-0 rounded-none px-6 py-3 text-sm">
+      <button type="submit" className="btn-cta shrink-0 rounded-none px-6 py-3 text-sm">
         Search
       </button>
     </form>
@@ -140,14 +140,14 @@ export default async function HomePage() {
               >
                 <span className="t-label w-16 shrink-0 pt-1">{cat.code}</span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-lg font-bold text-ink transition-colors group-hover:text-red-text">
+                  <span className="block text-lg font-bold text-ink transition-colors group-hover:text-accent">
                     {cat.label}
                   </span>
                   <span className="mt-1 block max-w-[62ch] text-sm">{cat.description}</span>
                 </span>
                 <span
                   aria-hidden="true"
-                  className="shrink-0 text-sm font-semibold text-red-text transition-transform duration-150 group-hover:translate-x-0.5"
+                  className="shrink-0 text-sm font-semibold text-accent transition-transform duration-150 group-hover:translate-x-0.5"
                 >
                   Browse →
                 </span>
@@ -166,7 +166,7 @@ export default async function HomePage() {
             <h2 className="text-[clamp(1.4rem,2.6vw,1.85rem)] font-bold">Browse by county</h2>
             <Link
               href="/directory"
-              className="text-sm font-semibold text-red-text underline decoration-red-rule underline-offset-4 hover:decoration-red"
+              className="text-sm font-semibold text-accent underline decoration-accent-rule underline-offset-4 hover:decoration-accent"
             >
               All 58 counties →
             </Link>
@@ -177,7 +177,7 @@ export default async function HomePage() {
               <li key={county.slug}>
                 <Link
                   href={`/directory/county/${county.slug}`}
-                  className="block bg-surface px-4 py-3 text-sm font-medium text-ink transition-colors hover:bg-red-wash hover:text-red-text"
+                  className="block bg-surface px-4 py-3 text-sm font-medium text-ink transition-colors hover:bg-accent-wash hover:text-accent"
                 >
                   {county.name}
                 </Link>
@@ -193,7 +193,7 @@ export default async function HomePage() {
           <h2 className="text-[clamp(1.4rem,2.6vw,1.85rem)] font-bold">Title 24, explained</h2>
           <Link
             href="/resources"
-            className="text-sm font-semibold text-red-text underline decoration-red-rule underline-offset-4 hover:decoration-red"
+            className="text-sm font-semibold text-accent underline decoration-accent-rule underline-offset-4 hover:decoration-accent"
           >
             All resources →
           </Link>
@@ -208,7 +208,7 @@ export default async function HomePage() {
               >
                 <span className="t-label w-[9.5rem] shrink-0 pt-1">{article.meta}</span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-lg font-bold text-ink transition-colors group-hover:text-red-text">
+                  <span className="block text-lg font-bold text-ink transition-colors group-hover:text-accent">
                     {article.title}
                   </span>
                   <span className="mt-1 block max-w-[62ch] text-sm">{article.excerpt}</span>
@@ -220,18 +220,18 @@ export default async function HomePage() {
       </section>
 
       {/* ── Supply-side CTA ── */}
-      <section className="border-t border-ink bg-ink">
+      <section className="bg-accent">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-10 gap-y-6 px-4 py-12 sm:px-6 lg:px-8">
           <div>
-            <h2 className="max-w-[20ch] text-[clamp(1.35rem,2.4vw,1.7rem)] font-bold text-paper">
+            <h2 className="max-w-[20ch] text-[clamp(1.35rem,2.4vw,1.7rem)] font-bold text-white">
               Are you a certified rater?
             </h2>
-            <p className="mt-2 max-w-[52ch] text-[0.95rem] text-paper/70">
+            <p className="mt-2 max-w-[52ch] text-[0.95rem] text-accent-wash">
               Get listed in the directory GCs search when they need someone before an inspection.
               Free, and it stays free.
             </p>
           </div>
-          <Link href="/get-listed" className="btn-red px-6 py-3.5 text-[0.95rem]">
+          <Link href="/get-listed" className="btn-cta px-6 py-3.5 text-[0.95rem]">
             Get listed free →
           </Link>
         </div>

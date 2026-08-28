@@ -36,7 +36,7 @@ export default function RaterCard({ rater }: { rater: Rater }) {
           <h3 className="text-lg font-bold leading-tight">
             <Link
               href={`/directory/rater/${rater.id}`}
-              className="text-ink transition-colors hover:text-red-text"
+              className="text-ink transition-colors hover:text-accent"
             >
               {rater.business_name}
             </Link>
@@ -88,7 +88,7 @@ export default function RaterCard({ rater }: { rater: Rater }) {
                   href={website}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-red-text underline decoration-red-rule underline-offset-2 hover:decoration-red"
+                  className="text-accent underline decoration-accent-rule underline-offset-2 hover:decoration-accent"
                 >
                   Website
                 </a>
@@ -96,7 +96,7 @@ export default function RaterCard({ rater }: { rater: Rater }) {
               {rater.email && (
                 <a
                   href={`mailto:${rater.email}`}
-                  className="text-red-text underline decoration-red-rule underline-offset-2 hover:decoration-red"
+                  className="text-accent underline decoration-accent-rule underline-offset-2 hover:decoration-accent"
                 >
                   Email
                 </a>

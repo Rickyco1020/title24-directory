@@ -38,7 +38,7 @@ export default function AdminLoginPage() {
             />
           </div>
           {state.error && (
-            <p className="text-red-500 text-sm">{state.error}</p>
+            <p className="text-accent-500 text-sm">{state.error}</p>
           )}
           <LoginButton />
         </form>

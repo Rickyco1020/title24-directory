@@ -98,7 +98,7 @@ export default async function AdminPage() {
           <p className="text-gray-500 text-sm mt-1">Manage rater listings</p>
         </div>
         <form action={adminLogout}>
-          <button type="submit" className="text-sm text-gray-500 hover:text-red-600 font-medium border border-gray-200 rounded-lg px-4 py-2 hover:border-red-300 transition-colors">
+          <button type="submit" className="text-sm text-gray-500 hover:text-accent-600 font-medium border border-gray-200 rounded-lg px-4 py-2 hover:border-accent-300 transition-colors">
             Log Out
           </button>
         </form>
@@ -113,7 +113,7 @@ export default async function AdminPage() {
             {requests!.map((r: any) => (
               <li key={r.id} className="text-sm text-orange-900">
                 <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold mr-2 ${
-                  r.kind === 'remove' ? 'bg-red-200 text-red-900' : 'bg-orange-200 text-orange-900'}`}>
+                  r.kind === 'remove' ? 'bg-accent-200 text-accent-900' : 'bg-orange-200 text-orange-900'}`}>
                   {r.kind.toUpperCase()}
                 </span>
                 {r.kind === 'remove' && <VerificationBadge status={r.verification_status} sentTo={r.verify_sent_to} />}
@@ -183,7 +183,7 @@ export default async function AdminPage() {
                       </p>
                     )}
                     {rater.website && !safeExternalUrl(rater.website) && (
-                      <p className="text-sm text-red-600 mb-1" title="Not an http(s) URL — shown as plain text, not linked">
+                      <p className="text-sm text-accent-600 mb-1" title="Not an http(s) URL — shown as plain text, not linked">
                         ⚠ Unsafe website value: <span className="font-mono">{rater.website}</span>
                       </p>
                     )}
@@ -220,7 +220,7 @@ export default async function AdminPage() {
                       </button>
                     </form>
                     <form action={rejectRater.bind(null, rater.id)}>
-                      <button type="submit" className="w-full bg-red-100 text-red-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-200 transition-colors">
+                      <button type="submit" className="w-full bg-accent-100 text-accent-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-accent-200 transition-colors">
                         ✕ Reject
                       </button>
                     </form>
@@ -265,7 +265,7 @@ export default async function AdminPage() {
                   </form>
                 )}
                 <form action={rejectRater.bind(null, rater.id)}>
-                  <button type="submit" className="bg-red-100 text-red-700 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-200 transition-colors">
+                  <button type="submit" className="bg-accent-100 text-accent-700 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-accent-200 transition-colors">
                     Remove
                   </button>
                 </form>

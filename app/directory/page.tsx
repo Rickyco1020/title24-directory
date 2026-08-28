@@ -46,7 +46,7 @@ function NoResults({ title, body, suggestions = [] }: { title: string; body: str
         <Link href="/directory" className="btn-quiet px-5 py-2.5 text-sm">
           Browse all raters
         </Link>
-        <Link href="/get-listed" className="btn-red px-5 py-2.5 text-sm">
+        <Link href="/get-listed" className="btn-accent px-5 py-2.5 text-sm">
           Get listed free
         </Link>
       </div>
@@ -357,7 +357,7 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Pr
         </div>
 
         <div className="flex items-end">
-          <button type="submit" className="btn-red w-full px-4 py-2 text-sm">
+          <button type="submit" className="btn-accent w-full px-4 py-2 text-sm">
             Search
           </button>
         </div>

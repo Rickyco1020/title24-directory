@@ -41,23 +41,23 @@ export default function ContactForm() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Your Name <span className="text-red-500">*</span></label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Your Name <span className="text-accent-500">*</span></label>
           <input required type="text" name="name" placeholder="Full name"
-            className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 ${fe.name ? 'border-red-400' : 'border-gray-300'}`} />
-          {fe.name && <p className="text-red-500 text-sm mt-1">{fe.name[0]}</p>}
+            className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 ${fe.name ? 'border-accent-400' : 'border-gray-300'}`} />
+          {fe.name && <p className="text-accent-500 text-sm mt-1">{fe.name[0]}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email Address <span className="text-red-500">*</span></label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Email Address <span className="text-accent-500">*</span></label>
           <input required type="email" name="email" placeholder="you@company.com"
-            className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 ${fe.email ? 'border-red-400' : 'border-gray-300'}`} />
-          {fe.email && <p className="text-red-500 text-sm mt-1">{fe.email[0]}</p>}
+            className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 ${fe.email ? 'border-accent-400' : 'border-gray-300'}`} />
+          {fe.email && <p className="text-accent-500 text-sm mt-1">{fe.email[0]}</p>}
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Subject <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Subject <span className="text-accent-500">*</span></label>
         <select required name="subject"
-          className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 bg-white ${fe.subject ? 'border-red-400' : 'border-gray-300'}`}>
+          className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 bg-white ${fe.subject ? 'border-accent-400' : 'border-gray-300'}`}>
           <option value="">Select a topic...</option>
           <option>Question about my listing</option>
           <option>Report incorrect information</option>
@@ -65,17 +65,17 @@ export default function ContactForm() {
           <option>Partnership or advertising</option>
           <option>Other</option>
         </select>
-        {fe.subject && <p className="text-red-500 text-sm mt-1">{fe.subject[0]}</p>}
+        {fe.subject && <p className="text-accent-500 text-sm mt-1">{fe.subject[0]}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Message <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Message <span className="text-accent-500">*</span></label>
         <textarea required name="message" rows={5} placeholder="How can we help?"
-          className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 resize-none ${fe.message ? 'border-red-400' : 'border-gray-300'}`} />
-        {fe.message && <p className="text-red-500 text-sm mt-1">{fe.message[0]}</p>}
+          className={`w-full border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 resize-none ${fe.message ? 'border-accent-400' : 'border-gray-300'}`} />
+        {fe.message && <p className="text-accent-500 text-sm mt-1">{fe.message[0]}</p>}
       </div>
 
-      {state.error && <p className="text-red-500 text-sm">{state.error}</p>}
+      {state.error && <p className="text-accent-500 text-sm">{state.error}</p>}
       <SubmitButton />
     </form>
   )

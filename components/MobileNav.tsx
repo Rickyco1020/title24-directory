@@ -85,14 +85,14 @@ export default function MobileNav() {
                   key={link.href}
                   href={link.href}
                   className={`rounded px-3 py-2.5 text-base font-medium transition-colors ${
-                    active ? 'bg-red-wash text-red-text' : 'text-body hover:bg-sunk hover:text-ink'
+                    active ? 'bg-accent-wash text-accent' : 'text-body hover:bg-sunk hover:text-ink'
                   }`}
                 >
                   {link.label}
                 </Link>
               )
             })}
-            <Link href="/get-listed" className="btn-red mt-1 px-3 py-2.5 text-center text-base">
+            <Link href="/get-listed" className="btn-accent mt-1 px-3 py-2.5 text-center text-base">
               Get Listed
             </Link>
           </nav>
