@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { CATEGORIES } from '@/lib/categories'
 import { CITIES, countyName } from '@/lib/california-data'
@@ -9,11 +8,33 @@ import ZoneSheet from '@/components/ZoneSheet'
 import { CZ_NUMBERS } from '@/components/CaliforniaClimateZones'
 import ZoneMapNav, { type TopCounty } from '@/components/ZoneMapNav'
 import { ratersByCounty } from '@/lib/rater-counts'
+import { absoluteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Title 24 Directory | Find HERS & ECC Raters in California',
   description:
     'Find certified HERS raters, ECC raters, commissioning agents, and acceptance testers across California. Free directory, instant results.',
+  // The homepage is reachable as /, /?ref=…, and via the apex→www redirect.
+  // Without this, each of those is a candidate for the indexed URL.
+  alternates: { canonical: absoluteUrl('/') },
+}
+
+// WebSite + SearchAction: tells Google the directory's own search exists, and
+// where to send a query. Points at the same /directory?q= route the hero form
+// submits to, so the sitelinks searchbox lands on a real result page.
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Title 24 Directory',
+  url: absoluteUrl('/'),
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: absoluteUrl('/directory?q={search_term_string}'),
+    },
+    'query-input': 'required name=search_term_string',
+  },
 }
 
 // Real numbers or none. The old hero advertised "4 service types" and
@@ -64,15 +85,13 @@ async function listingCount(): Promise<number | null> {
   return count ?? null
 }
 
+// A plain GET form rather than a server action. The hero's search box is the
+// first thing a visitor touches, often before the page has finished loading —
+// an ordinary form submits on Enter and on the button from the moment the HTML
+// is parsed, with no JavaScript and nothing to hydrate first.
 function SearchForm() {
-  async function handleSearch(formData: FormData) {
-    'use server'
-    const q = String(formData.get('q') ?? '').trim()
-    redirect(q ? `/directory?q=${encodeURIComponent(q)}` : '/directory')
-  }
-
   return (
-    <form action={handleSearch} className="mt-7 flex max-w-lg overflow-hidden rounded border-[1.5px] border-ink bg-surface">
+    <form action="/directory" method="GET" className="mt-7 flex max-w-lg overflow-hidden rounded border-[1.5px] border-ink bg-surface">
       <label htmlFor="home-q" className="sr-only">
         City, county, or ZIP
       </label>
@@ -114,6 +133,8 @@ export default async function HomePage() {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
+
       <ZoneSheet linkZones>
         <h1 className="max-w-[16ch] text-[clamp(1.9rem,4.6vw,3rem)] font-bold leading-[1.04]">
           Find a certified rater <span className="marked">near you</span>, before your inspection

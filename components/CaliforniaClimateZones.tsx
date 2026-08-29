@@ -91,7 +91,13 @@ export default function CaliforniaClimateZones({
           )
           return linkZones ? (
             <a key={zone.z} href={`/directory/zone/${zone.z}`} tabIndex={-1}>
-              <title>Climate zone {zone.z}</title>
+              {/* One string child, not `Climate zone {zone.z}`. React treats
+                  every <title> as document metadata and refuses to render an
+                  array of children into one, so the split form served an empty
+                  <title> and then hydrated a filled one — the whole page
+                  re-rendered on the client (React #418), which wiped whatever
+                  had already been typed into the hero search box. */}
+              <title>{`Climate zone ${zone.z}`}</title>
               {shape}
             </a>
           ) : (

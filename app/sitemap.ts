@@ -80,7 +80,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (error) throw error
     raterPages = (data ?? []).map((r: { id: string; created_at?: string | null }) => ({
       url: `${BASE_URL}/directory/rater/${r.id}`,
-      lastModified: r.created_at ? new Date(r.created_at) : new Date(),
+      lastModified: r.created_at ? new Date(r.created_at) : GENERATED_AT,
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     }))

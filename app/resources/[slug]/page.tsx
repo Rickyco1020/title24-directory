@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Breadcrumb from '@/components/Breadcrumb'
 import type { Metadata } from 'next'
+import { absoluteUrl } from '@/lib/site'
 
 const articles: Record<string, { title: string; seoTitle: string; description: string; tags: string[]; content: string }> = {
   'what-is-a-hers-rater': {
@@ -9,9 +10,9 @@ const articles: Record<string, { title: string; seoTitle: string; description: s
     seoTitle: 'What Is a HERS Rater in California',
     description: 'Learn what a HERS rater is, why California requires them, and when you need one for your construction or renovation project.',
     tags: ['HERS'],
-    content: `## What is a HERS Rater?
+    content: `## The Job in Plain Terms
 
-A HERS (Home Energy Rating System) rater is a certified professional who inspects and tests a home's energy systems to verify compliance with California's Title 24 energy code. Think of a HERS rater as an energy code inspector â like a structural inspector checks framing, a HERS rater checks your HVAC systems, insulation, ductwork, and windows to make sure everything performs as the plans specify.
+A HERS (Home Energy Rating System) rater is a certified professional who inspects and tests a home's energy systems to verify compliance with California's Title 24 energy code. Think of a HERS rater as an energy code inspector — like a structural inspector checks framing, a HERS rater checks your HVAC systems, insulation, ductwork, and windows to make sure everything performs as the plans specify.
 
 ## What Does a HERS Rater Actually Do?
 
@@ -31,7 +32,7 @@ Starting with the 2025 California Energy Code, the HERS program is being phased 
     seoTitle: 'CF2R vs CF3R Explained',
     description: 'Confused about CF2R and CF3R forms? Here\'s a clear explanation of the difference between installer certificates and verifier certificates in California Title 24.',
     tags: ['Forms'],
-    content: `## CF2R vs CF3R: Understanding Title 24 Compliance Forms
+    content: `## Installer Certificate vs. Verifier Certificate
 
 The CF2R is a declaration by the trade contractor that they installed the specified energy measure correctly. The CF3R is the independent verification signed by a certified HERS or ECC rater after they have personally tested and inspected the installation.
 
@@ -49,7 +50,7 @@ California's Title 24 compliance system is built on the principle that self-cert
     seoTitle: 'Title 24 Compliance: Builder\'s Guide',
     description: 'A complete guide to California Title 24 energy code compliance for new construction and renovations. Learn what\'s required, who verifies it, and how to stay on schedule.',
     tags: ['Compliance'],
-    content: `## California Title 24 Compliance: A Builder's Complete Guide
+    content: `## Why the Energy Code Lands on the Builder
 
 California's Title 24 Building Energy Efficiency Standards are among the most comprehensive energy codes in the country. For builders, contractors, and developers, understanding what Title 24 requires is essential to keeping projects on schedule.
 
@@ -59,7 +60,7 @@ Title 24 refers to Part 6 of the California Code of Regulations, which sets mini
 
 ## The Three Documents Every Project Needs
 
-Title 24 compliance runs on paperwork â specifically, a chain of three documents that must be completed in order: CF1R (Compliance Report), CF2R (Installer Certificate), and CF3R (Verification Certificate).
+Title 24 compliance runs on paperwork — specifically, a chain of three documents that must be completed in order: CF1R (Compliance Report), CF2R (Installer Certificate), and CF3R (Verification Certificate).
 
 ## How to Keep Your Project on Schedule
 
@@ -71,7 +72,7 @@ Title 24 inspections are a frequent source of construction delays. To stay on tr
     seoTitle: 'Title 24 Acceptance Testing Explained',
     description: 'Learn what Title 24 acceptance testing covers in California, when it\'s required, and how to find a certified acceptance tester for your project.',
     tags: ['Compliance'],
-    content: `## What Does a Title 24 Acceptance Tester Do?
+    content: `## Functional Testing Before Occupancy
 
 Acceptance testing is a mandatory part of Title 24 compliance for certain building systems. An acceptance tester is a certified professional who performs standardized functional tests to verify that installed systems operate correctly before a certificate of occupancy is issued.
 
@@ -93,7 +94,7 @@ Use our directory to find certified acceptance testers serving your project's lo
     seoTitle: 'HERS Rater vs ECC Rater',
     description: 'HERS raters and ECC raters are the same role under two names — the 2025 California Energy Code renamed the program. Here is which term applies to your project, and the distinction that does matter.',
     tags: ['HERS', 'ECC'],
-    content: `## HERS Rater or ECC Rater?
+    content: `## One Program, Renamed in 2025
 
 They are the same person doing the same job. If you are searching for one and not the other, you are cutting your options in half for no reason.
 
@@ -133,7 +134,7 @@ Browse the directory under the **HERS / ECC Rater** service type to see certifie
     seoTitle: 'Title 24 Solar Requirements',
     description: 'California requires solar panels on most new homes. Learn about Title 24 solar requirements, exceptions, and how compliance is verified.',
     tags: ['Solar', 'Compliance'],
-    content: `## Title 24 Solar Requirements for New Homes
+    content: `## Solar on New Homes Since 2020
 
 Since 2020, California has required solar photovoltaic systems on most new residential construction. This mandate, part of the Title 24 Building Energy Efficiency Standards, makes California the first state in the nation to require solar on new homes.
 
@@ -155,7 +156,7 @@ Solar compliance is documented on the CF1R energy compliance report and verified
     seoTitle: 'What Is a CF1R Form?',
     description: 'The CF1R is the foundation of Title 24 compliance. Learn what it is, who prepares it, and why it matters for your California construction project.',
     tags: ['Forms', 'Compliance'],
-    content: `## What Is a CF1R?
+    content: `## The Certificate of Compliance, Defined
 
 The CF1R, or Certificate of Compliance, is the first document in California's Title 24 energy compliance chain. It is an energy model and report generated by an energy consultant that demonstrates how a proposed building design will meet or exceed the state's energy efficiency standards.
 
@@ -177,7 +178,7 @@ Without an approved CF1R, your building permit will not be issued. The CF1R also
     seoTitle: 'Duct Leakage Testing in California',
     description: 'Duct leakage testing is one of the most common Title 24 HERS verification measures. Learn how it works, what the limits are, and how to pass.',
     tags: ['HERS', 'Testing'],
-    content: `## What Is Duct Leakage Testing?
+    content: `## Why This Test Shows Up on So Many Projects
 
 Duct leakage testing is a diagnostic procedure that measures how much conditioned air escapes from your HVAC ductwork before reaching the living space. In California, duct leakage testing is one of the most frequently required HERS verification measures under Title 24.
 
@@ -199,9 +200,11 @@ Seal all duct joints with mastic or approved tape before the test. Pay special a
     seoTitle: 'Heat Pump Water Heaters Under Title 24',
     description: 'Heat pump water heaters are increasingly required by Title 24. Learn about the requirements, energy savings, and compliance verification process.',
     tags: ['Compliance', 'HERS'],
-    content: `## Heat Pump Water Heaters and Title 24
+    content: `## How HPWHs Became the Baseline
 
-California's 2025 Energy Code strongly favors heat pump water heaters (HPWHs) for new residential construction. Under the updated Title 24 standards, heat pump water heaters are the baseline technology for calculating energy budgets, making them effectively required for most new homes unless designers offset the penalty of using a less efficient system elsewhere.
+The 2022 Energy Code made the heat pump water heater (HPWH) the baseline for single-family new construction. Baseline means the energy budget your design is scored against already assumes one, so specifying a gas or electric-resistance tank is not prohibited outright — it just puts you in a hole you have to dig out of with efficiency elsewhere in the building. In practice that made HPWHs the default on most new homes.
+
+The 2025 Energy Code extends the same framing rather than replacing it, carrying heat pump water heating into multifamily construction. If you built to the 2022 code on the single-family side, the 2025 cycle is a widening of ground you already know.
 
 ## Why Heat Pump Water Heaters?
 
@@ -221,7 +224,7 @@ Heat pump water heaters need adequate airspace around them to operate efficientl
     seoTitle: 'Title 24 Performance vs Prescriptive',
     description: 'California Title 24 offers two compliance approaches. Learn the difference between performance and prescriptive paths and which is right for your project.',
     tags: ['Compliance'],
-    content: `## Performance Path vs. Prescriptive Path
+    content: `## Two Ways to Show Compliance
 
 California's Title 24 energy code offers two methods for demonstrating compliance: the prescriptive path and the performance path. Understanding the difference is important for builders, architects, and energy consultants because the choice affects design flexibility, cost, and the verification measures required.
 
@@ -243,7 +246,7 @@ The prescriptive path is simpler but less flexible. It works well for straightfo
     seoTitle: 'HERS Rater for HVAC Replacement',
     description: 'Replacing your HVAC system in California? Learn when Title 24 requires a HERS rater inspection and what to expect during the verification process.',
     tags: ['HERS', 'HVAC'],
-    content: `## Do You Need a HERS Rater for an HVAC Replacement?
+    content: `## The Short Answer: Usually Yes
 
 In most cases, yes. California's Title 24 energy code requires HERS verification for HVAC system replacements in existing homes. When you replace a furnace, air conditioner, or heat pump, a certified HERS or ECC rater must verify that the new system is installed correctly and meets energy code requirements.
 
@@ -274,6 +277,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: article.seoTitle,
     description: article.description,
+    alternates: { canonical: absoluteUrl(`/resources/${slug}`) },
   }
 }
 
@@ -283,8 +287,23 @@ export default async function ResourceArticlePage({ params }: { params: Promise<
   if (!article) notFound()
   const sections = article.content.split(/^## /gm).filter(Boolean)
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: article.title,
+    description: article.description,
+    url: absoluteUrl(`/resources/${slug}`),
+    publisher: {
+      '@type': 'Organization',
+      name: 'Title 24 Directory',
+      url: absoluteUrl('/'),
+    },
+  }
+
   return (
     <div className="mx-auto max-w-3xl px-4 pb-20 pt-12 sm:px-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
       <Breadcrumb items={[
         { label: 'Home', href: '/' },
         { label: 'Resources', href: '/resources' },

@@ -2,16 +2,20 @@ import { Suspense } from 'react'
 import { supabase } from '@/lib/supabase'
 import RaterCard from '@/components/RaterCard'
 import SearchAutocomplete from '@/components/SearchAutocomplete'
-import { CATEGORIES, categoryMatchValues } from '@/lib/categories'
+import { CATEGORIES, canonicalCategory, categoryMatchValues } from '@/lib/categories'
 import { CA_COUNTIES, slugify } from '@/lib/california-data'
 import { isZip, countiesForZip } from '@/lib/zip'
 import { resolvePlace, suggest, countyList, type PlaceResolution, type Suggestion } from '@/lib/place-match'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { absoluteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Find a Title 24 Rater in California',
   description: 'Browse California\'s complete directory of HERS raters, ECC raters, commissioning agents, and acceptance testers. Filter by city, county, and service type.',
+  // Filter and pagination params all serve the same browsable list — canonical
+  // keeps ?type/?county/?page permutations from indexing as duplicates.
+  alternates: { canonical: absoluteUrl('/directory') },
 }
 
 export const dynamic = 'force-dynamic'
@@ -310,6 +314,16 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Pr
   const resolvedParams = await searchParams
   const counties = [...CA_COUNTIES].sort((a, b) => a.name.localeCompare(b.name))
 
+  // The controls are uncontrolled inputs, so they read these once per mount.
+  // Keying the form on the active filters remounts it after a client-side
+  // navigation — otherwise a shared or bookmarked /directory?type=… showed
+  // "All types" over a filtered result set, and paging kept the old box value.
+  const activeQ = resolvedParams.q ?? ''
+  // ?type=ecc is a live legacy link: the 2025 code renamed HERS to ECC and the
+  // category values merged, so resolve it to the option that actually exists.
+  const activeType = resolvedParams.type ? canonicalCategory(resolvedParams.type) : ''
+  const activeCounty = resolvedParams.county ? slugify(resolvedParams.county) : ''
+
   return (
     <div className="mx-auto max-w-7xl px-4 pb-20 pt-10 sm:px-6 lg:px-8">
       <h1 className="text-[clamp(1.65rem,3.2vw,2.25rem)] font-bold">
@@ -321,10 +335,11 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Pr
       </p>
 
       <form
+        key={`${activeQ}|${activeType}|${activeCounty}`}
         method="GET"
         className="mt-8 mb-9 grid grid-cols-1 gap-4 rounded border border-rule bg-surface p-5 sm:grid-cols-2 lg:grid-cols-4"
       >
-        <SearchAutocomplete defaultValue={resolvedParams.q} />
+        <SearchAutocomplete defaultValue={activeQ} />
 
         <div>
           <label htmlFor="type" className="t-label mb-1.5 block">
@@ -333,7 +348,7 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Pr
           <select
             id="type"
             name="type"
-            defaultValue={resolvedParams.type}
+            defaultValue={activeType}
             className="w-full rounded border border-rule bg-surface px-3 py-2 text-sm text-ink transition-colors focus:border-ink focus:outline-none"
           >
             <option value="">All types</option>
@@ -348,7 +363,7 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Pr
           <select
             id="county"
             name="county"
-            defaultValue={resolvedParams.county ? slugify(resolvedParams.county) : ''}
+            defaultValue={activeCounty}
             className="w-full rounded border border-rule bg-surface px-3 py-2 text-sm text-ink transition-colors focus:border-ink focus:outline-none"
           >
             <option value="">All counties</option>

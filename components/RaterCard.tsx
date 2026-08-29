@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { CATEGORY_LABELS, displayServices } from '@/lib/categories'
 import { safeExternalUrl } from '@/lib/security'
+import { formatPhone, telHref } from '@/lib/format'
 import type { Rater } from '@/lib/supabase'
 import { countyName, cityName } from '@/lib/california-data'
 
@@ -53,8 +54,8 @@ export default function RaterCard({ rater }: { rater: Rater }) {
         </div>
 
         {rater.phone && (
-          <a href={`tel:${rater.phone}`} className="btn-ink shrink-0 px-3.5 py-2 text-sm">
-            {rater.phone}
+          <a href={telHref(rater.phone)} className="btn-ink shrink-0 px-3.5 py-2 text-sm">
+            {formatPhone(rater.phone)}
           </a>
         )}
       </div>

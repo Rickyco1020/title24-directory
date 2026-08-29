@@ -5,6 +5,7 @@ import { CATEGORY_LABELS, displayServices } from '@/lib/categories'
 import type { Rater } from '@/lib/supabase'
 import { CA_COUNTIES, cityName } from '@/lib/california-data'
 import { escapeForJsonLd, safeExternalUrl } from '@/lib/security'
+import { formatPhone, telHref } from '@/lib/format'
 import Breadcrumb from '@/components/Breadcrumb'
 import type { Metadata } from 'next'
 import { absoluteUrl } from '@/lib/site'
@@ -92,8 +93,8 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
 
           <div className="flex shrink-0 flex-wrap gap-2.5">
             {rater.phone && (
-              <a href={`tel:${rater.phone}`} className="btn-accent px-5 py-3 text-[0.95rem]">
-                {rater.phone}
+              <a href={telHref(rater.phone)} className="btn-accent px-5 py-3 text-[0.95rem]">
+                {formatPhone(rater.phone)}
               </a>
             )}
             {website && (
@@ -134,8 +135,8 @@ export default async function RaterProfilePage({ params }: { params: Promise<{ i
           <div className="bg-surface px-4 py-3.5">
             <dt className="t-label">Phone</dt>
             <dd className="mt-1 text-sm">
-              <a href={`tel:${rater.phone}`} className="text-accent underline decoration-accent-rule underline-offset-2 hover:decoration-accent">
-                {rater.phone}
+              <a href={telHref(rater.phone)} className="text-accent underline decoration-accent-rule underline-offset-2 hover:decoration-accent">
+                {formatPhone(rater.phone)}
               </a>
             </dd>
           </div>
