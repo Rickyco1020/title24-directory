@@ -7,9 +7,10 @@ type Props = {
    */
   activeZones?: readonly string[]
   /**
-   * Draw the watermark map. The homepage turns it off: since the zone map
-   * became a real control further down the page, a second faded copy of the
-   * same coastline in the hero reads as the broken one.
+   * Draw the watermark map. On by default everywhere, including the
+   * homepage — the hero map is the first climate-zone cue a visitor sees;
+   * the interactive picker further down the homepage is the deep version
+   * of the same map, not a replacement for it.
    */
   showMap?: boolean
   /** Make the watermark map clickable — every zone links to its own page. */

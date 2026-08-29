@@ -111,7 +111,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <ZoneSheet showMap={false}>
+      <ZoneSheet linkZones>
         <h1 className="max-w-[16ch] text-[clamp(1.9rem,4.6vw,3rem)] font-bold leading-[1.04]">
           Find a certified rater <span className="marked">near you</span>, before your inspection
           date.
