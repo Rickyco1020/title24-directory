@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { CZ_NUMBERS, CZ_VIEWBOX, CZ_ZONES } from '@/components/CaliforniaClimateZones'
 
-export type TopCounty = { slug: string; name: string; raters: number }
+export type TopCounty = { slug: string; name: string; raters: number; zones: readonly string[] }
 
 export type ZoneMapNavProps = {
   /** Counties in each zone, for the caption under the map. */
@@ -24,14 +24,27 @@ export type ZoneMapNavProps = {
  * homepage HTML whether or not any JavaScript runs; the map only mirrors them.
  * Prefetch is off — sixteen speculative page loads to decorate a homepage is a
  * poor trade.
+ *
+ * The county shortcuts below light the map too. A county can span several
+ * zones (Los Angeles touches five), so this is a second, independent hover
+ * source rather than an alias for the first: `hovered` stays the single zone
+ * a chip or map shape owns, `countyHover` carries a whole zone list, and a
+ * map shape lights up if either one claims it.
  */
 export default function ZoneMapNav({ countiesPerZone, topCounties }: ZoneMapNavProps) {
   const router = useRouter()
   const [hovered, setHovered] = useState<string | null>(null)
+  const [countyHover, setCountyHover] = useState<{
+    slug: string
+    name: string
+    zones: readonly string[]
+  } | null>(null)
 
   const href = (zone: string) => `/directory/zone/${zone}`
   const leave = (zone: string) => () =>
     setHovered(current => (current === zone ? null : current))
+  const countyLeave = (slug: string) => () =>
+    setCountyHover(current => (current?.slug === slug ? null : current))
 
   return (
     <div className="mt-8 grid gap-x-10 gap-y-8 lg:grid-cols-12">
@@ -44,7 +57,7 @@ export default function ZoneMapNav({ countiesPerZone, topCounties }: ZoneMapNavP
           focusable="false"
         >
           {CZ_ZONES.map(zone => {
-            const isLit = zone.z === hovered
+            const isLit = zone.z === hovered || (countyHover?.zones.includes(zone.z) ?? false)
             return (
               <path
                 key={zone.z}
@@ -72,7 +85,13 @@ export default function ZoneMapNav({ countiesPerZone, topCounties }: ZoneMapNavP
             ? `Climate zone ${hovered} — ${countiesPerZone[hovered] ?? 0} ${
                 countiesPerZone[hovered] === 1 ? 'county' : 'counties'
               }`
-            : 'CEC building climate zones 1–16'}
+            : countyHover
+              ? countyHover.zones.length > 0
+                ? `${countyHover.name} County — climate zone${
+                    countyHover.zones.length > 1 ? 's' : ''
+                  } ${countyHover.zones.join(', ')}`
+                : `${countyHover.name} County`
+              : 'CEC building climate zones 1–16'}
         </figcaption>
       </figure>
 
@@ -110,6 +129,14 @@ export default function ZoneMapNav({ countiesPerZone, topCounties }: ZoneMapNavP
                 <li key={county.slug} className="break-inside-avoid border-b border-rule">
                   <Link
                     href={`/directory/county/${county.slug}`}
+                    onMouseEnter={() =>
+                      setCountyHover({ slug: county.slug, name: county.name, zones: county.zones })
+                    }
+                    onMouseLeave={countyLeave(county.slug)}
+                    onFocus={() =>
+                      setCountyHover({ slug: county.slug, name: county.name, zones: county.zones })
+                    }
+                    onBlur={countyLeave(county.slug)}
                     className="group flex items-baseline justify-between gap-4 py-2.5 text-sm font-medium text-ink transition-colors hover:text-accent"
                   >
                     <span>{county.name} County</span>

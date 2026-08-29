@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { CATEGORIES } from '@/lib/categories'
 import { CITIES, countyName } from '@/lib/california-data'
-import { countiesForZone } from '@/lib/climate-zones'
+import { countiesForZone, zonesForCounty } from '@/lib/climate-zones'
 import { supabase } from '@/lib/supabase'
 import ZoneSheet from '@/components/ZoneSheet'
 import { CZ_NUMBERS } from '@/components/CaliforniaClimateZones'
@@ -104,7 +104,7 @@ export default async function HomePage() {
   const topCounties: TopCounty[] = ratersPerCounty
     ? [...ratersPerCounty.entries()]
         .filter(([, n]) => n > 0)
-        .map(([slug, raters]) => ({ slug, name: countyName(slug), raters }))
+        .map(([slug, raters]) => ({ slug, name: countyName(slug), raters, zones: zonesForCounty(slug) }))
         .sort((a, b) => b.raters - a.raters || a.name.localeCompare(b.name))
         .slice(0, 8)
     : []
