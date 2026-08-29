@@ -21,6 +21,11 @@ export const metadata: Metadata = {
 // figure here a visitor actually cares about, so it comes from the database.
 export const revalidate = 3600
 
+// Permit-pull date decides the governing code, not the calendar year an
+// inspection happens, so both cycles are live right now: 2022 for anything
+// permitted before 2026-01-01, 2025 for anything permitted after.
+const CODE_CYCLES = ['2022', '2025']
+
 const FEATURED_ARTICLES = [
   {
     slug: 'what-is-a-hers-rater',
@@ -130,8 +135,8 @@ export default async function HomePage() {
             <dd className="mt-0.5 font-bold text-ink">{CITIES.length}</dd>
           </div>
           <div>
-            <dt className="t-label">Code cycle</dt>
-            <dd className="mt-0.5 font-bold text-ink">2025</dd>
+            <dt className="t-label">{CODE_CYCLES.length > 1 ? 'Code cycles' : 'Code cycle'}</dt>
+            <dd className="mt-0.5 font-bold text-ink">{CODE_CYCLES.join(' · ')}</dd>
           </div>
         </dl>
       </ZoneSheet>
