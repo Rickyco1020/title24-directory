@@ -141,6 +141,24 @@ export default async function HomePage() {
         </dl>
       </ZoneSheet>
 
+      {/* ── Supply-side CTA ── */}
+      <section className="bg-accent">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-10 gap-y-6 px-4 py-12 sm:px-6 lg:px-8">
+          <div>
+            <h2 className="max-w-[20ch] text-[clamp(1.35rem,2.4vw,1.7rem)] font-bold text-white">
+              Are you a certified rater?
+            </h2>
+            <p className="mt-2 max-w-[52ch] text-[0.95rem] text-accent-wash">
+              Get listed in the directory GCs search when they need someone before an inspection.
+              Free, and it stays free.
+            </p>
+          </div>
+          <Link href="/get-listed" className="btn-cta px-6 py-3.5 text-[0.95rem]">
+            Get listed free →
+          </Link>
+        </div>
+      </section>
+
       {/* ── Services. A ruled index, not three identical cards: the three
              services are not peers you compare, they are three places to
              go, and a list says that faster. ── */}
@@ -226,24 +244,6 @@ export default async function HomePage() {
             </li>
           ))}
         </ul>
-      </section>
-
-      {/* ── Supply-side CTA ── */}
-      <section className="bg-accent">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-10 gap-y-6 px-4 py-12 sm:px-6 lg:px-8">
-          <div>
-            <h2 className="max-w-[20ch] text-[clamp(1.35rem,2.4vw,1.7rem)] font-bold text-white">
-              Are you a certified rater?
-            </h2>
-            <p className="mt-2 max-w-[52ch] text-[0.95rem] text-accent-wash">
-              Get listed in the directory GCs search when they need someone before an inspection.
-              Free, and it stays free.
-            </p>
-          </div>
-          <Link href="/get-listed" className="btn-cta px-6 py-3.5 text-[0.95rem]">
-            Get listed free →
-          </Link>
-        </div>
       </section>
     </>
   )
