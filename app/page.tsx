@@ -22,9 +22,12 @@ export const metadata: Metadata = {
 export const revalidate = 3600
 
 // Permit-pull date decides the governing code, not the calendar year an
-// inspection happens, so both cycles are live right now: 2022 for anything
-// permitted before 2026-01-01, 2025 for anything permitted after.
-const CODE_CYCLES = ['2022', '2025']
+// inspection happens. Field verification lags permitting by years on
+// non-residential and multifamily jobs especially, so raters here still
+// need certs spanning every cycle with live construction: 2016 and 2019
+// (large res/nonres/multifam jobs still finishing), 2022 (anything
+// permitted before 2026-01-01), and 2025 (permitted after).
+const CODE_CYCLES = ['2016', '2019', '2022', '2025']
 
 const FEATURED_ARTICLES = [
   {
