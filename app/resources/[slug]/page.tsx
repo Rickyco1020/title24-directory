@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Breadcrumb from '@/components/Breadcrumb'
 import type { Metadata } from 'next'
 import { absoluteUrl } from '@/lib/site'
+import { truncateForMeta } from '@/lib/format'
 
 const articles: Record<string, { title: string; seoTitle: string; description: string; tags: string[]; content: string }> = {
   'what-is-a-hers-rater': {
@@ -276,7 +277,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!article) return {}
   return {
     title: article.seoTitle,
-    description: article.description,
+    // Three of the hand-written descriptions ran past Google's snippet length.
+    // Truncating here rather than editing the strings keeps the full sentence
+    // for the JSON-LD below and holds new articles to the same limit.
+    description: truncateForMeta(article.description),
     alternates: { canonical: absoluteUrl(`/resources/${slug}`) },
   }
 }

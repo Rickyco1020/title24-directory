@@ -5,7 +5,7 @@ import { CATEGORY_LABELS, displayServices } from '@/lib/categories'
 import type { Rater } from '@/lib/supabase'
 import { CA_COUNTIES, cityName } from '@/lib/california-data'
 import { escapeForJsonLd, safeExternalUrl } from '@/lib/security'
-import { formatPhone, telHref } from '@/lib/format'
+import { formatPhone, telHref, truncateForMeta } from '@/lib/format'
 import Breadcrumb from '@/components/Breadcrumb'
 import type { Metadata } from 'next'
 import { absoluteUrl } from '@/lib/site'
@@ -37,7 +37,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     // with it, a long business name pushed these past 90 characters and Google
     // truncated the part that identifies the company.
     title: { absolute: `${rater.business_name} | Title 24 Rater` },
-    description: rater.description ?? `${rater.business_name} is a certified Title 24 rater serving ${counties}. View services, coverage area, and contact details.`,
+    // The blurb is the rater's own free text, capped at 500 characters on the
+    // way in — passed through raw it overflowed Google's snippet on 107 of 108
+    // profiles. Truncated on a word boundary; the generated sentence still
+    // covers listings with no blurb at all.
+    description:
+      truncateForMeta(rater.description) ??
+      `${rater.business_name} is a certified Title 24 rater serving ${counties}. View services, coverage area, and contact details.`,
     alternates: { canonical: absoluteUrl(`/directory/rater/${id}`) },
   }
 }

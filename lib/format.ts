@@ -30,3 +30,24 @@ export function telHref(phone: string): string {
   const digits = digitsOnly(phone)
   return digits.length === 10 ? `tel:+1${digits}` : `tel:${phone.replace(/[^\d+]/g, '')}`
 }
+
+/**
+ * A string safe to hand to Google as a meta description.
+ *
+ * Rater blurbs are free text capped at 500 characters by the submit schema, and
+ * article descriptions are written by hand, so both routinely ran past the
+ * ~155-160 characters Google renders — the tail was invisible and the visible
+ * snippet was whatever the text happened to open with. Cuts on a word boundary
+ * so the snippet ends on a whole word, and returns undefined for empty input so
+ * callers can fall back to a generated sentence with `??`.
+ */
+export function truncateForMeta(text: string | null | undefined, limit = 155): string | undefined {
+  const trimmed = text?.trim()
+  if (!trimmed) return undefined
+  if (trimmed.length <= limit) return trimmed
+  // One character of the budget belongs to the ellipsis.
+  const cut = trimmed.slice(0, limit - 1)
+  const lastSpace = cut.lastIndexOf(' ')
+  const body = lastSpace > 0 ? cut.slice(0, lastSpace) : cut
+  return `${body.replace(/[\s\u2013\u2014.,;:!?-]+$/, '')}\u2026`
+}
