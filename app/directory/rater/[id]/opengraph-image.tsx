@@ -6,11 +6,16 @@ export const runtime = 'edge'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
-export default async function Image({ params }: { params: { id: string } }) {
+// `params` is a Promise in Next 16. Typed as a plain object and read
+// synchronously, `params.id` was `undefined`, the lookup below missed, and
+// every rater's card fell through to the hardcoded default — 108 profiles
+// sharing one anonymous social image. Nothing catches this but a byte diff.
+export default async function Image({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const { data: rater } = await supabase
     .from('raters')
     .select('business_name, services, counties_served')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   const name = rater?.business_name ?? 'Title 24 Rater'

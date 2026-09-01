@@ -18,8 +18,12 @@ const articles: Record<string, { title: string; tags: string[] }> = {
   'hvac-replacement-hers-rater': { title: 'HVAC Replacement and Title 24: When You Need a HERS Rater', tags: ['HVAC', 'HERS'] },
 }
 
-export default function Image({ params }: { params: { slug: string } }) {
-  const article = articles[params.slug]
+// See the rater OG route: `params` is a Promise in Next 16, so reading
+// `params.slug` off the un-awaited object missed every article and served the
+// generic fallback for all eleven.
+export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const article = articles[slug]
   const title = article?.title ?? 'Title 24 Resources'
   const tags = article?.tags ?? []
 
