@@ -2,6 +2,7 @@
 import { z } from 'zod'
 import { Resend } from 'resend'
 import { escapeHtml } from '@/lib/security'
+import { ADMIN_EMAIL } from '@/lib/site'
 import { clientIp, headerSafe, honeypotTripped, rateLimit, rateLimitExceeded } from '@/lib/rate-limit'
 
 const schema = z.object({
@@ -52,7 +53,6 @@ export async function submitContactForm(prevState: ContactFormState, formData: F
 
   rateLimit(key, RATE_LIMIT, RATE_WINDOW_MS)
 
-  const adminEmail = process.env.ADMIN_EMAIL ?? 'rickydcc137@gmail.com'
 
   if (process.env.RESEND_API_KEY) {
     const resend = new Resend(process.env.RESEND_API_KEY)
@@ -68,7 +68,7 @@ export async function submitContactForm(prevState: ContactFormState, formData: F
     try {
       await resend.emails.send({
         from: 'Title24 Directory <noreply@title24directory.com>',
-        to: adminEmail,
+        to: ADMIN_EMAIL,
         replyTo: result.data.email,
         subject: headerSafe(`Contact form: ${result.data.subject}`),
         html: `<!DOCTYPE html>

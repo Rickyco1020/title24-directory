@@ -5,7 +5,7 @@ import { Resend } from 'resend'
 import { createHash, randomBytes } from 'crypto'
 import { escapeHtml } from '@/lib/security'
 import { clientIp, headerSafe, honeypotTripped, rateLimit, rateLimitExceeded } from '@/lib/rate-limit'
-import { SITE_URL as SITE_URL_FROM_CONFIG } from '@/lib/site'
+import { ADMIN_EMAIL, SITE_URL as SITE_URL_FROM_CONFIG } from '@/lib/site'
 
 const schema = z.object({
   rater_id: z.string().uuid().optional().or(z.literal('')),
@@ -44,7 +44,6 @@ const VERIFY_WINDOW_MS = 24 * 60 * 60 * 1000
 const VERIFY_TTL_MS = 48 * 60 * 60 * 1000
 
 const SITE_URL = SITE_URL_FROM_CONFIG
-const NOTIFY_TO = process.env.ADMIN_EMAIL ?? 'rickyco1020@gmail.com'
 // Sent from the verified domain, not Resend's shared `resend.dev` sender: the
 // shared sender only reliably delivers to the account's own address, and it
 // rewrites every link through resend-clicks.com — which would put the
@@ -194,7 +193,7 @@ export async function submitClaim(prev: ClaimState, formData: FormData): Promise
         await resend.emails.send({
           from: MAIL_FROM,
           to: verifySentTo,
-          replyTo: NOTIFY_TO,
+          replyTo: ADMIN_EMAIL,
           subject: headerSafe(`Confirm removal of ${listingName ?? 'your listing'} from Title 24 Directory`),
           html: `
             <p style="font-family:sans-serif;font-size:15px">We received a request to remove this listing from the Title 24 Directory:</p>
@@ -221,7 +220,7 @@ export async function submitClaim(prev: ClaimState, formData: FormData): Promise
     try {
       await resend.emails.send({
         from: MAIL_FROM,
-        to: NOTIFY_TO,
+        to: ADMIN_EMAIL,
         subject: headerSafe(`[${LABEL[d.kind]}] ${d.business_name || d.contact_name}`),
         html: `
           <h2>${e.label}</h2>
@@ -295,7 +294,7 @@ export async function confirmRemoval(token: string): Promise<ConfirmResult> {
       const resend = new Resend(process.env.RESEND_API_KEY)
       await resend.emails.send({
         from: MAIL_FROM,
-        to: NOTIFY_TO,
+        to: ADMIN_EMAIL,
         subject: headerSafe(`[Removal confirmed] ${request.business_name || 'listing'}`),
         html: `<p style="font-family:sans-serif;font-size:14px">The address on file confirmed the removal of <strong>${escapeHtml(request.business_name)}</strong>. This one is safe to action.</p>
                <p style="font-family:sans-serif;font-size:14px"><a href="${SITE_URL}/admin">Open the admin panel</a></p>`,

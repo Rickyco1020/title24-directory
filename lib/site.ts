@@ -34,6 +34,21 @@ function clean(url: string): string {
 
 export const SITE_URL = clean(RAW)
 
+/**
+ * Where operator mail goes: contact-form messages, new listing submissions, and
+ * claim / correction / removal requests.
+ *
+ * This used to be three separate `process.env.ADMIN_EMAIL ?? '<literal>'`
+ * expressions in three server actions, and they had already drifted — the claim
+ * flow fell back to rickyco1020@gmail.com while the other two fell back to
+ * rickydcc137@gmail.com. So with ADMIN_EMAIL unset, removal requests (the ones
+ * with a legal edge) landed in a different inbox from everything else. One
+ * export, one fallback, no way to drift again.
+ *
+ * Set ADMIN_EMAIL in the deployment env so the fallback never fires.
+ */
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'rickydcc137@gmail.com'
+
 /** Absolute URL for a site-relative path. */
 export function absoluteUrl(path = '/'): string {
   return `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`

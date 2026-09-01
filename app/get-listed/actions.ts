@@ -5,7 +5,7 @@ import { Resend } from 'resend'
 import { escapeHtml, isHttpUrl } from '@/lib/security'
 import { displayServices } from '@/lib/categories'
 import { clientIp, headerSafe, honeypotTripped, rateLimit, rateLimitExceeded } from '@/lib/rate-limit'
-import { absoluteUrl } from '@/lib/site'
+import { ADMIN_EMAIL, absoluteUrl } from '@/lib/site'
 import { resolvePlace } from '@/lib/place-match'
 import { slugify } from '@/lib/california-data'
 
@@ -194,10 +194,9 @@ export async function submitListing(prevState: FormState, formData: FormData): P
 
     // Admin notification email
     try {
-      const adminEmail = process.env.ADMIN_EMAIL ?? 'rickydcc137@gmail.com'
       await resend.emails.send({
         from: 'Title24 Directory <noreply@title24directory.com>',
-        to: adminEmail,
+        to: ADMIN_EMAIL,
         subject: headerSafe(`New listing submission: ${d.business_name}`),
         html: `<!DOCTYPE html>
 <html>
