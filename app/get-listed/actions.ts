@@ -174,7 +174,7 @@ export async function submitListing(prevState: FormState, formData: FormData): P
       <h2 style="color: #111827; margin: 0 0 16px;">Listing Received ✅</h2>
       <p style="color: #374151; line-height: 1.6;">Hi ${e.contact_name},</p>
       <p style="color: #374151; line-height: 1.6;">We've received your listing for <strong>${e.business_name}</strong> and will review it within 1–2 business days.</p>
-      <p style="color: #374151; line-height: 1.6;">Once approved, your listing will appear in our directory and across relevant California city and county search pages on <a href="https://title24directory.com" style="color: #1d4ed8;">title24directory.com</a>.</p>
+      <p style="color: #374151; line-height: 1.6;">Once approved, your listing will appear in our directory and across relevant California city and county search pages on <a href="${absoluteUrl('/')}" style="color: #1d4ed8;">title24directory.com</a>.</p>
       <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 16px; margin: 24px 0;">
         <p style="margin: 0; color: #0369a1; font-size: 14px;"><strong>Listing summary</strong><br>
         Business: ${e.business_name}<br>

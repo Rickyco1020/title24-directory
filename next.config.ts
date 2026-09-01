@@ -8,6 +8,21 @@ const securityHeaders = [
   { key: "Content-Security-Policy", value: "frame-ancestors 'none'" },
   // Full referrer only to same-origin; origin-only cross-site over HTTPS.
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  // Nothing here uses the camera, the microphone or location, and nothing
+  // opts into FLoC/Topics cohort calculation. Say so, so an injected script
+  // or embed can't either.
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+  },
+  // Two years, subdomains included, and preload-eligible. The platform already
+  // sends a bare max-age; without includeSubDomains a future subdomain can be
+  // stripped to http, and without `preload` the very first visit is still
+  // downgradeable.
+  {
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains; preload",
+  },
 ];
 
 const nextConfig: NextConfig = {

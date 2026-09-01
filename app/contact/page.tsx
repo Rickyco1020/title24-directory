@@ -1,10 +1,12 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { absoluteUrl } from '@/lib/site'
 import ContactForm from './ContactForm'
 
 export const metadata: Metadata = {
   title: 'Contact',
   description: 'Get in touch with Title 24 Directory. Questions about your listing, reporting incorrect information, or general Title 24 compliance questions.',
+  alternates: { canonical: absoluteUrl('/contact') },
 }
 
 export default function ContactPage() {
