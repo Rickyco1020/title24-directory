@@ -10,6 +10,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { absoluteUrl } from '@/lib/site'
 import { escapeForJsonLd } from '@/lib/security'
+import { countyHasListings, placeListingCounts } from '@/lib/rater-counts'
 
 export async function generateStaticParams() {
   return CA_COUNTIES.map(county => ({ county: county.slug }))
@@ -21,10 +22,22 @@ export async function generateMetadata({ params }: { params: Promise<{ county: s
   const { county: countySlug } = await params
   const county = CA_COUNTIES.find(c => c.slug === countySlug)
   if (!county) return {}
+  const hasListings = countyHasListings(await placeListingCounts(), county.slug)
   return {
     title: `HERS Raters in ${county.name} County, CA`,
     description: `Find certified HERS raters, ECC raters, and Title 24 acceptance testers in ${county.name} County, California.`,
     alternates: { canonical: absoluteUrl(`/directory/county/${county.slug}`) },
+    // 64 city and 24 county pages currently render zero listings, which makes
+    // them ~95% identical to each other: the only per-page variables are the
+    // place name and the county roll-up. Google's thin-content and doorway
+    // classifiers are built for exactly that shape, and the risk is site-wide —
+    // a large block of near-duplicate URLs can suppress the good ones. So a
+    // place with nothing to list is kept (it is an honest landing page with a
+    // real CTA, and it is one listing away from being useful) but asks not to
+    // be indexed. `follow` is left on so the links out to the county and the
+    // rest of the directory still carry equity. app/sitemap.ts drops the same
+    // places using the same helper, so the sitemap and the page never disagree.
+    ...(hasListings ? {} : { robots: { index: false, follow: true } }),
   }
 }
 

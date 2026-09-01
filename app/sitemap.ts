@@ -3,6 +3,7 @@ import { CITIES, CA_COUNTIES } from '@/lib/california-data'
 import { CZ_NUMBERS } from '@/components/CaliforniaClimateZones'
 import { SITE_URL } from '@/lib/site'
 import { supabase } from '@/lib/supabase'
+import { cityHasListings, countyHasListings, placeListingCounts } from '@/lib/rater-counts'
 
 const BASE_URL = SITE_URL
 
@@ -26,14 +27,21 @@ const articles = [
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const cityPages = CITIES.map(city => ({
+  // A place with no listings is asked not to be indexed by its own
+  // generateMetadata, so listing it here would be a sitemap contradicting the
+  // page it points at — and `changeFrequency: 'daily'` on a page that never
+  // changes is a claim Google can check and hold against the whole site. Same
+  // helper as the two page files, so the two decisions cannot drift apart.
+  const counts = await placeListingCounts()
+
+  const cityPages = CITIES.filter(city => cityHasListings(counts, city.slug)).map(city => ({
     url: `${BASE_URL}/directory/${city.slug}`,
     lastModified: GENERATED_AT,
     changeFrequency: 'daily' as const,
     priority: 0.7,
   }))
 
-  const countyPages = CA_COUNTIES.map(county => ({
+  const countyPages = CA_COUNTIES.filter(county => countyHasListings(counts, county.slug)).map(county => ({
     url: `${BASE_URL}/directory/county/${county.slug}`,
     lastModified: GENERATED_AT,
     changeFrequency: 'daily' as const,

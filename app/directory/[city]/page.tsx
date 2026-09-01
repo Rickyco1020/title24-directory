@@ -4,6 +4,7 @@ import { CITIES } from '@/lib/california-data'
 import { zonesForCity, zoneCallout } from '@/lib/climate-zones'
 import { absoluteUrl } from '@/lib/site'
 import { escapeForJsonLd } from '@/lib/security'
+import { cityHasListings, placeListingCounts } from '@/lib/rater-counts'
 import RaterCard from '@/components/RaterCard'
 import Breadcrumb from '@/components/Breadcrumb'
 import ZoneSheet from '@/components/ZoneSheet'
@@ -21,10 +22,22 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   const { city: citySlug } = await params
   const city = CITIES.find(c => c.slug === citySlug)
   if (!city) return {}
+  const hasListings = cityHasListings(await placeListingCounts(), city.slug)
   return {
     title: `HERS Raters in ${city.name}, CA`,
     description: `Find certified HERS raters, ECC raters, and Title 24 acceptance testers in ${city.name}, California.`,
     alternates: { canonical: absoluteUrl(`/directory/${city.slug}`) },
+    // 64 city and 24 county pages currently render zero listings, which makes
+    // them ~95% identical to each other: the only per-page variables are the
+    // place name and the county roll-up. Google's thin-content and doorway
+    // classifiers are built for exactly that shape, and the risk is site-wide —
+    // a large block of near-duplicate URLs can suppress the good ones. So a
+    // place with nothing to list is kept (it is an honest landing page with a
+    // real CTA, and it is one listing away from being useful) but asks not to
+    // be indexed. `follow` is left on so the links out to the county and the
+    // rest of the directory still carry equity. app/sitemap.ts drops the same
+    // places using the same helper, so the sitemap and the page never disagree.
+    ...(hasListings ? {} : { robots: { index: false, follow: true } }),
   }
 }
 
