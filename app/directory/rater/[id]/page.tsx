@@ -15,7 +15,13 @@ function formatCountyName(slug: string): string {
   return county?.name ?? slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
 }
 
-export const dynamic = 'force-dynamic'
+// Was `force-dynamic`: every hit, including every Googlebot crawl of the
+// largest section of the sitemap, paid for an uncached render plus a Supabase
+// round trip. A rater's own details change no faster than a city page's, and
+// city, county and zone pages have all been on the same hour-long window for
+// months. `dynamicParams` stays at its default of true, so a listing approved
+// between builds still renders on demand and is cached from then on.
+export const revalidate = 3600
 
 async function getRater(id: string): Promise<Rater | null> {
   const { data } = await supabase
@@ -25,6 +31,26 @@ async function getRater(id: string): Promise<Rater | null> {
     .in('status', ['approved', 'featured'])
     .single()
   return data
+}
+
+/**
+ * Prerender the live listings. Wrapped in try/catch and falling back to an
+ * empty list on purpose: with no reachable database this must degrade to
+ * "prerender nothing, render everything on demand" rather than fail the build.
+ */
+export async function generateStaticParams(): Promise<{ id: string }[]> {
+  try {
+    const { data, error } = await supabase
+      .from('raters')
+      .select('id')
+      .in('status', ['approved', 'featured'])
+      // Supabase silently truncates at db-max-rows; ask for a bound explicitly.
+      .range(0, 49_999)
+    if (error) throw error
+    return (data ?? []).map((r: { id: string }) => ({ id: r.id }))
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
