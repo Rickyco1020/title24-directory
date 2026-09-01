@@ -8,6 +8,7 @@ import { CZ_NUMBERS } from '@/components/CaliforniaClimateZones'
 import Breadcrumb from '@/components/Breadcrumb'
 import ZoneSheet from '@/components/ZoneSheet'
 import { absoluteUrl } from '@/lib/site'
+import { escapeForJsonLd } from '@/lib/security'
 
 export const revalidate = 3600
 
@@ -86,7 +87,7 @@ export default async function ZonePage({ params }: { params: Promise<{ zone: str
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeForJsonLd(jsonLd) }} />
 
       <ZoneSheet activeZones={[zone]} linkZones>
         <Breadcrumb

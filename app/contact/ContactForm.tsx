@@ -23,7 +23,7 @@ export default function ContactForm() {
       <div className="py-16 text-center">
         <div className="text-6xl mb-6">✅</div>
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Message Sent</h2>
-        <p className="text-gray-600 text-lg mb-8">Thanks for reaching out — we'll get back to you within 1–2 business days.</p>
+        <p className="text-gray-600 text-lg mb-8">Thanks for reaching out — we&rsquo;ll get back to you within 1–2 business days.</p>
         <Link href="/" className="text-blue-700 font-semibold hover:underline">Back to Home →</Link>
       </div>
     )

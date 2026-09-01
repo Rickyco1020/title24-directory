@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase'
 import { CITIES } from '@/lib/california-data'
 import { zonesForCity, zoneCallout } from '@/lib/climate-zones'
 import { absoluteUrl } from '@/lib/site'
+import { escapeForJsonLd } from '@/lib/security'
 import RaterCard from '@/components/RaterCard'
 import Breadcrumb from '@/components/Breadcrumb'
 import ZoneSheet from '@/components/ZoneSheet'
@@ -83,7 +84,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeForJsonLd(jsonLd) }} />
 
       <ZoneSheet activeZones={zones} linkZones>
         <Breadcrumb items={[

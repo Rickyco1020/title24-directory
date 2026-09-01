@@ -4,6 +4,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import type { Metadata } from 'next'
 import { absoluteUrl } from '@/lib/site'
 import { truncateForMeta } from '@/lib/format'
+import { escapeForJsonLd } from '@/lib/security'
 
 const articles: Record<string, { title: string; seoTitle: string; description: string; tags: string[]; content: string }> = {
   'what-is-a-hers-rater': {
@@ -306,7 +307,7 @@ export default async function ResourceArticlePage({ params }: { params: Promise<
 
   return (
     <div className="mx-auto max-w-3xl px-4 pb-20 pt-12 sm:px-6">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeForJsonLd(jsonLd) }} />
 
       <Breadcrumb items={[
         { label: 'Home', href: '/' },

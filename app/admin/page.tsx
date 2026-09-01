@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { createServiceClient } from '@/lib/supabase'
+import { createServiceClient, type ListingRequest, type Rater } from '@/lib/supabase'
 import { updateRaterStatus, adminLogout, isAuthenticated } from './actions'
 import { safeExternalUrl } from '@/lib/security'
 import type { Metadata } from 'next'
@@ -110,7 +110,7 @@ export default async function AdminPage() {
             {requestCount} open listing {requestCount === 1 ? 'request' : 'requests'}
           </h2>
           <ul className="space-y-3">
-            {requests!.map((r: any) => (
+            {requests!.map((r: ListingRequest) => (
               <li key={r.id} className="text-sm text-orange-900">
                 <span className={`inline-block px-2 py-0.5 rounded text-xs font-bold mr-2 ${
                   r.kind === 'remove' ? 'bg-accent-200 text-accent-900' : 'bg-orange-200 text-orange-900'}`}>
@@ -166,7 +166,7 @@ export default async function AdminPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {pending!.map((rater: any) => (
+            {pending!.map((rater: Rater) => (
               <div key={rater.id} className="bg-white border-2 border-yellow-200 rounded-xl p-6">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                   <div className="flex-1 min-w-0">
@@ -196,7 +196,7 @@ export default async function AdminPage() {
                     <p className="text-xs text-gray-500 mb-1">
                       <strong>Counties:</strong> {rater.counties_served?.map(countyName).join(', ') || '—'}
                     </p>
-                    {rater.cities_served?.length > 0 && (
+                    {rater.cities_served && rater.cities_served.length > 0 && (
                       <p className="text-xs text-gray-500 mb-1">
                         <strong>Cities:</strong> {rater.cities_served.map(cityName).join(', ')}
                       </p>
@@ -239,7 +239,7 @@ export default async function AdminPage() {
           Live Listings
         </h2>
         <div className="space-y-3">
-          {approved?.map((rater: any) => (
+          {approved?.map((rater: Rater) => (
             <div key={rater.id} className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">

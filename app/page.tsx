@@ -8,6 +8,7 @@ import ZoneSheet from '@/components/ZoneSheet'
 import { CZ_NUMBERS } from '@/components/CaliforniaClimateZones'
 import ZoneMapNav, { type TopCounty } from '@/components/ZoneMapNav'
 import { ratersByCounty } from '@/lib/rater-counts'
+import { escapeForJsonLd } from '@/lib/security'
 import { absoluteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
@@ -133,7 +134,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeForJsonLd(websiteJsonLd) }} />
 
       <ZoneSheet linkZones>
         <h1 className="max-w-[16ch] text-[clamp(1.9rem,4.6vw,3rem)] font-bold leading-[1.04]">

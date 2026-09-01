@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabase, type Rater } from '@/lib/supabase'
 import RaterCard from '@/components/RaterCard'
 import SearchAutocomplete from '@/components/SearchAutocomplete'
 import { CATEGORIES, canonicalCategory, categoryMatchValues } from '@/lib/categories'
@@ -281,7 +281,7 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
       </div>
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        {raters.map((rater: any) => <RaterCard key={rater.id} rater={rater} />)}
+        {raters.map((rater: Rater) => <RaterCard key={rater.id} rater={rater} />)}
       </div>
 
       {totalPages > 1 && (

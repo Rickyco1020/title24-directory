@@ -13,7 +13,7 @@ export default function ContactPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
       <h1 className="text-3xl font-bold text-gray-900 mb-2">Contact Us</h1>
-      <p className="text-gray-500 mb-12">Have a question about the directory or your listing? We're here to help.</p>
+      <p className="text-gray-500 mb-12">Have a question about the directory or your listing? We&rsquo;re here to help.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-5 gap-10">
         {/* Left: contact form */}
@@ -35,7 +35,7 @@ export default function ContactPage() {
             <h2 className="font-bold text-gray-900 mb-3">Common questions</h2>
             <ul className="space-y-3 text-sm">
               <li><Link href="/resources/what-is-a-hers-rater" className="text-blue-700 hover:underline font-medium">What is a HERS / ECC Rater?</Link></li>
-              <li><Link href="/resources/cf2r-vs-cf3r" className="text-blue-700 hover:underline font-medium">CF2R vs CF3R — what's the difference?</Link></li>
+              <li><Link href="/resources/cf2r-vs-cf3r" className="text-blue-700 hover:underline font-medium">CF2R vs CF3R — what&rsquo;s the difference?</Link></li>
               <li><Link href="/resources/title-24-compliance-guide" className="text-blue-700 hover:underline font-medium">Title 24 compliance guide for builders</Link></li>
               <li><Link href="/resources" className="text-blue-700 hover:underline font-medium">Browse all resources →</Link></li>
             </ul>

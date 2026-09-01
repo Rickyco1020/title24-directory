@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { supabase, type Rater } from '@/lib/supabase'
 import { CA_COUNTIES, CITIES } from '@/lib/california-data'
 import { zonesForCounty, zoneCallout } from '@/lib/climate-zones'
 import RaterCard from '@/components/RaterCard'
@@ -9,6 +9,7 @@ import ZoneLinks from '@/components/ZoneLinks'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { absoluteUrl } from '@/lib/site'
+import { escapeForJsonLd } from '@/lib/security'
 
 export async function generateStaticParams() {
   return CA_COUNTIES.map(county => ({ county: county.slug }))
@@ -61,7 +62,7 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeForJsonLd(jsonLd) }} />
 
       <ZoneSheet activeZones={zones} linkZones>
         <Breadcrumb items={[
@@ -105,7 +106,7 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
       <div className="mx-auto max-w-7xl px-4 pb-20 pt-12 sm:px-6 lg:px-8">
         {count > 0 ? (
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-            {raters!.map((rater: any) => <RaterCard key={rater.id} rater={rater} />)}
+            {raters!.map((rater: Rater) => <RaterCard key={rater.id} rater={rater} />)}
           </div>
         ) : (
           <div className="border-t border-ink py-14 text-center">

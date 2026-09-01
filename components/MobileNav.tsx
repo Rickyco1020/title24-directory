@@ -10,28 +10,30 @@ const LINKS = [
 ]
 
 export default function MobileNav() {
-  const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
   const panelRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
-  // Route change closes the panel. Without this, tapping a link navigates
-  // underneath a menu that stays open over the new page.
-  useEffect(() => {
-    setIsOpen(false)
-  }, [pathname])
+  // The panel is open *for a particular route*, not open in the abstract.
+  // Tapping a link navigates, `pathname` changes, and `isOpen` is false on the
+  // next render — so the menu still closes on navigation, but without an effect
+  // that calls setState in its body. That effect was a second render pass on
+  // every route change (and an error under the React Compiler lint rules); this
+  // is one render and no effect at all.
+  const [openFor, setOpenFor] = useState<string | null>(null)
+  const isOpen = openFor === pathname
 
   useEffect(() => {
     if (!isOpen) return
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') {
-        setIsOpen(false)
+        setOpenFor(null)
         buttonRef.current?.focus()
       }
     }
     function onDown(e: MouseEvent) {
       const t = e.target as Node
-      if (!panelRef.current?.contains(t) && !buttonRef.current?.contains(t)) setIsOpen(false)
+      if (!panelRef.current?.contains(t) && !buttonRef.current?.contains(t)) setOpenFor(null)
     }
     document.addEventListener('keydown', onKey)
     document.addEventListener('mousedown', onDown)
@@ -46,7 +48,7 @@ export default function MobileNav() {
       <button
         ref={buttonRef}
         type="button"
-        onClick={() => setIsOpen(o => !o)}
+        onClick={() => setOpenFor(o => (o === pathname ? null : pathname))}
         className="flex h-9 w-9 items-center justify-center rounded text-ink transition-colors hover:bg-sunk"
         aria-label={isOpen ? 'Close menu' : 'Open menu'}
         aria-expanded={isOpen}

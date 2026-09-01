@@ -29,6 +29,27 @@ export type Rater = {
   source?: 'self' | 'seeded'
 }
 
+/**
+ * A row of `listing_requests` — the claim / correct / remove queue behind the
+ * admin panel. `verify_token_hash` is deliberately not modelled: only the claim
+ * action ever touches it, and nothing that renders should read it.
+ */
+export type ListingRequest = {
+  id: string
+  created_at: string
+  rater_id: string | null
+  kind: 'claim' | 'correct' | 'remove'
+  business_name: string | null
+  contact_name: string
+  email: string
+  phone: string | null
+  message: string | null
+  handled: boolean
+  verification_status: 'not_required' | 'pending' | 'verified' | 'unverifiable'
+  verify_sent_to: string | null
+  verified_at: string | null
+}
+
 export type City = {
   id: number
   name: string
