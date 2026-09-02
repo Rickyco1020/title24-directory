@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next'
 import { CITIES, CA_COUNTIES } from '@/lib/california-data'
-import { CZ_NUMBERS } from '@/components/CaliforniaClimateZones'
+import { CZ_NUMBERS } from '@/lib/zone-map'
 import { SITE_URL } from '@/lib/site'
 import { supabase } from '@/lib/supabase'
 import { cityHasListings, countyHasListings, placeListingCounts } from '@/lib/rater-counts'

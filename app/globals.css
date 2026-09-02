@@ -184,7 +184,12 @@
   .sheet-map--links a:hover {
     color: var(--color-accent);
   }
-  .sheet-map--links a:hover path {
+  /* `use`, not `path`. The zone shapes are pulled out of
+     public/climate-zones.svg with <use>, and the cloned <path> sits in a shadow
+     tree no selector here can reach. Styling the <use> works instead because
+     fill-opacity, stroke-opacity and stroke-width are inherited properties, and
+     a rule always beats the presentation attributes the component sets. */
+  .sheet-map--links a:hover use {
     fill-opacity: 0.34;
     stroke-opacity: 0.9;
     stroke-width: 2;

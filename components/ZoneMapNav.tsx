@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { CZ_NUMBERS, CZ_VIEWBOX, CZ_ZONES } from '@/components/CaliforniaClimateZones'
+import { CZ_NUMBERS, CZ_VIEWBOX, CZ_ZONES, zoneSpriteHref } from '@/lib/zone-map'
 
 export type TopCounty = { slug: string; name: string; raters: number; zones: readonly string[] }
 
@@ -56,12 +56,20 @@ export default function ZoneMapNav({ countiesPerZone, topCounties }: ZoneMapNavP
           aria-hidden="true"
           focusable="false"
         >
+          {/* <use>, not <path>: the geometry lives in public/climate-zones.svg
+              so it is fetched and cached once for the whole site instead of
+              being serialized into this page's HTML, its RSC payload and the
+              client bundle. Every paint attribute below is an inherited
+              property, so it reaches the cloned shape; the shape hit-tests as
+              this <use> element, so the handlers fire exactly as they did on
+              the path. `vector-effect` is the one thing that cannot be set from
+              here — it does not inherit — so it is baked into the sprite. */}
           {CZ_ZONES.map(zone => {
             const isLit = zone.z === hovered || (countyHover?.zones.includes(zone.z) ?? false)
             return (
-              <path
+              <use
                 key={zone.z}
-                d={zone.d}
+                href={zoneSpriteHref(zone.z)}
                 onClick={() => router.push(href(zone.z))}
                 onMouseEnter={() => setHovered(zone.z)}
                 onMouseLeave={leave(zone.z)}
@@ -74,7 +82,6 @@ export default function ZoneMapNav({ countiesPerZone, topCounties }: ZoneMapNavP
                 strokeOpacity={isLit ? 0.95 : 0.28}
                 strokeWidth={isLit ? 2 : 1}
                 strokeLinejoin="round"
-                vectorEffect="non-scaling-stroke"
               />
             )
           })}
