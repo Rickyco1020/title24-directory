@@ -1,5 +1,6 @@
 import { createServiceClient } from '@/lib/supabase'
 import { confirmRemoval } from '../actions'
+import { ADMIN_EMAIL } from '@/lib/site'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -57,8 +58,12 @@ export default async function VerifyRemovalPage({
         <p>
           Something went wrong on our side, so the removal is <strong>not</strong> confirmed yet.
           Please email us at{' '}
-          <a href="mailto:hello@title24directory.com" className="text-blue-700 hover:underline">
-            hello@title24directory.com
+          {/* title24directory.com publishes no MX records — it sends mail through
+              Resend but receives none, so the hello@ address this used to name was
+              a black hole on the one page a business lands on when an automated
+              removal has already failed. ADMIN_EMAIL is a real, monitored inbox. */}
+          <a href={`mailto:${ADMIN_EMAIL}`} className="text-blue-700 hover:underline">
+            {ADMIN_EMAIL}
           </a>{' '}
           and we&rsquo;ll take the listing down by hand.
         </p>
