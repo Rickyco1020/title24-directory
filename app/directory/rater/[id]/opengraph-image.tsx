@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og'
 import { supabase } from '@/lib/supabase'
 import { CATEGORY_LABELS, displayServices } from '@/lib/categories'
+import { countyName } from '@/lib/california-data'
 
 export const runtime = 'edge'
 export const size = { width: 1200, height: 630 }
@@ -20,7 +21,17 @@ export default async function Image({ params }: { params: Promise<{ id: string }
 
   const name = rater?.business_name ?? 'Title 24 Rater'
   const services = displayServices(rater?.services).map((s: string) => CATEGORY_LABELS[s] ?? s)
-  const counties = (rater?.counties_served ?? []).slice(0, 3).join(', ')
+  // Slugs, not display names, are what the column stores — joined raw this read
+  // 'Serving los-angeles, san-bernardino' on the card. Invisible until the
+  // lookup above started returning a rater.
+  const counties = (rater?.counties_served ?? []).slice(0, 3).map(countyName).join(', ')
+  // Built as one string rather than three JSX children on purpose: Satori
+  // rejects a <div> with more than one child node unless it declares
+  // `display: flex`, and this line only ever had more than one child once the
+  // lookup above started returning a rater. See the note on the div below.
+  const location = counties
+    ? `\u{1F4CD} Serving ${counties}${(rater?.counties_served?.length ?? 0) > 3 ? ' + more' : ''}`
+    : ''
 
   return new ImageResponse(
     (
@@ -55,11 +66,11 @@ export default async function Image({ params }: { params: Promise<{ id: string }
             ))}
           </div>
         )}
-        {/* Location */}
-        {counties && (
-          <div style={{ color: '#bfdbfe', fontSize: '24px' }}>
-            📍 Serving {counties}{(rater?.counties_served?.length ?? 0) > 3 ? ' + more' : ''}
-          </div>
+        {/* Location. One text child — Satori throws
+            "Expected <div> to have explicit display: flex ... if it has more
+            than one child node" otherwise, and the whole image 500s. */}
+        {location && (
+          <div style={{ color: '#bfdbfe', fontSize: '24px' }}>{location}</div>
         )}
       </div>
     ),
