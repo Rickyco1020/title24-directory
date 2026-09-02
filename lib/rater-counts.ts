@@ -2,6 +2,20 @@ import { cache } from 'react'
 import { supabase } from '@/lib/supabase'
 import { CITIES } from '@/lib/california-data'
 
+/**
+ * How many listing cards a city or county page will draw before it stops and
+ * links to the paginated directory instead.
+ *
+ * A city page shows every rater covering its county, so the ceiling on any one
+ * page is the county roster — and Los Angeles County alone feeds roughly ninety
+ * city pages. Uncapped, the day the roster reaches four figures is the day
+ * ninety prerendered documents each carry the whole thing. Fifty cards is well
+ * past what anyone scrolls and still a bounded page.
+ *
+ * Both place pages import this so the two can never drift.
+ */
+export const PLACE_CARD_LIMIT = 50
+
 /** How many listings each place page will actually render. */
 export type PlaceCounts = {
   /** City slug -> raters the city page shows: city-specific plus county-wide. */

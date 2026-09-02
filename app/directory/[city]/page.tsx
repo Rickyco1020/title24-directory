@@ -4,7 +4,7 @@ import { CITIES } from '@/lib/california-data'
 import { zonesForCity, zoneCallout } from '@/lib/climate-zones'
 import { absoluteUrl } from '@/lib/site'
 import { escapeForJsonLd } from '@/lib/security'
-import { cityHasListings, placeListingCounts } from '@/lib/rater-counts'
+import { PLACE_CARD_LIMIT, cityHasListings, placeListingCounts } from '@/lib/rater-counts'
 import RaterCard from '@/components/RaterCard'
 import Breadcrumb from '@/components/Breadcrumb'
 import ZoneSheet from '@/components/ZoneSheet'
@@ -55,28 +55,68 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
   // county (they do serve the city — they just haven't singled it out). The two
   // are shown as separate groups so the page is honest about which is which,
   // and so it differs from its neighbours.
-  const base = () =>
+  //
+  // Two queries rather than one OR'd query, and both bounded. The union used to
+  // come back whole and get split in JavaScript, which meant the page fetched
+  // and rendered the entire county roster; it also meant a cap could only fall
+  // on whichever rows the database happened to return first, so the raters who
+  // actually name this city could be crowded out by the county-wide ones. Split
+  // at the source and each group gets its own ceiling — and the fragile
+  // interpolated `.or()` filter string, along with the fallback that existed
+  // only to catch it, goes away.
+  const base = (opts?: { count: 'exact' }) =>
     supabase
       .from('raters')
-      .select('*')
+      .select('*', opts)
       .in('status', ['approved', 'featured'])
       .order('status', { ascending: false })
+      // Without a unique tiebreaker Postgres may order ties differently between
+      // calls, so a capped list could shuffle between rebuilds.
+      .order('id', { ascending: true })
+      .range(0, PLACE_CARD_LIMIT - 1)
 
-  const primary = await base()
-    .or(`cities_served.cs.{${city.slug}},counties_served.cs.{${city.county_slug}}`)
-  let raters = primary.data
+  // Cached per request (React `cache`), and generateMetadata already asked for
+  // it, so this costs nothing.
+  const placeCounts = await placeListingCounts()
 
-  // If the OR filter is ever rejected, fall back to county coverage alone
-  // rather than serving an error on all 472 city pages. Same rows this page
-  // showed before, just without the city-specific split.
-  if (primary.error) {
-    const fallback = await base().contains('counties_served', [city.county_slug])
-    raters = fallback.data
-  }
+  const [cityRes, countyRes] = await Promise.all([
+    // The exact count rides along on the same request, in the Content-Range
+    // header. It is the only honest way to say "showing the first 50 of N" for
+    // this group, since the rows themselves stop at 50.
+    base({ count: 'exact' }).contains('cities_served', [city.slug]),
+    base().contains('counties_served', [city.county_slug]),
+  ])
 
-  const all = raters ?? []
-  const listsCity = all.filter(r => (r.cities_served ?? []).includes(city.slug))
-  const countyOnly = all.filter(r => !(r.cities_served ?? []).includes(city.slug))
+  const listsCity = cityRes.data ?? []
+  const cityIds = new Set(listsCity.map(r => r.id))
+  const countyOnly = (countyRes.data ?? []).filter(r => !cityIds.has(r.id))
+
+  // Totals for the header and the "there are more" lines.
+  //
+  // The union total comes from placeListingCounts() rather than from these two
+  // queries: `cities` there is already the count of raters who name this city OR
+  // cover its county, deduplicated, and it is the same number the noindex rule
+  // and the sitemap decide on. Adding the two query counts instead would
+  // double-count anyone who is in both groups, and the page would then disagree
+  // with the sitemap about whether it has anything on it.
+  //
+  // Everything falls back to what was actually fetched. A page that rendered
+  // nothing must not claim a roster it is not showing, so a failed query reads
+  // as zero and lands on the empty state exactly as it did before.
+  const fetchedTotal = listsCity.length + countyOnly.length
+  const unionTotal = fetchedTotal > 0 ? (placeCounts?.cities.get(city.slug) ?? fetchedTotal) : 0
+
+  // Raters naming this city are never truncated to make room for county-wide
+  // ones — they are the reason this page is not its neighbour.
+  const listsCityTotal = Math.max(cityRes.count ?? listsCity.length, listsCity.length)
+  // |county-only| = |union| − |names the city|, exactly: county-only is defined
+  // as the union minus that group. So this stays consistent with the header
+  // without a third query.
+  const countyOnlyTotal = Math.max(unionTotal - listsCityTotal, countyOnly.length)
+
+  const shownCountyOnly = countyOnly.slice(0, Math.max(PLACE_CARD_LIMIT - listsCity.length, 0))
+  const listsCityCapped = listsCityTotal > listsCity.length
+  const countyOnlyCapped = countyOnlyTotal > shownCountyOnly.length
 
   // The city's own CEC zone where the ZIP→place source has it, the county's
   // set otherwise. Empty for the seven counties that source doesn't cover, in
@@ -124,7 +164,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
         <dl className="title-block mt-7">
           <div>
             <dt className="t-label">Raters</dt>
-            <dd className="mt-0.5 font-bold text-ink">{all.length}</dd>
+            <dd className="mt-0.5 font-bold text-ink">{unionTotal}</dd>
           </div>
           <div>
             <dt className="t-label">County</dt>
@@ -140,33 +180,57 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
       </ZoneSheet>
 
       <div className="mx-auto max-w-7xl px-4 pb-20 pt-12 sm:px-6 lg:px-8">
-        {all.length > 0 ? (
+        {unionTotal > 0 ? (
           <>
             {listsCity.length > 0 && (
               <section className="mb-12">
                 <h2 className="text-lg font-bold">Raters listing {city.name} specifically</h2>
                 <p className="mt-1.5 mb-5 text-sm">
-                  {listsCity.length} rater{listsCity.length !== 1 ? 's' : ''} name {city.name} in
-                  their service area.
+                  {listsCityTotal} rater{listsCityTotal !== 1 ? 's' : ''} name {city.name} in their
+                  service area.
+                  {listsCityCapped && ` Showing the first ${listsCity.length}.`}
                 </p>
                 <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
                   {listsCity.map(r => <RaterCard key={r.id} rater={r} />)}
                 </div>
+                {listsCityCapped && (
+                  <p className="mt-6 text-sm">
+                    <Link
+                      href={`/directory?q=${encodeURIComponent(city.name)}`}
+                      className="font-semibold text-accent underline decoration-accent-rule underline-offset-4 hover:decoration-accent"
+                    >
+                      See all {listsCityTotal} raters serving {city.name} →
+                    </Link>
+                  </p>
+                )}
               </section>
             )}
 
-            {countyOnly.length > 0 && (
+            {countyOnlyTotal > 0 && (
               <section>
                 <h2 className="text-lg font-bold">
                   {listsCity.length > 0 ? `Also serving ${city.name}` : `Serving ${city.name}`}
                 </h2>
                 <p className="mt-1.5 mb-5 text-sm">
-                  {countyOnly.length} rater{countyOnly.length !== 1 ? 's' : ''} cover
-                  {countyOnly.length === 1 ? 's' : ''} all of {city.county} County.
+                  {countyOnlyTotal} rater{countyOnlyTotal !== 1 ? 's' : ''} cover
+                  {countyOnlyTotal === 1 ? 's' : ''} all of {city.county} County.
+                  {countyOnlyCapped && ` Showing ${shownCountyOnly.length}.`}
                 </p>
-                <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-                  {countyOnly.map(r => <RaterCard key={r.id} rater={r} />)}
-                </div>
+                {shownCountyOnly.length > 0 && (
+                  <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                    {shownCountyOnly.map(r => <RaterCard key={r.id} rater={r} />)}
+                  </div>
+                )}
+                {countyOnlyCapped && (
+                  <p className="mt-6 text-sm">
+                    <Link
+                      href={`/directory?county=${city.county_slug}`}
+                      className="font-semibold text-accent underline decoration-accent-rule underline-offset-4 hover:decoration-accent"
+                    >
+                      See all {countyOnlyTotal} raters covering {city.county} County →
+                    </Link>
+                  </p>
+                )}
               </section>
             )}
           </>

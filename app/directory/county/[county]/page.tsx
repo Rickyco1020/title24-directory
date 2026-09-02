@@ -10,7 +10,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { absoluteUrl } from '@/lib/site'
 import { escapeForJsonLd } from '@/lib/security'
-import { countyHasListings, placeListingCounts } from '@/lib/rater-counts'
+import { PLACE_CARD_LIMIT, countyHasListings, placeListingCounts } from '@/lib/rater-counts'
 
 export async function generateStaticParams() {
   return CA_COUNTIES.map(county => ({ county: county.slug }))
@@ -46,12 +46,20 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
   const county = CA_COUNTIES.find(c => c.slug === countySlug)
   if (!county) notFound()
 
+  // Bounded. This query used to select the whole matching set, and this is the
+  // page where that ceiling is highest — a county roster is the largest result
+  // any place page can produce, and it is the same roster that fans out across
+  // every city page in the county. Past the cap the page says so and hands off
+  // to the paginated directory rather than drawing a thousand cards.
   const { data: raters } = await supabase
     .from('raters')
     .select('*')
     .in('status', ['approved', 'featured'])
     .contains('counties_served', [countySlug])
     .order('status', { ascending: false })
+    // A stable tiebreaker, so a capped list does not reshuffle between builds.
+    .order('id', { ascending: true })
+    .range(0, PLACE_CARD_LIMIT - 1)
 
   const citiesInCounty = CITIES.filter(c => c.county_slug === countySlug)
 
@@ -71,7 +79,16 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
     ],
   }
 
-  const count = raters?.length ?? 0
+  // The header number is the true roster size, not the number of cards drawn —
+  // and it comes from the same tally the noindex rule and the sitemap use, so
+  // the three cannot disagree about whether this county has anyone on it.
+  //
+  // It falls back to what was actually fetched, and reads zero when nothing was:
+  // if the query failed, the page renders its empty state and must not
+  // simultaneously claim a roster it is not showing.
+  const shown = raters ?? []
+  const count = shown.length > 0 ? ((await placeListingCounts())?.counties.get(countySlug) ?? shown.length) : 0
+  const capped = count > shown.length
 
   return (
     <>
@@ -118,9 +135,22 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
 
       <div className="mx-auto max-w-7xl px-4 pb-20 pt-12 sm:px-6 lg:px-8">
         {count > 0 ? (
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-            {raters!.map((rater: Rater) => <RaterCard key={rater.id} rater={rater} />)}
-          </div>
+          <>
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              {shown.map((rater: Rater) => <RaterCard key={rater.id} rater={rater} />)}
+            </div>
+            {capped && (
+              <p className="mt-8 border-t border-rule pt-5 text-sm">
+                Showing {shown.length} of {count} raters covering {county.name} County.{' '}
+                <Link
+                  href={`/directory?county=${county.slug}`}
+                  className="font-semibold text-accent underline decoration-accent-rule underline-offset-4 hover:decoration-accent"
+                >
+                  See all {count} →
+                </Link>
+              </p>
+            )}
+          </>
         ) : (
           <div className="border-t border-ink py-14 text-center">
             <p className="text-xl font-bold text-ink">No raters listed yet in {county.name} County</p>
