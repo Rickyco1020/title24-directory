@@ -45,9 +45,14 @@ export const SITE_URL = clean(RAW)
  * with a legal edge) landed in a different inbox from everything else. One
  * export, one fallback, no way to drift again.
  *
- * Set ADMIN_EMAIL in the deployment env so the fallback never fires.
+ * The fallback is the real destination, not a placeholder: ADMIN_EMAIL is not
+ * set in Vercel (checked 2026-09-01 — the project carries six variables and
+ * this is not among them), so this literal is what production actually uses.
+ * Operator mail belongs on the business identity, so it goes to the T24 Studio
+ * address rather than a personal Gmail. Setting ADMIN_EMAIL in the deployment
+ * env still overrides it, which is the escape hatch, not the plan.
  */
-export const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'rickydcc137@gmail.com'
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'rick@t24studio.com'
 
 /** Absolute URL for a site-relative path. */
 export function absoluteUrl(path = '/'): string {
