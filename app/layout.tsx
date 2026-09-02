@@ -67,6 +67,11 @@ const FOOTER_COLUMNS = [
   },
 ]
 
+const LEGAL_LINKS = [
+  { href: '/privacy', label: 'Privacy Policy' },
+  { href: '/terms', label: 'Terms of Service' },
+]
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${chivo.variable} ${martian.variable}`}>
@@ -145,10 +150,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               ))}
             </div>
 
-            <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-paper/15 pt-6">
-              <p className="text-xs text-paper/65">
-                © {new Date().getFullYear()} Title24 Directory
-              </p>
+            {/* Privacy and terms live on the bottom rule rather than in a
+                fourth column: they belong on every page (an ad network will not
+                review a site whose policy is only reachable from one of them),
+                but they are not navigation and should not read as a peer of
+                "Find a rater". */}
+            <div className="mt-12 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-paper/15 pt-6">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                <p className="text-xs text-paper/65">
+                  © {new Date().getFullYear()} Title24 Directory
+                </p>
+                {LEGAL_LINKS.map(link => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="text-xs text-paper/65 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
               <p className="t-label text-paper/55">
                 Zone geometry: CEC building climate zones, 2015 boundaries
               </p>

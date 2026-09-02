@@ -71,6 +71,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE_URL}/get-listed`, lastModified: GENERATED_AT, changeFrequency: 'monthly' as const, priority: 0.8 },
     { url: `${BASE_URL}/resources`, lastModified: GENERATED_AT, changeFrequency: 'weekly' as const, priority: 0.7 },
     { url: `${BASE_URL}/contact`, lastModified: GENERATED_AT, changeFrequency: 'monthly' as const, priority: 0.5 },
+    // Low priority, rarely changing, but they have to be here: an ad network
+    // reviewing the site looks for a discoverable privacy policy, and a page
+    // linked from every footer that is missing from the sitemap reads as an
+    // oversight rather than a decision.
+    { url: `${BASE_URL}/privacy`, lastModified: GENERATED_AT, changeFrequency: 'yearly' as const, priority: 0.3 },
+    { url: `${BASE_URL}/terms`, lastModified: GENERATED_AT, changeFrequency: 'yearly' as const, priority: 0.3 },
   ]
 
   // Rater detail pages exist and render, but nothing linked to them and they
