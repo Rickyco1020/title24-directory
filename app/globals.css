@@ -61,6 +61,7 @@
 /* Semantic z-scale. Never use a bare number anywhere in the app. */
 :root {
   --z-sheet: 1;
+  --z-fade: 15;
   --z-sticky: 20;
   --z-dropdown: 30;
   --z-overlay: 40;

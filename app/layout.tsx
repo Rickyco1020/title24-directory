@@ -1,8 +1,9 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Chivo, Martian_Mono } from 'next/font/google'
 import './globals.css'
 import Link from 'next/link'
 import MobileNav from '@/components/MobileNav'
+import BottomFade from '@/components/BottomFade'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { SITE_URL } from '@/lib/site'
@@ -37,6 +38,14 @@ export const metadata: Metadata = {
   verification: {
     google: '-KyQtMRifeytgspRHN_ukGNKioN5_oQ9cdnxaUMrn2U',
   },
+}
+
+// viewport-fit: 'cover' is what makes env(safe-area-inset-bottom) resolve to
+// a real value instead of 0 — BottomFade's height depends on it.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 }
 
 const FOOTER_COLUMNS = [
@@ -114,6 +123,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </header>
 
         <main id="main">{children}</main>
+
+        <BottomFade />
 
         {/* Hairline in paper, not ink: a page ending in a dark band (the
             homepage CTA) would otherwise merge into the footer with no seam,
