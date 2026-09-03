@@ -115,6 +115,16 @@
     line-height: 1.4;
   }
 
+  /* ── Card description, clamped to two lines. line-clamp alone stops the
+        text dead mid-sentence with no ellipsis on this stack — the same
+        guillotine cut as the mobile toolbar problem, just smaller. Masking
+        the second line's own height fades it into the card instead, so the
+        truncation reads as deliberate. ── */
+  .desc-fade {
+    -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  }
+
   /* ── The drafting grid. Sits behind hero content, masked so it
         fades out before it reaches the text column. ── */
   .sheet-grid {

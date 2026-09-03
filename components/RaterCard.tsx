@@ -61,7 +61,9 @@ export default function RaterCard({ rater }: { rater: Rater }) {
       </div>
 
       {rater.description && (
-        <p className="line-clamp-2 px-4 pb-3 text-sm leading-relaxed">{rater.description}</p>
+        <p className="desc-fade line-clamp-2 px-4 pb-3 text-sm leading-relaxed">
+          {rater.description}
+        </p>
       )}
 
       <dl className="mt-auto flex flex-wrap border-t border-rule">
