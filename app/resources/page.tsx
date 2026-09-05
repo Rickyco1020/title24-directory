@@ -59,6 +59,24 @@ export default function ResourcesPage() {
         ))}
       </ul>
 
+      {/* The one outbound link on the site, and it belongs here rather than in
+          the sitewide footer: readers who finish "What is a CF1R" ask where the
+          report itself comes from, and that is a different job from the
+          verification this directory indexes. `noopener` without `noreferrer`
+          so the referrer survives and the traffic is attributable. */}
+      <p className="mt-8 max-w-[68ch] text-sm leading-relaxed text-muted">
+        Looking for the compliance report rather than the verifier?{' '}
+        <a
+          href="https://t24studio.com/hers-ecc-verification/"
+          target="_blank"
+          rel="noopener"
+          className="text-accent underline decoration-accent-rule underline-offset-2 hover:decoration-accent"
+        >
+          Title 24 reports (CF1R)
+        </a>{' '}
+        are prepared by T24 Studio.
+      </p>
+
       <aside className="mt-14 border-t border-ink pt-8">
         <h2 className="text-lg font-bold">Ready to find someone?</h2>
         <p className="mt-2 max-w-[56ch] text-[0.95rem]">
