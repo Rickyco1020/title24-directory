@@ -18,13 +18,24 @@ export async function generateStaticParams() {
 
 export const revalidate = 3600
 
+// Same 60-character ceiling as the city pages, minus the 21 characters the
+// layout appends. San Bernardino and San Luis Obispo are the two counties long
+// enough to cross it, so they drop the ", CA" rather than have Google cut the
+// county name or the site name off the end.
+const TITLE_BUDGET = 60 - ' | Title 24 Directory'.length
+
+function countyTitle(name: string): string {
+  const withState = `HERS Raters in ${name} County, CA`
+  return withState.length <= TITLE_BUDGET ? withState : `HERS Raters in ${name} County`
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ county: string }> }): Promise<Metadata> {
   const { county: countySlug } = await params
   const county = CA_COUNTIES.find(c => c.slug === countySlug)
   if (!county) return {}
   const hasListings = countyHasListings(await placeListingCounts(), county.slug)
   return {
-    title: `HERS Raters in ${county.name} County, CA`,
+    title: countyTitle(county.name),
     description: `Find certified HERS raters, ECC raters, and Title 24 acceptance testers in ${county.name} County, California.`,
     alternates: { canonical: absoluteUrl(`/directory/county/${county.slug}`) },
     // 64 city and 24 county pages currently render zero listings, which makes

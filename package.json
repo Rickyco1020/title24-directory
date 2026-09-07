@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "seed:geo": "npx tsx scripts/seed-geo.ts",
-    "seed:raters": "npx tsx scripts/seed-raters.ts"
+    "seed:raters": "npx tsx scripts/seed-raters.ts",
+    "check:links": "npx tsx scripts/check-listing-links.ts"
   },
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.15.0",

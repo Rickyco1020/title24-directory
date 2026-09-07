@@ -4,7 +4,10 @@ import './globals.css'
 import Link from 'next/link'
 import MobileNav from '@/components/MobileNav'
 import BottomFade from '@/components/BottomFade'
-import { Analytics } from '@vercel/analytics/react'
+// The /next entry point, not /react: it reads the App Router's route template,
+// so the 472 city pages report as /directory/[city] instead of 472 separate
+// URLs. Speed Insights was already on the matching entry point.
+import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { SITE_URL } from '@/lib/site'
 

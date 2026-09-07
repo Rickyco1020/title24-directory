@@ -18,13 +18,26 @@ export async function generateStaticParams() {
 
 export const revalidate = 3600
 
+// Google truncates a <title> around 60 characters, and the layout appends
+// " | Title 24 Directory" — 21 of them. Two of the 472 cities (Rancho Santa
+// Margarita, Rolling Hills Estates) run past that line once ", CA" is attached,
+// and a truncated title costs the city name or the brand. Those two drop the
+// ", CA" instead: the state is still in the description, the heading and the
+// URL. Every other city keeps the title it is already indexed under.
+const TITLE_BUDGET = 60 - ' | Title 24 Directory'.length
+
+function cityTitle(name: string): string {
+  const withState = `HERS Raters in ${name}, CA`
+  return withState.length <= TITLE_BUDGET ? withState : `HERS Raters in ${name}`
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ city: string }> }): Promise<Metadata> {
   const { city: citySlug } = await params
   const city = CITIES.find(c => c.slug === citySlug)
   if (!city) return {}
   const hasListings = cityHasListings(await placeListingCounts(), city.slug)
   return {
-    title: `HERS Raters in ${city.name}, CA`,
+    title: cityTitle(city.name),
     description: `Find certified HERS raters, ECC raters, and Title 24 acceptance testers in ${city.name}, California.`,
     alternates: { canonical: absoluteUrl(`/directory/${city.slug}`) },
     // 64 city and 24 county pages currently render zero listings, which makes
