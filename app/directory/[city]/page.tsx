@@ -16,7 +16,11 @@ export async function generateStaticParams() {
   return CITIES.map(city => ({ city: city.slug }))
 }
 
-export const revalidate = 3600
+// A day, not an hour. 472 city pages regenerating hourly on crawler
+// traffic alone is what put the project over Vercel's ISR write quota,
+// and a directory's listings do not change hourly. New data still goes
+// live immediately via a deploy.
+export const revalidate = 86400
 
 // Google truncates a <title> around 60 characters, and the layout appends
 // " | Title 24 Directory" — 21 of them. Two of the 472 cities (Rancho Santa

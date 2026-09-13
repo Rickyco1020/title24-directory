@@ -41,7 +41,7 @@ const websiteJsonLd = {
 // Real numbers or none. The old hero advertised "4 service types" and
 // "100% free" as if they were achievements; the listing count is the only
 // figure here a visitor actually cares about, so it comes from the database.
-export const revalidate = 3600
+export const revalidate = 86400
 
 // Permit-pull date decides the governing code, not the calendar year an
 // inspection happens. Field verification lags permitting by years on

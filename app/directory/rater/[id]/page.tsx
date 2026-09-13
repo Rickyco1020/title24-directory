@@ -18,10 +18,10 @@ function formatCountyName(slug: string): string {
 // Was `force-dynamic`: every hit, including every Googlebot crawl of the
 // largest section of the sitemap, paid for an uncached render plus a Supabase
 // round trip. A rater's own details change no faster than a city page's, and
-// city, county and zone pages have all been on the same hour-long window for
-// months. `dynamicParams` stays at its default of true, so a listing approved
+// city, county and zone pages have all been on the same window for months.
+// `dynamicParams` stays at its default of true, so a listing approved
 // between builds still renders on demand and is cached from then on.
-export const revalidate = 3600
+export const revalidate = 86400
 
 async function getRater(id: string): Promise<Rater | null> {
   const { data } = await supabase

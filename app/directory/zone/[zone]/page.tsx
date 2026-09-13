@@ -10,7 +10,7 @@ import ZoneSheet from '@/components/ZoneSheet'
 import { absoluteUrl } from '@/lib/site'
 import { escapeForJsonLd } from '@/lib/security'
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 export function generateStaticParams() {
   return CZ_NUMBERS.map(zone => ({ zone }))

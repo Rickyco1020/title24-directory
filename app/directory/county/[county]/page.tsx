@@ -16,7 +16,7 @@ export async function generateStaticParams() {
   return CA_COUNTIES.map(county => ({ county: county.slug }))
 }
 
-export const revalidate = 3600
+export const revalidate = 86400
 
 // Same 60-character ceiling as the city pages, minus the 21 characters the
 // layout appends. San Bernardino and San Luis Obispo are the two counties long
