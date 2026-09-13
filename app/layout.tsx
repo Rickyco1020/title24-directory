@@ -8,6 +8,7 @@ import BottomFade from '@/components/BottomFade'
 // so the 472 city pages report as /directory/[city] instead of 472 separate
 // URLs. Speed Insights was already on the matching entry point.
 import { Analytics } from '@vercel/analytics/next'
+import ConversionTracking from '@/components/ConversionTracking'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { SITE_URL } from '@/lib/site'
 
@@ -193,6 +194,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <Analytics />
         <SpeedInsights />
+        <ConversionTracking />
       </body>
     </html>
   )

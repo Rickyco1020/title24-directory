@@ -6,7 +6,8 @@ import { HONEYPOT_FIELD, HONEYPOT_STYLE } from '@/lib/forms'
 import { CATEGORIES } from '@/lib/categories'
 import { CA_COUNTIES } from '@/lib/california-data'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { trackEvent } from '@/lib/analytics'
 
 const FIELDS = [
   { name: 'business_name', label: 'Business name', required: true, type: 'text', placeholder: 'Your company name' },
@@ -42,6 +43,13 @@ function FieldError({ message }: { message?: string }) {
 export default function GetListedPage() {
   const [state, action] = useActionState(submitListing, { success: false })
   const [description, setDescription] = useState('')
+
+  // The success screen replaces the form in place — there is no redirect and
+  // no thank-you URL — so this flip is the only moment a completed listing is
+  // observable. Keyed on state.success so a re-render cannot double-count it.
+  useEffect(() => {
+    if (state.success) trackEvent('listing_submitted')
+  }, [state.success])
 
   if (state.success) {
     return (
