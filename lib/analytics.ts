@@ -10,6 +10,11 @@
 //   - Vercel Analytics' track(), which is already on every page via the
 //     <Analytics /> component in the root layout. Custom events are a Pro
 //     feature; on Hobby the call is simply ignored.
+//   - gtag('event', ...), when GA4 is configured. This is a separate call
+//     rather than something gtag reads out of the dataLayer push above:
+//     gtag.js only interprets dataLayer entries written in its own arguments
+//     format and ignores GTM-style {event: name} objects, so the two sinks
+//     cannot double-count each other.
 //
 // Nothing here throws. An analytics call that breaks a phone link is a worse
 // outcome than a missing row in a report.
@@ -21,6 +26,7 @@ type EventProps = Record<string, string | number | boolean | null>
 declare global {
   interface Window {
     dataLayer?: Record<string, unknown>[]
+    gtag?: (...args: unknown[]) => void
   }
 }
 
@@ -36,6 +42,12 @@ export function trackEvent(name: string, props: EventProps = {}): void {
 
   try {
     track(name, props)
+  } catch {
+    // Same reasoning.
+  }
+
+  try {
+    window.gtag?.('event', name, props)
   } catch {
     // Same reasoning.
   }
