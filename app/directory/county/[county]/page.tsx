@@ -76,7 +76,7 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
 
   // Every zone the county touches, from the CEC ZIP mapping. Empty for the
   // seven counties the ZIP→place source doesn't cover, in which case the hero
-  // draws the plain base sheet and the page makes no zone claim.
+  // redlines the county alone and the page makes no zone claim.
   const zones = zonesForCounty(countySlug)
   const callout = zoneCallout(zones)
 
@@ -105,7 +105,7 @@ export default async function CountyPage({ params }: { params: Promise<{ county:
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeForJsonLd(jsonLd) }} />
 
-      <ZoneSheet activeZones={zones} linkZones>
+      <ZoneSheet activeZones={zones} activeCounty={countySlug} linkZones>
         <Breadcrumb items={[
           { label: 'Home', href: '/' },
           { label: 'Directory', href: '/directory' },

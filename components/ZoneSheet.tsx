@@ -7,6 +7,12 @@ type Props = {
    */
   activeZones?: readonly string[]
   /**
+   * County slug to redline on a county or city page. The zones then become a
+   * light tint under it rather than the mark itself — see
+   * CaliforniaClimateZones for why.
+   */
+  activeCounty?: string
+  /**
    * Draw the watermark map. On by default everywhere, including the
    * homepage — the hero map is the first climate-zone cue a visitor sees;
    * the interactive picker further down the homepage is the deep version
@@ -28,6 +34,7 @@ type Props = {
  */
 export default function ZoneSheet({
   activeZones,
+  activeCounty,
   showMap = true,
   linkZones = false,
   children,
@@ -43,7 +50,11 @@ export default function ZoneSheet({
           className={`sheet-map${linkZones ? ' sheet-map--links' : ''}`}
           aria-hidden="true"
         >
-          <CaliforniaClimateZones activeZones={activeZones} linkZones={linkZones} />
+          <CaliforniaClimateZones
+            activeZones={activeZones}
+            activeCounty={activeCounty}
+            linkZones={linkZones}
+          />
         </div>
       )}
 
@@ -58,9 +69,17 @@ export default function ZoneSheet({
       {showMap && (
         <p className="sheet-legend t-label" aria-hidden="true">
           <span
-            className={`inline-block h-[9px] w-[9px] rounded-[2px] ${marked ? 'bg-accent' : 'bg-ink/30'}`}
+            className={`inline-block h-[9px] w-[9px] rounded-[2px] ${
+              marked || activeCounty ? 'bg-accent' : 'bg-ink/30'
+            }`}
           />
-          {marked ? 'Active zone' : 'CEC building climate zones 1–16'}
+          {activeCounty
+            ? marked
+              ? 'County · zones tinted'
+              : 'County'
+            : marked
+              ? 'Active zone'
+              : 'CEC building climate zones 1–16'}
         </p>
       )}
     </section>

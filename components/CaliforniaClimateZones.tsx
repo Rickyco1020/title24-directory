@@ -1,4 +1,4 @@
-import { CZ_VIEWBOX, CZ_ZONES, zoneSpriteHref } from '@/lib/zone-map'
+import { CZ_VIEWBOX, CZ_ZONES, countySpriteHref, zoneSpriteHref } from '@/lib/zone-map'
 
 /**
  * California's sixteen CEC building climate zones, drawn as the hero watermark.
@@ -38,6 +38,15 @@ type Props = {
    */
   activeZones?: readonly string[]
   /**
+   * County slug to redline (its boundary is in the same sprite). On a county
+   * or city page this is the shape that gets the red pen; `activeZones` then
+   * drop to a light tint underneath it. Without it, a county that spans zones
+   * 14 and 16 redlined most of the state — Los Angeles County's own page
+   * painted everything from Oregon to Mexico. With it, the county is the
+   * mark and its zones are context.
+   */
+  activeCounty?: string
+  /**
    * Wrap every zone in a link to its page. Plain SVG anchors, not a router
    * click handler: the map then works with no JavaScript at all and this stays
    * a server component. They carry tabIndex={-1} because the SVG is aria-hidden
@@ -50,6 +59,7 @@ type Props = {
 export default function CaliforniaClimateZones({
   className = '',
   activeZones,
+  activeCounty,
   linkZones = false,
 }: Props) {
   // Filtering from CZ_ZONES rather than mapping over activeZones keeps draw
@@ -104,7 +114,7 @@ export default function CaliforniaClimateZones({
         <g
           className="pointer-events-none text-accent"
           stroke="currentColor"
-          strokeWidth={2.2}
+          strokeWidth={activeCounty ? 1 : 2.2}
           strokeLinejoin="round"
         >
           {marked.map(zone => (
@@ -112,11 +122,24 @@ export default function CaliforniaClimateZones({
               key={`mark-${zone.z}`}
               href={zoneSpriteHref(zone.z)}
               fill="currentColor"
-              fillOpacity={0.1}
-              strokeOpacity={0.95}
+              fillOpacity={activeCounty ? 0.05 : 0.1}
+              strokeOpacity={activeCounty ? 0.45 : 0.95}
             />
           ))}
         </g>
+      )}
+
+      {activeCounty && (
+        <use
+          href={countySpriteHref(activeCounty)}
+          className="pointer-events-none text-accent"
+          fill="currentColor"
+          fillOpacity={0.18}
+          stroke="currentColor"
+          strokeOpacity={0.95}
+          strokeWidth={2.2}
+          strokeLinejoin="round"
+        />
       )}
     </svg>
   )

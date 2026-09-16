@@ -137,7 +137,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
 
   // The city's own CEC zone where the ZIP→place source has it, the county's
   // set otherwise. Empty for the seven counties that source doesn't cover, in
-  // which case the hero draws the plain base sheet and claims nothing.
+  // which case the hero redlines the county alone and claims nothing.
   const zones = zonesForCity(city.slug, city.county_slug)
   const callout = zoneCallout(zones)
 
@@ -156,7 +156,7 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: escapeForJsonLd(jsonLd) }} />
 
-      <ZoneSheet activeZones={zones} linkZones>
+      <ZoneSheet activeZones={zones} activeCounty={city.county_slug} linkZones>
         <Breadcrumb items={[
           { label: 'Home', href: '/' },
           { label: 'Directory', href: '/directory' },
