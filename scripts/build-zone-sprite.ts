@@ -24,7 +24,9 @@
 import { writeFileSync, readFileSync, existsSync } from 'fs'
 import { resolve } from 'path'
 import { CZ_VIEWBOX_SOURCE, ZONE_GEOMETRY } from '../lib/zone-geometry'
+import { COUNTY_GEOMETRY } from '../lib/county-geometry'
 import { CZ_VIEWBOX, CZ_ZONES } from '../lib/zone-map'
+import { CA_COUNTIES } from '../lib/california-data'
 
 const OUT = resolve(process.cwd(), 'public/climate-zones.svg')
 
@@ -53,11 +55,25 @@ function assertMetadataInSync(): void {
       throw new Error(`zone ${zone.z} opacity mismatch: lib/zone-map.ts has ${style.o}, geometry has ${zone.o}`)
     }
   })
+
+  // Every county the app knows has a shape, and every shape is a county the
+  // app knows. A county chip whose slug has no <path> would hover to nothing.
+  const known = new Set(CA_COUNTIES.map(c => c.slug))
+  const drawn = new Set(COUNTY_GEOMETRY.map(c => c.slug))
+  for (const slug of known) {
+    if (!drawn.has(slug)) throw new Error(`county "${slug}" is in lib/california-data.ts but has no geometry`)
+  }
+  for (const slug of drawn) {
+    if (!known.has(slug)) throw new Error(`county geometry "${slug}" matches no county in lib/california-data.ts`)
+  }
 }
 
 function render(): string {
   const paths = ZONE_GEOMETRY.map(
     zone => `    <path id="cz-${zone.z}" vector-effect="non-scaling-stroke" d="${zone.d}"/>`,
+  ).join('\n')
+  const counties = COUNTY_GEOMETRY.map(
+    county => `    <path id="county-${county.slug}" vector-effect="non-scaling-stroke" d="${county.d}"/>`,
   ).join('\n')
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${CZ_VIEWBOX_SOURCE}">
@@ -69,9 +85,13 @@ function render(): string {
     components/CaliforniaClimateZones.tsx and components/ZoneMapNav.tsx with
     <use href="/climate-zones.svg#cz-N">. Deliberately unpainted: every fill,
     stroke and opacity is supplied by the page that references it.
+
+    The 58 county boundaries (lib/county-geometry.ts, same projection and
+    viewBox) follow as #county-<slug>, for the homepage picker's county hover.
   -->
   <defs>
 ${paths}
+${counties}
   </defs>
 </svg>
 `
@@ -89,8 +109,12 @@ if (process.argv.includes('--check')) {
     console.error('public/climate-zones.svg is out of date. Run: npx tsx scripts/build-zone-sprite.ts')
     process.exit(1)
   }
-  console.log(`public/climate-zones.svg is up to date (${ZONE_GEOMETRY.length} zones).`)
+  console.log(
+    `public/climate-zones.svg is up to date (${ZONE_GEOMETRY.length} zones, ${COUNTY_GEOMETRY.length} counties).`,
+  )
 } else {
   writeFileSync(OUT, svg)
-  console.log(`Wrote public/climate-zones.svg — ${ZONE_GEOMETRY.length} zones, ${svg.length} bytes.`)
+  console.log(
+    `Wrote public/climate-zones.svg — ${ZONE_GEOMETRY.length} zones, ${COUNTY_GEOMETRY.length} counties, ${svg.length} bytes.`,
+  )
 }

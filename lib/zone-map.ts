@@ -34,6 +34,14 @@ export function zoneSpriteHref(zone: string): string {
   return `${CZ_SPRITE_URL}#cz-${zone}`
 }
 
+/**
+ * The id a county's boundary <path> carries inside the sprite. Slugs are the
+ * same ones lib/california-data.ts and COUNTY_ZONES use ('los-angeles').
+ */
+export function countySpriteHref(countySlug: string): string {
+  return `${CZ_SPRITE_URL}#county-${countySlug}`
+}
+
 /** Zones in map draw order, with the watermark's base opacity for each. */
 export const CZ_ZONES: readonly ZoneStyle[] = [
   { z: '1', o: 0.16 },

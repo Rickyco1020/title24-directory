@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { CZ_NUMBERS, CZ_VIEWBOX, CZ_ZONES, zoneSpriteHref } from '@/lib/zone-map'
+import { CZ_NUMBERS, CZ_VIEWBOX, CZ_ZONES, countySpriteHref, zoneSpriteHref } from '@/lib/zone-map'
 
 export type TopCounty = { slug: string; name: string; raters: number; zones: readonly string[] }
 
@@ -25,11 +25,16 @@ export type ZoneMapNavProps = {
  * Prefetch is off — sixteen speculative page loads to decorate a homepage is a
  * poor trade.
  *
- * The county shortcuts below light the map too. A county can span several
- * zones (Los Angeles touches five), so this is a second, independent hover
- * source rather than an alias for the first: `hovered` stays the single zone
- * a chip or map shape owns, `countyHover` carries a whole zone list, and a
- * map shape lights up if either one claims it.
+ * The county shortcuts below light the map too, but they light the COUNTY,
+ * not its zones. A county can span several zones (Los Angeles touches five),
+ * and lighting whole zones for it was wrong in a way that looked broken: zones
+ * 14 and 16 between them run from the Oregon border to Mexico, so hovering
+ * Los Angeles, Kern, Fresno or San Bernardino painted most of the state red.
+ * Now the county's own boundary (also in the sprite, same projection) is drawn
+ * over the base sheet, and the zone numbers it touches are called out where a
+ * number belongs — in the chip grid and the caption. `hovered` stays the
+ * single zone a chip or map shape owns; `countyHover` is the second,
+ * independent source and never touches the zone shapes.
  */
 export default function ZoneMapNav({ countiesPerZone, topCounties }: ZoneMapNavProps) {
   const router = useRouter()
@@ -65,7 +70,7 @@ export default function ZoneMapNav({ countiesPerZone, topCounties }: ZoneMapNavP
               the path. `vector-effect` is the one thing that cannot be set from
               here — it does not inherit — so it is baked into the sprite. */}
           {CZ_ZONES.map(zone => {
-            const isLit = zone.z === hovered || (countyHover?.zones.includes(zone.z) ?? false)
+            const isLit = zone.z === hovered
             return (
               <use
                 key={zone.z}
@@ -85,6 +90,23 @@ export default function ZoneMapNav({ countiesPerZone, topCounties }: ZoneMapNavP
               />
             )
           })}
+
+          {/* The hovered county, over the base sheet. pointer-events-none so
+              the zone shapes underneath keep their own hover; without it the
+              county would swallow the cursor and the zone hover would stick. */}
+          {countyHover && (
+            <use
+              key={countyHover.slug}
+              href={countySpriteHref(countyHover.slug)}
+              className="pointer-events-none text-accent"
+              fill="currentColor"
+              fillOpacity={0.35}
+              stroke="currentColor"
+              strokeOpacity={0.95}
+              strokeWidth={2}
+              strokeLinejoin="round"
+            />
+          )}
         </svg>
 
         <figcaption className="t-label mt-3 text-center">
@@ -110,7 +132,11 @@ export default function ZoneMapNav({ countiesPerZone, topCounties }: ZoneMapNavP
         </p>
 
         <ul className="mt-6 grid max-w-[30rem] grid-cols-4 gap-1.5 sm:grid-cols-8">
-          {CZ_NUMBERS.map(zone => (
+          {CZ_NUMBERS.map(zone => {
+            // A county hover marks its zones here, on the numbers, instead of
+            // on the map.
+            const inCounty = countyHover?.zones.includes(zone) ?? false
+            return (
             <li key={zone}>
               <Link
                 href={href(zone)}
@@ -119,13 +145,16 @@ export default function ZoneMapNav({ countiesPerZone, topCounties }: ZoneMapNavP
                 onMouseLeave={leave(zone)}
                 onFocus={() => setHovered(zone)}
                 onBlur={leave(zone)}
-                className="block rounded border border-rule bg-surface px-2.5 py-2 text-center font-mono text-xs font-semibold text-ink transition-colors hover:border-accent hover:text-accent"
+                className={`block rounded border bg-surface px-2.5 py-2 text-center font-mono text-xs font-semibold transition-colors hover:border-accent hover:text-accent ${
+                  inCounty ? 'border-accent text-accent' : 'border-rule text-ink'
+                }`}
               >
                 {zone}
                 <span className="sr-only"> — climate zone {zone}</span>
               </Link>
             </li>
-          ))}
+            )
+          })}
         </ul>
 
         {topCounties.length > 0 && (
