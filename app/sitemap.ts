@@ -27,6 +27,10 @@ const articles = [
   'heat-pump-water-heater-title-24',
   'performance-path-title-24',
   'hvac-replacement-hers-rater',
+  "refrigerant-charge-verification",
+  "quality-insulation-installation-qii",
+  "how-to-find-cf3r-registry",
+  "hvac-changeout-permit-california",
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

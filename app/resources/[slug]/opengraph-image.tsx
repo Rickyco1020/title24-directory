@@ -7,6 +7,10 @@ export const contentType = 'image/png'
 const articles: Record<string, { title: string; tags: string[] }> = {
   'adu-title-24-requirements': { title: 'Title 24 for ADUs: What California Homeowners Need to Know', tags: ['ADU', 'Compliance'] },
   'hers-test-cost': { title: 'How Much Does a HERS Test Cost in California?', tags: ['HERS', 'Cost'] },
+  "refrigerant-charge-verification": { title: "Refrigerant Charge Verification (RCV) in California: When It's Required and How It Works", tags: ["HVAC", "HERS"] },
+  "quality-insulation-installation-qii": { title: "Quality Insulation Installation (QII): What It Is and How to Pass the Inspection", tags: ["Insulation", "HERS"] },
+  "how-to-find-cf3r-registry": { title: "How to Find Your CF2R and CF3R Documents in the California Data Registry", tags: ["Forms", "ECC"] },
+  "hvac-changeout-permit-california": { title: "Do You Need a Permit to Replace an AC or Furnace in California?", tags: ["HVAC", "Compliance"] },
   '2025-energy-code-changes': { title: 'California 2025 Energy Code: What Changed for Homes', tags: ['Compliance', 'ECC'] },
   'what-is-a-hers-rater': { title: 'What Is a HERS Rater (Now Called an ECC Rater)?', tags: ['HERS', 'ECC'] },
   'cf2r-vs-cf3r': { title: 'CF2R vs CF3R: What\'s the Difference?', tags: ['Forms'] },
