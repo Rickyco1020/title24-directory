@@ -14,6 +14,9 @@ const GENERATED_AT = new Date()
 
 const articles = [
   'what-is-a-hers-rater',
+  'adu-title-24-requirements',
+  'hers-test-cost',
+  '2025-energy-code-changes',
   'cf2r-vs-cf3r',
   'title-24-compliance-guide',
   'what-is-acceptance-testing',

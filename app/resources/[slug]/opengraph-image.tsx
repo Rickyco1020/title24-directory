@@ -5,6 +5,9 @@ export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
 const articles: Record<string, { title: string; tags: string[] }> = {
+  'adu-title-24-requirements': { title: 'Title 24 for ADUs: What California Homeowners Need to Know', tags: ['ADU', 'Compliance'] },
+  'hers-test-cost': { title: 'How Much Does a HERS Test Cost in California?', tags: ['HERS', 'Cost'] },
+  '2025-energy-code-changes': { title: 'California 2025 Energy Code: What Changed for Homes', tags: ['Compliance', 'ECC'] },
   'what-is-a-hers-rater': { title: 'What Is a HERS Rater (Now Called an ECC Rater)?', tags: ['HERS', 'ECC'] },
   'cf2r-vs-cf3r': { title: 'CF2R vs CF3R: What\'s the Difference?', tags: ['Forms'] },
   'title-24-compliance-guide': { title: 'California Title 24 Compliance: A Builder\'s Complete Guide', tags: ['Compliance'] },

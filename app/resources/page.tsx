@@ -9,6 +9,9 @@ export const metadata: Metadata = {
 }
 
 const articles = [
+  { slug: 'adu-title-24-requirements', title: 'Title 24 for ADUs: What California Homeowners Need to Know', excerpt: 'Detached, attached or garage conversion: how the energy code treats each kind of ADU, when solar is required, and which HERS tests to expect.', tags: ['ADU', 'Compliance'] },
+  { slug: 'hers-test-cost', title: 'How Much Does a HERS Test Cost in California?', excerpt: 'What drives the price of HERS and ECC verification for a changeout, an ADU or a new home, and how to avoid paying for a retest.', tags: ['HERS', 'Cost'] },
+  { slug: '2025-energy-code-changes', title: 'California 2025 Energy Code: What Changed for Homes', excerpt: 'The 2025 code took effect January 1, 2026. HERS became ECC, heat pumps moved further toward the baseline, and insulation and window minimums got tighter.', tags: ['Compliance', 'ECC'] },
   { slug: 'what-is-a-hers-rater', title: 'What Is a HERS Rater (Now Called an ECC Rater) and When Do You Need One?', excerpt: 'Learn what a HERS Rater does, how the role is transitioning to ECC Rater under the 2025 energy code, and how to find one for your California project.', tags: ['HERS', 'ECC'] },
   { slug: 'cf2r-vs-cf3r', title: 'CF2R vs CF3R: What\'s the Difference?', excerpt: 'Understanding the difference between CF2R installer certificates and CF3R verifier certificates for Title 24 compliance.', tags: ['Forms'] },
   { slug: 'title-24-compliance-guide', title: 'California Title 24 Compliance: A Builder\'s Complete Guide', excerpt: 'A complete guide to navigating California\'s Title 24 energy code for new construction and major renovations.', tags: ['Compliance'] },
