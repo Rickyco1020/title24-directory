@@ -250,7 +250,7 @@ The prescriptive path is simpler but less flexible. It works well for straightfo
     tags: ['ADU', 'Compliance'],
     content: `## Every Permitted ADU Needs Title 24
 
-If your ADU needs a building permit, it needs to show compliance with California's energy code (Title 24, Part 6). In practice that means a CF1R compliance report submitted with your plans, installer certificates (CF2R) from the trades, and field verification by a certified HERS or ECC rater (CF3R) for any measures the CF1R flags for testing. The building department will not sign off final inspection until that paperwork is complete and registered.
+If your ADU is site-built or factory-built and needs a building permit, it needs to show compliance with California's energy code (Title 24, Part 6). HUD-code manufactured homes follow a different set of state rules. In practice that means a CF1R compliance report submitted with your plans, installer certificates (CF2R) from the trades, and field verification by a certified HERS or ECC rater (CF3R) for any measures the CF1R flags for testing. When field verification is required, the building department will not sign off final inspection until that paperwork is complete and registered.
 
 ## How Your ADU Type Changes the Rules
 
@@ -266,17 +266,17 @@ There are exceptions even for detached ADUs. The most common are limited solar a
 
 ## Which HERS Tests Should You Expect?
 
-It depends on the systems in your CF1R, but the usual list for an ADU includes duct leakage testing if you have ducted heating or cooling, airflow and fan efficacy checks on ducted systems, refrigerant charge verification on split systems, and verification of any measure you took credit for, such as Quality Insulation Installation (QII). Ductless mini-split systems in an ADU often mean fewer field tests than a ducted system, which is one reason they are popular for small units.
+Your CF1R has the final list. For a 2025-code ADU it commonly includes duct leakage testing if you have ducted heating or cooling, airflow and fan efficacy checks on ducted systems, refrigerant charge verification on heat pumps (and on air conditioners in Climate Zones 2 and 8 through 15), and verification of measures like Quality Insulation Installation (QII). A new ADU dwelling unit also needs its whole-house ventilation airflow and its kitchen range hood verified, even if it has no ducts. A ductless mini-split has no ducts to leakage-test, so it usually means fewer field tests than a ducted system, but it still needs refrigerant charge verification and anything else the CF1R lists.
 
-QII is the one that catches people out. If your CF1R takes credit for it, the rater has to inspect the insulation before drywall goes up. Miss that window and you may have to open walls or redo the energy calculations.
+QII is the one that catches people out. Under the 2025 prescriptive rules it applies to new detached ADUs in every climate zone and to additions over 700 square feet. Additions of 700 square feet or less are exempt unless the energy model takes credit for QII. Either way, the rater has to inspect at framing and again before drywall goes up. Miss that window and you may have to open walls or redo the energy calculations.
 
 ## Heat Pumps Are the Baseline
 
-Under the 2022 and 2025 codes, the standard design that the performance calculation compares your ADU against uses heat pump equipment for space heating, water heating or both, depending on climate zone. You can still model gas equipment, but you have to make up the difference elsewhere, usually with better envelope measures. For most ADUs the simplest path to compliance is an all-electric design: a ductless or small ducted heat pump plus a heat pump water heater.
+For a new detached ADU, the 2025 code's baseline uses a heat pump for both space heating and water heating in every climate zone. Under the 2022 code (permit applications before January 1, 2026), the baseline used a heat pump for space heating or water heating depending on climate zone. You can still propose gas equipment on the performance path, but the energy model has to show the project still complies, usually by making up the difference elsewhere. Attached ADUs and conversions follow the addition and alteration rules instead, including separate rules for equipment you keep. For a new detached ADU, an all-electric design (a ductless or small ducted heat pump plus a heat pump water heater) lines up with the 2025 baseline, so it is worth pricing first.
 
 ## How to Keep Your ADU on Schedule
 
-Get the CF1R done before plan submittal, not after the first plan check comment. Book your HERS or ECC rater early and tell them whether QII is on the report. Make sure your HVAC installer knows the rater will test refrigerant charge and duct leakage, and have them complete the CF2R promptly. Most failed verifications come down to leaky ducts or missing paperwork, both of which are cheap to fix before the rater arrives and expensive to fix after.
+Get the CF1R done before plan submittal, not after the first plan check comment. Book your HERS or ECC rater early and tell them whether QII is on the report. Give your HVAC installer the list of tests on the CF1R, such as refrigerant charge and, for ducted systems, duct leakage, and have them complete the CF2R promptly. Leaky ducts and missing paperwork are common reasons a verification gets held up, and both are easier to fix before the rater arrives than after.
 `,
   },
   'hers-test-cost': {
@@ -286,23 +286,23 @@ Get the CF1R done before plan submittal, not after the first plan check comment.
     tags: ['HERS', 'Cost'],
     content: `## The Short Answer
 
-There is no set price. HERS and ECC raters are private businesses, and what you pay depends on how many measures your project needs verified, how many systems are involved and where the job is. As a rough guide, publicly posted California prices for a single-system HVAC changeout verification commonly fall in the low hundreds of dollars, while new construction and ADUs with several measures cost more. Treat any number you see online, including these, as a starting point for getting quotes, not a promise.
+There is no set price. HERS and ECC raters are private businesses, and what you pay depends on how many measures your project needs verified, how many systems are involved and where the job is. As a rough guide, the publicly posted California prices we found for a single-system HVAC changeout verification were in the low hundreds of dollars, while projects with several measures, like many new homes and ADUs, cost more. Treat any number you see online, including these, as a starting point for getting quotes, not a promise.
 
 ## What You Are Actually Paying For
 
-A HERS or ECC visit is priced by the work on your CF1R or permit, not by the square foot. Each verified measure takes equipment, time on site and data entry in a CEC-approved registry. The common ones are duct leakage testing, refrigerant charge verification, airflow and fan efficacy measurements, blower door testing, and Quality Insulation Installation (QII) inspections. A changeout with one system and one duct test is a short visit. A new home with QII, a blower door test, two HVAC systems and a heat pump water heater can mean multiple trips.
+A HERS or ECC quote mostly follows the work on your CF1R or permit: which measures need verifying, how many systems, and how many trips. Some raters also price certain tests, like duct leakage, in square-footage brackets. Each verified measure takes equipment, time on site and data entry in a CEC-approved registry. The common ones are duct leakage testing, refrigerant charge verification, airflow and fan efficacy measurements, blower door testing, and Quality Insulation Installation (QII) inspections. A changeout with one system and one duct test is a short visit. A new home with QII, a blower door test, two HVAC systems and a heat pump water heater can mean multiple trips.
 
 ## What Drives the Price Up
 
-Number of systems is the biggest factor. Each additional furnace, condenser or heat pump adds testing. Multiple site visits add cost, and QII alone usually means at least one extra trip because the insulation has to be inspected before drywall. Registry fees are often built into the quote but are sometimes listed separately, so ask. Travel distance matters too: a rater who has to drive two hours will price that in. Finally, retests. If your ducts fail leakage testing or the refrigerant charge is off, the rater has to come back, and the second visit is rarely free.
+Number of systems is a big factor. Each additional independent HVAC system usually adds testing, so ask the rater how they count systems (a furnace and condenser working together are typically one system). Multiple site visits add cost, and QII alone usually means at least one extra trip because the insulation has to be inspected before drywall. Registry fees are often built into the quote but are sometimes listed separately, so ask. Travel distance matters too: a rater who has to drive two hours will price that in. Finally, retests. If your ducts fail leakage testing or the refrigerant charge is off, the problem has to be fixed and re-verified. Sometimes that can happen on the same visit; often it means a return trip, so ask what retests and waiting time cost.
 
 ## Changeout vs. ADU vs. New Home
 
-For an HVAC changeout, the typical scope is duct leakage plus refrigerant charge or airflow verification on one system, and it is usually the least expensive HERS job. For an ADU, expect the changeout scope plus whatever else the CF1R lists, which often includes QII and sometimes a blower door test. A new single-family home has the broadest scope and is often quoted as a package that covers every visit.
+For an HVAC changeout, the typical scope is duct leakage plus refrigerant charge or airflow verification on one system, depending on the equipment and climate zone, and it is usually the least expensive HERS job. An ADU depends on what kind it is: a new detached ADU is treated like a new home, while attached ADUs and conversions follow the addition and alteration rules. Its scope can include QII, ventilation checks and sometimes a blower door test, and a ductless ADU skips the duct test. A new single-family home has the broadest scope and is often quoted as a package, so ask which visits and retests the package includes.
 
 ## How to Avoid Paying Twice
 
-Most of the money people lose on HERS testing goes to failed tests, not to the first visit. Have your HVAC contractor seal and pre-test the ducts before the rater arrives. Make sure the installer has completed the CF2R paperwork in the registry, since the rater cannot sign a CF3R against a missing installer certificate. Finish the full installation before scheduling. Clear access to the attic, the air handler and the condenser. And bundle as many measures into one visit as the construction sequence allows.
+Failed tests, waiting time and return visits are where HERS costs climb past the original quote. Have your HVAC contractor seal and pre-test the ducts before the rater arrives. Make sure the installer has completed the CF2R paperwork in the registry, since the rater cannot sign a CF3R against a missing installer certificate. Book the rater early. Have HVAC equipment fully installed before its tests, but schedule QII inspections at the framing and insulation stages, before anything gets covered. Clear access to the attic, the air handler and the condenser. And bundle as many measures into one visit as the construction sequence allows.
 
 ## Getting Quotes
 
@@ -320,23 +320,23 @@ California updates its Building Energy Efficiency Standards (Title 24, Part 6) e
 
 ## HERS Raters Are Now ECC Raters
 
-The biggest visible change is a name. Under the 2025 code the field verification program is called ECC, for Energy Code Compliance, and HERS raters and providers become ECC raters and providers. The job is essentially the same: an independent, certified rater tests and verifies energy measures in the field and signs the CF3R. The CEC has also tightened quality assurance and documentation requirements on providers. For homeowners and contractors, the practical point is that a 2026 permit will ask for ECC verification, and most experienced HERS raters now hold ECC certification as well.
+The biggest visible change is a name. Under the 2025 code the field verification program is called ECC, for Energy Code Compliance, and the raters and providers are called ECC raters and ECC providers. The name change doesn't approve anyone automatically: raters are certified for a specific code cycle, and as of October 2026 CHEERS is the approved ECC provider. The job is essentially the same: an independent, certified rater tests and verifies energy measures in the field and signs the CF3R. The CEC has also tightened quality assurance and documentation requirements on providers. For homeowners and contractors, the practical point is that a permit applied for on or after January 1, 2026 uses ECC verification when the scope requires it, while an application submitted before that date stays on the 2022 code and HERS forms, even if the permit is issued in 2026. Ask your rater to confirm they are certified for your project's code cycle.
 
 ## Heat Pumps Keep Moving Toward the Baseline
 
-The 2022 code made heat pumps the baseline for new single-family homes, for space heating, water heating or both depending on climate zone. The 2025 code continues in that direction, including making heat pump water heaters the baseline in additions. Gas equipment is still allowed in many situations, particularly when you are replacing existing gas equipment in an alteration, but in new work you generally have to compensate for it with other efficiency measures.
+The 2022 code made heat pumps the baseline for new single-family homes, for space heating, water heating or both depending on climate zone. The 2025 code goes further: for new single-family homes, the baseline is now a heat pump for both space heating and water heating in every climate zone. For additions, when a new water heater is installed it generally has to be a heat pump water heater (small additions of 500 square feet or less also have an electric point-of-use option), and the gas tankless option the 2022 code allowed is gone. Gas equipment is still allowed in many situations, particularly when you are replacing existing gas equipment in an alteration, but in new work you generally have to compensate for it with other efficiency measures.
 
 ## HVAC Sizing and Load Calculations
 
-The 2025 code puts more emphasis on proper sizing. Load calculations and correctly sized systems are expected for new space-conditioning systems, including systems serving additions. For HVAC contractors that means the Manual J style load calculation is more likely to be asked for, and oversizing to be safe is harder to justify.
+The 2025 code puts more emphasis on proper sizing. Heating and cooling load calculations, using a method such as ACCA Manual J, are required for new space-conditioning systems, and equipment selection now references ACCA Manual S-2023. Systems serving additions have their own sizing rules, including maximum capacity limits unless airflow is verified. For HVAC contractors that means sizing from the calculated loads, not adding an arbitrary safety margin.
 
 ## Insulation and Windows Get Tighter
 
-Minimum wall insulation went up, to R-15 in 2x4 framing and R-21 in 2x6 framing. Window U-factor and solar heat gain requirements became more stringent in nearly every climate zone, and that reaches alteration projects too, so a like-for-like window replacement may now need a better-performing window than the one coming out.
+Minimum wall insulation went up, to R-15 in 2x4 framing and R-21 in 2x6 framing. The prescriptive maximum window U-factor tightened from 0.30 to 0.27 in Climate Zones 1 through 5, 11 through 14 and 16, and stays at 0.30 in Climate Zones 6 through 10 and 15. The solar heat gain limit tightened only in Climate Zone 15 for new construction. Replacement windows in alterations follow these limits too, with an exception for small replacements of 75 square feet or less, so check the numbers for your climate zone before you order.
 
 ## What This Means for Your Project
 
-If you are planning an ADU, addition or new home in 2026, assume the 2025 rules apply and have your energy consultant run the CF1R under the 2025 software. If you are replacing HVAC equipment, expect the permit to call for ECC verification of the new system. And if you are a contractor, the cheapest way through the new code is still the old one: sealed ducts, correct charge and complete paperwork before the rater shows up.
+If you are planning an ADU, addition or new home, check the permit application date first: applications submitted on or after January 1, 2026 use the 2025 rules and software, while earlier applications stay on the 2022 code. If you are replacing HVAC equipment on a 2025-code permit, expect ECC verification for the tests your equipment, ducts and climate zone trigger. And if you are a contractor, the easiest way to avoid delays under the new code is still the old one: sealed ducts, correct charge and complete paperwork before the rater shows up, with any construction-stage inspections booked early.
 `,
   },
   'hvac-replacement-hers-rater': {
