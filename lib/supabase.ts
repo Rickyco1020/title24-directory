@@ -27,6 +27,8 @@ export type Rater = {
   description: string | null
   license_number: string | null
   source?: 'self' | 'seeded'
+  /** Set by migration 006; absent on rows never edited, and before it runs. */
+  admin_edited_at?: string | null
 }
 
 /**

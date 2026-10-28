@@ -63,8 +63,47 @@ async function rejectRater(id: string) {
   await updateRaterStatus(id, 'rejected')
 }
 
-export default async function AdminPage() {
+function formatDate(iso: string | null | undefined): string | null {
+  if (!iso) return null
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
+
+/** Lower-case text match, plus a digits-only match so "(626) 331" finds "626-331-…". */
+function matchesQuery(rater: Rater, q: string): boolean {
+  const needle = q.trim().toLowerCase()
+  if (!needle) return true
+  const text = [rater.business_name, rater.contact_name, rater.email, rater.phone]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase()
+  if (text.includes(needle)) return true
+  const digits = needle.replace(/\D/g, '')
+  return digits.length >= 3 && (rater.phone ?? '').replace(/\D/g, '').includes(digits)
+}
+
+function EditButton({ id, compact }: { id: string; compact?: boolean }) {
+  return (
+    <a
+      href={`/admin/edit/${id}`}
+      className={compact
+        ? 'inline-block bg-gray-100 text-gray-800 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-200 transition-colors'
+        : 'block w-full text-center bg-gray-100 text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-200 transition-colors'}
+    >
+      ✎ Edit
+    </a>
+  )
+}
+
+function EditedNote({ at }: { at?: string | null }) {
+  const date = formatDate(at)
+  if (!date) return null
+  return <p className="text-xs text-gray-400 mt-1">Edited by admin — {date}</p>
+}
+
+export default async function AdminPage({ searchParams }: { searchParams: Promise<{ q?: string; approved?: string }> }) {
   if (!(await isAuthenticated())) redirect('/admin/login')
+  const { q: rawQuery, approved: approvedId } = await searchParams
+  const query = (rawQuery ?? '').slice(0, 100).trim()
 
   const supabase = createServiceClient()
   const { data: pending } = await supabase
@@ -85,9 +124,14 @@ export default async function AdminPage() {
     .eq('handled', false)
     .order('created_at', { ascending: true })
 
+  // Counts come from the full lists; search only filters what is shown.
   const pendingCount = pending?.length ?? 0
   const approvedCount = approved?.length ?? 0
   const requestCount = requests?.length ?? 0
+
+  const shownPending = (pending ?? []).filter((r: Rater) => matchesQuery(r, query))
+  const shownApproved = (approved ?? []).filter((r: Rater) => matchesQuery(r, query))
+  const justApproved = approvedId ? (approved ?? []).find((r: Rater) => r.id === approvedId) : undefined
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
@@ -150,6 +194,39 @@ export default async function AdminPage() {
         </div>
       </div>
 
+      {justApproved && (
+        <p role="status" className="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+          Saved and approved: <strong>{justApproved.business_name}</strong> is live.{' '}
+          <a href={`/directory/rater/${justApproved.id}`} target="_blank" rel="noopener noreferrer" className="underline">
+            View public page ↗
+          </a>
+        </p>
+      )}
+
+      {/* Search — filters both lists below; counts above stay the full totals. */}
+      <form method="get" action="/admin" className="mb-10 flex flex-wrap items-center gap-2" role="search">
+        <label htmlFor="admin-search" className="sr-only">Search listings</label>
+        <input
+          id="admin-search"
+          type="search"
+          name="q"
+          defaultValue={query}
+          placeholder="Search business, contact, email or phone"
+          className="flex-1 min-w-[16rem] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+        />
+        <button type="submit" className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-700">
+          Search
+        </button>
+        {query && (
+          <>
+            <a href="/admin" className="text-sm text-gray-500 hover:text-gray-900 px-2">Clear</a>
+            <p className="w-full text-xs text-gray-500">
+              {shownPending.length + shownApproved.length} of {pendingCount + approvedCount} listings match &ldquo;{query}&rdquo;
+            </p>
+          </>
+        )}
+      </form>
+
       {/* Pending Section */}
       <section className="mb-12">
         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -164,9 +241,13 @@ export default async function AdminPage() {
           <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center text-gray-500">
             No pending submissions — you&apos;re all caught up! 🎉
           </div>
+        ) : shownPending.length === 0 ? (
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center text-sm text-gray-500">
+            No pending listings match this search.
+          </div>
         ) : (
           <div className="space-y-4">
-            {pending!.map((rater: Rater) => (
+            {shownPending.map((rater: Rater) => (
               <div key={rater.id} className="bg-white border-2 border-yellow-200 rounded-xl p-6">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                   <div className="flex-1 min-w-0">
@@ -205,10 +286,12 @@ export default async function AdminPage() {
                       <p className="text-sm text-gray-600 mt-2 italic">&ldquo;{rater.description}&rdquo;</p>
                     )}
                     <p className="text-xs text-gray-400 mt-2">Submitted: {new Date(rater.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                    <EditedNote at={rater.admin_edited_at} />
                   </div>
 
                   {/* Action buttons */}
                   <div className="flex sm:flex-col gap-2 shrink-0">
+                    <EditButton id={rater.id} />
                     <form action={approveRater.bind(null, rater.id)}>
                       <button type="submit" className="w-full bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors">
                         ✓ Approve
@@ -238,18 +321,25 @@ export default async function AdminPage() {
           <span className="w-2 h-2 bg-green-400 rounded-full inline-block"></span>
           Live Listings
         </h2>
+        {query && shownApproved.length === 0 && (
+          <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center text-sm text-gray-500">
+            No live listings match this search.
+          </div>
+        )}
         <div className="space-y-3">
-          {approved?.map((rater: Rater) => (
+          {shownApproved.map((rater: Rater) => (
             <div key={rater.id} className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <h3 className="font-bold text-gray-900 truncate">{rater.business_name}</h3>
                   <StatusBadge status={rater.status} />
                 </div>
-                <p className="text-sm text-gray-500">{rater.contact_name} · {rater.email}</p>
+                <p className="text-sm text-gray-500">{rater.contact_name} · {rater.email}{rater.phone ? ` · ${rater.phone}` : ''}</p>
                 <p className="text-xs text-gray-400 mt-0.5">Counties: {rater.counties_served?.join(', ') || '—'}</p>
+                <EditedNote at={rater.admin_edited_at} />
               </div>
               <div className="flex gap-2 shrink-0">
+                <EditButton id={rater.id} compact />
                 {rater.status === 'approved' && (
                   <form action={featureRater.bind(null, rater.id)}>
                     <button type="submit" className="bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-200 transition-colors">

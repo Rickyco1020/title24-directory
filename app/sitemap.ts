@@ -93,15 +93,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const { data, error } = await supabase
       .from('raters')
-      .select('id, created_at')
+      // '*' rather than naming admin_edited_at: the column only exists once
+      // migration 006 has run, and naming a missing column fails the query.
+      .select('*')
       .in('status', ['approved', 'featured'])
       // Supabase truncates at db-max-rows without saying so. 50k is the sitemap
       // spec's own per-file limit, so anything past it needs a split anyway.
       .range(0, 49_999)
     if (error) throw error
-    raterPages = (data ?? []).map((r: { id: string; created_at?: string | null }) => ({
+    raterPages = (data ?? []).map((r: { id: string; created_at?: string | null; admin_edited_at?: string | null }) => ({
       url: `${BASE_URL}/directory/rater/${r.id}`,
-      lastModified: r.created_at ? new Date(r.created_at) : GENERATED_AT,
+      // An admin edit changes what the page says, so it is the real lastmod.
+      lastModified: r.admin_edited_at
+        ? new Date(r.admin_edited_at)
+        : r.created_at
+          ? new Date(r.created_at)
+          : GENERATED_AT,
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     }))
