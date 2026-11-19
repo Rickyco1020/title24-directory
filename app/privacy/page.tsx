@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ADMIN_EMAIL, absoluteUrl } from '@/lib/site'
 import LegalPage, { LegalList, LegalSection } from '@/components/LegalPage'
+import { LEGAL_UPDATED, formatLegalDate } from '@/lib/legal-dates'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 }
 
 /** One place to change the date, and one place a reviewer can check it. */
-const UPDATED = 'September 1, 2026'
+const UPDATED = formatLegalDate(LEGAL_UPDATED.privacy)
 
 function Mail() {
   return (

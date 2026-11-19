@@ -2,6 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ADMIN_EMAIL, absoluteUrl } from '@/lib/site'
 import LegalPage, { LegalList, LegalSection } from '@/components/LegalPage'
+import { LEGAL_UPDATED, formatLegalDate } from '@/lib/legal-dates'
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl('/terms') },
 }
 
-const UPDATED = 'September 1, 2026'
+const UPDATED = formatLegalDate(LEGAL_UPDATED.terms)
 
 function Mail() {
   return (

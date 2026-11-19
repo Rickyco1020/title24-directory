@@ -10,12 +10,71 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { absoluteUrl } from '@/lib/site'
 
-export const metadata: Metadata = {
-  title: 'Find a Title 24 Rater in California',
-  description: 'Browse California\'s complete directory of HERS raters, ECC raters, commissioning agents, and acceptance testers. Filter by city, county, and service type.',
-  // Filter and pagination params all serve the same browsable list — canonical
-  // keeps ?type/?county/?page permutations from indexing as duplicates.
-  alternates: { canonical: absoluteUrl('/directory') },
+const PER_PAGE = 20
+
+const TITLE = 'Find a Title 24 Rater in California'
+const DESCRIPTION =
+  'Browse California\'s complete directory of HERS raters, ECC raters, commissioning agents, and acceptance testers. Filter by city, county, and service type.'
+
+/** ?page=abc and ?page=0 both mean page 1. */
+function pageNumber(page: string | undefined): number {
+  return Math.max(1, parseInt(page ?? '1', 10) || 1)
+}
+
+/** /directory for page 1, /directory?page=N after it — one URL per page. */
+function pagePath(page: number): string {
+  return page > 1 ? `/directory?page=${page}` : '/directory'
+}
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string>>
+}): Promise<Metadata> {
+  const { q, type, county, page } = await searchParams
+  const base: Metadata = { title: TITLE, description: DESCRIPTION }
+
+  // A search or a filter is a view of the same list, not a page of its own:
+  // every ?q/?type/?county permutation keeps pointing at /directory so they
+  // never index as duplicates.
+  if (q?.trim() || type || county) {
+    return { ...base, alternates: { canonical: absoluteUrl('/directory') } }
+  }
+
+  // The unfiltered list is different. Its pages are the only links to most
+  // rater profiles, and while every one of them canonicalised to page 1 Google
+  // was being told pages 2+ were copies it need not crawl. Each page is now its
+  // own canonical, with prev/next tying the series together.
+  const current = pageNumber(page)
+  const { count, error } = await supabase
+    .from('raters')
+    .select('id', { count: 'exact', head: true })
+    .in('status', ['approved', 'featured'])
+  // If the count fails, fall back to the old behaviour rather than guess.
+  if (error || count == null) {
+    return { ...base, alternates: { canonical: absoluteUrl('/directory') } }
+  }
+  const totalPages = Math.max(1, Math.ceil(count / PER_PAGE))
+
+  // ?page=99 renders an empty list. Don't let it be indexed as a page.
+  if (current > totalPages) {
+    return {
+      ...base,
+      alternates: { canonical: absoluteUrl('/directory') },
+      robots: { index: false, follow: true },
+    }
+  }
+
+  return {
+    ...base,
+    // Distinct titles, so six pages don't share one in the results.
+    ...(current > 1 ? { title: `${TITLE} (page ${current} of ${totalPages})` } : {}),
+    alternates: { canonical: absoluteUrl(pagePath(current)) },
+    pagination: {
+      previous: current > 1 ? absoluteUrl(pagePath(current - 1)) : null,
+      next: current < totalPages ? absoluteUrl(pagePath(current + 1)) : null,
+    },
+  }
 }
 
 export const dynamic = 'force-dynamic'
@@ -125,8 +184,8 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
   const { q, type, county, page } = searchParams
   // ?page=abc would become range(NaN, NaN) and ?page=0 range(-20, -1);
   // both are PostgREST errors that would render as an innocuous empty state.
-  const currentPage = Math.max(1, parseInt(page ?? '1', 10) || 1)
-  const perPage = 20
+  const currentPage = pageNumber(page)
+  const perPage = PER_PAGE
   const from = (currentPage - 1) * perPage
   const to = from + perPage - 1
 
@@ -284,28 +343,50 @@ async function DirectoryResults({ searchParams }: { searchParams: Record<string,
         {raters.map((rater: Rater) => <RaterCard key={rater.id} rater={rater} />)}
       </div>
 
-      {totalPages > 1 && (
-        <nav aria-label="Pagination" className="mt-10 flex flex-wrap justify-center gap-2">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => {
-            const params = new URLSearchParams({ ...searchParams, page: String(p) })
-            const current = p === currentPage
-            return (
-              <Link
-                key={p}
-                href={`/directory?${params}`}
-                aria-current={current ? 'page' : undefined}
-                className={`min-w-[2.5rem] rounded px-3 py-2 text-center text-sm font-medium transition-colors ${
-                  current
-                    ? 'bg-ink text-surface'
-                    : 'border border-rule bg-surface text-ink hover:border-ink'
-                }`}
-              >
-                {p}
+      {totalPages > 1 && (() => {
+        // Plain server-rendered links: a crawler that runs no JavaScript walks
+        // the whole directory through these. Page 1 links to the bare URL so
+        // /directory and /directory?page=1 are not two addresses for one page.
+        const hrefFor = (p: number) => {
+          const params = new URLSearchParams(searchParams)
+          if (p > 1) params.set('page', String(p))
+          else params.delete('page')
+          const qs = params.toString()
+          return qs ? `/directory?${qs}` : '/directory'
+        }
+        const step = 'rounded border border-rule bg-surface px-3 py-2 text-center text-sm font-medium text-ink transition-colors hover:border-ink'
+        return (
+          <nav aria-label="Pagination" className="mt-10 flex flex-wrap justify-center gap-2">
+            {currentPage > 1 && (
+              <Link href={hrefFor(currentPage - 1)} rel="prev" className={step}>
+                Previous
               </Link>
-            )
-          })}
-        </nav>
-      )}
+            )}
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => {
+              const current = p === currentPage
+              return (
+                <Link
+                  key={p}
+                  href={hrefFor(p)}
+                  aria-current={current ? 'page' : undefined}
+                  className={`min-w-[2.5rem] rounded px-3 py-2 text-center text-sm font-medium transition-colors ${
+                    current
+                      ? 'bg-ink text-surface'
+                      : 'border border-rule bg-surface text-ink hover:border-ink'
+                  }`}
+                >
+                  {p}
+                </Link>
+              )
+            })}
+            {currentPage < totalPages && (
+              <Link href={hrefFor(currentPage + 1)} rel="next" className={step}>
+                Next
+              </Link>
+            )}
+          </nav>
+        )
+      })()}
     </div>
   )
 }
